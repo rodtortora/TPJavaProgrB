@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Scanner;
-
+//Prueba
 public class ATM {
 	private LectorTarjeta lector;
 	private ArrayList<Banco> bancos = new ArrayList<>();
