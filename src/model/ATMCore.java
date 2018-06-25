@@ -2,24 +2,23 @@ package model;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.Scanner;
-//Prueba
-public class ATM {
-	private LectorTarjeta lector;
+
+public class ATMCore {
+	private LectorTarjeta lector = new LectorTarjeta();
 	private ArrayList<Banco> bancos = new ArrayList<>();
 	private ArrayList<Billetero> billeteros = new ArrayList<>();
 	private int ID;
 	private String ubicacion;
 	private boolean modoMantenimiento;
-	private Banco bancoActual;
-	private TarjetaATM tarjetaActual;
-	private Scanner teclado;
-	private Cuenta cuentaSeleccionada;
-	private BigInteger saldoDisponible;
+	private Banco bancoATM; // Empresa bancaria a la cual pertenece el ATM. Influye en las tarifas de extraccion.
+	private Banco bancoActual; // Banco al que pertenece la tarjeta leida
+	private boolean bancoATMIgualBancoTarjeta;
+	private Cuenta cuentaSeleccionada; // Cuenta seleccionada de la tarjeta leida
+	private BigDecimal limiteExtracCuentaSeleccionada;
 	
-	public ATM(int ID, String ubicacion) {
+	public ATMCore(int ID, String ubicacion) {
 		this.ID = ID;
 		this.ubicacion = ubicacion;
 	}
@@ -44,84 +43,56 @@ public class ATM {
 	public void setBancoActual(Banco bancoActual) {
 		this.bancoActual = bancoActual;
 	}
-	public TarjetaATM getTarjetaActual() {
-		return tarjetaActual;
+	public boolean isBancoATMIgualBancoTarjeta() {
+		return bancoATMIgualBancoTarjeta;
 	}
-	public void setTarjetaActual(TarjetaATM tarjetaActual) {
-		this.tarjetaActual = tarjetaActual;
+	public void setBancoATMIgualBancoTarjeta(boolean bancoATMIgualBancoTarjeta) {
+		this.bancoATMIgualBancoTarjeta = bancoATMIgualBancoTarjeta;
 	}
+	public Banco getBancoATM() {
+		return bancoATM;
+	}
+	public void setBancoATM(Banco bancoATM) {
+		this.bancoATM = bancoATM;
+	}
+
 	public void addBilletero(Billetero billetero) {
 		billeteros.add(billetero);
 	}
-
 	
-	public BigDecimal getSaldoDisponible() {
-		for (Billetero billetero : billeteros) {
-			this.saldoDisponible += billetero.getSaldo();
-		}
-	}
-	public void validar(BigInteger idTarjetaATM, int PIN) {
-		lector = new LectorTarjeta();
-		lector.leerTarjeta(idTarjetaATM); // TODO: Devuelve el nro por la pantalla, solo si el cajero esta habilitado
-		if (!this.isModoMantenimiento()) {
+	// Primer metodo que se debe ejecutar
+	public void validarTarjeta(BigInteger idTarjetaATM, int PIN) {
+		if (!this.isModoMantenimiento()) {					
+			lector.setTarjetaLeida(idTarjetaATM);
 			Iterator<Banco> itbancos = bancos.iterator();
-			while ((itbancos.hasNext()) && (this.getBancoActual() == null)) {
+			while (itbancos.hasNext() && this.getBancoActual() == null) {
 				Banco banco = itbancos.next();
-				if ((idTarjetaATM.compareTo(banco.getMinRango()) == 0) || (idTarjetaATM.compareTo(banco.getMinRango()) == 1)) {
-					if ((idTarjetaATM.compareTo(banco.getMaxRango()) == 0) || (idTarjetaATM.compareTo(banco.getMaxRango()) == -1)) {
-						this.setBancoActual(banco);
-						bancoActual = banco;
-						System.out.println(banco.toString()); // Muestra datos del banco
-						Iterator<TarjetaATM> tarjetas = banco.getTarjetas().iterator();
-						while (tarjetas.hasNext() && this.getTarjetaActual() == null) {
-							TarjetaATM tarjeta = tarjetas.next();
-							if (idTarjetaATM.compareTo(tarjeta.getID()) == 0 && tarjeta.isHabilitada()) {
-								this.setTarjetaActual(tarjeta);
-								tarjetaActual = tarjeta;
-								int fallos = 0;
-								while (PIN != tarjeta.getPIN() && fallos < 3) {								
-									fallos++;
-									System.out.println("Ingrese pin nuevamente");
-									teclado = new Scanner(System.in);
-									PIN = teclado.nextInt();
-								}
-								if (fallos == 3) {
-									lector.retenerTarjeta(idTarjetaATM);
-									tarjeta.setHabilitada(false);
-									System.out.println("Tarjeta bloqueada por intentos fallidos");
-									break;
-									//TODO: Mostrar menu de procedimiento ante retencion de tarjeta
-								} else {
-									System.out.println("Autenticacion correcta");
-									// TODO: mostrar menu correspondiente a autenticación correcta										
-								}		
-							}					
-						}	
-						if (this.getTarjetaActual() == null) {
-							System.out.println("Tarjeta no encontrada en el banco"); //TODO ir al menu correspondiente
-						} else {
-							this.setTarjetaActual(null);
-						}
+				if (banco.validarTarjeta(lector.getTarjetaLeida(), PIN)) {
+					this.setBancoActual(banco);
+					this.setBancoATMIgualBancoTarjeta(this.getBancoActual() == this.getBancoATM());
+					System.out.println(banco.toString());
+					//TODO: mostrar menu correspondiente para consumir el resto de metodos
+				} else {
+					System.out.println("ATM: Error en validacion tarjeta"); //TODO: hand error
+					if (banco.getTarjetaEvaluada().isHabilitada() == false) {
+						lector.retenerTarjeta(idTarjetaATM);
+						System.out.println("ATM: tarjeta retenida por el banco");
+					} else {
+						System.out.println("ATM: expulsando tarjeta");
+						lector.expulsarTarjeta();
+						
 					}
+					banco.setTarjetaEvaluada(null);
 				}
 			}
-			if (this.getBancoActual() == null) {
-				System.out.println("Esta tarjeta no puede operar en este ATM");
-				// TODO: mostrar menu correspondiente
-			} else {
-				this.setBancoActual(null);
-			}			
-		} else {
-			System.out.println("Error: modo mantenimiento");
 		}
-		
 	}
 	
 	public void elegirCuenta(Cuenta cuentaSeleccionada) {
-		if (this.getTarjetaActual().getUsuario().getCuenta().size() > 1) {
+		if (getBancoActual().getTarjetaEvaluada().getUsuario().getCuenta().size() > 1) {
 			this.cuentaSeleccionada = cuentaSeleccionada;
 		} else {
-			System.out.println("No hay otra cuenta para elegir");
+			System.out.println("ATM: No hay otra cuenta para elegir");
 		}
 	}
 	
@@ -129,12 +100,19 @@ public class ATM {
 		return this.cuentaSeleccionada;
 	}
 	
+	public void calcularLimiteExtraccionCuenta(Cuenta cuenta) { //Calcula limite de extraccion de la cuenta seleccionada.
+		if (this.isBancoATMIgualBancoTarjeta()) {
+			this.limiteExtracCuentaSeleccionada = cuenta.getSaldo() + 
+		}
+		
+	}
+	
 	public void extraer(BigDecimal valor) {
-		if (this.getBancoActual() == null || this.getTarjetaActual() == null || this.getCuentaSeleccionada() == null) {
-			System.out.println("Error: tarjeta, banco o cuenta son null");
+		if (this.getBancoActual() == null || lector.getTarjetaLeida() == null || this.getCuentaSeleccionada() == null) {
+			System.out.println("ATM: Error: tarjeta, banco o cuenta son null");
 		} else {
-			if (this.getCuentaSeleccionada().getSaldoDisponible().compareTo(valor) == -1) {
-				System.out.println("No se puede extraer tanto dinero, supera saldo disponible de la cuenta. Reintente con cantidad menor o manana");
+			if (this.getCuentaSeleccionada().this.getLimiteExtraccionCuenta().compareTo(valor) == -1) {
+				System.out.println("ATM: No se puede extraer tanto dinero, supera saldo disponible de la cuenta. Reintente con cantidad menor o en otro momento");
 			} else {						
 					// Validar si se pueden combinar billetes para extraer la cantidad pedida
 				}
@@ -145,8 +123,9 @@ public class ATM {
 			// los valores de los cargos se obtienen de una lista de tarifas
 	}
 	
-		public static void main (String[] args) {
-			
+	
+public static void main (String[] args) {
+		
 		// Numeros de tarjeta
 		BigInteger idtarjeta0 = BigInteger.valueOf(1200000); // En whitelist y no existente
 		BigInteger idtarjeta1 = BigInteger.valueOf(2000001);// En whitelist y existente
@@ -168,7 +147,7 @@ public class ATM {
 		BigDecimal saldo0 = BigDecimal.valueOf(1000.00);
 		
 		// Declaracion de cajeros, bancos y tarjetas
-		ATM cajero1 = new ATM(1, "Mar del Plata");
+		ATMCore cajero1 = new ATMCore(1, "Mar del Plata");
 		Banco banco0 = new Banco("La Plaza",inicial,fin);
 		Banco banco1 = new Banco("Provincia",inicial1,fin1);
 		Banco banco2 = new Banco("Frances",inicial2,fin2);
@@ -181,8 +160,8 @@ public class ATM {
 		TarjetaATM tarjeta3 = new TarjetaATM(idtarjeta3, 1234, true);
 		TarjetaATM tarjeta5 = new TarjetaATM(idtarjeta5, 1234, true);
 		
-		// Pruebas
-		System.out.println("Prueba 1:");
+		// Lote Pruebas
+		/*System.out.println("Prueba 1:");
 		banco0.addTarjeta(tarjeta1); // Asignacion incorrecta: Error en banco.setTarjetas
 		banco1.addTarjeta(tarjeta1); // Asignacion correcta: Tarjeta agregada con exito
 		cajero1.validar(idtarjeta1, 1234); // Banco Provincia: Autenticacion correcta
@@ -194,7 +173,13 @@ public class ATM {
 		tarjeta0.setUsuario(new Usuario(1, "Tortora", "Rodrigo"));
 		tarjeta0.getUsuario().setCuenta(new CajaAhorro(cbu0,saldo0,100.00,5000.00));
 		System.out.println("-----------");
-		System.out.println(tarjeta0.getUsuario().getCuenta1(0).tipoCta());
+		System.out.println(tarjeta0.getUsuario().getCuenta(0).tipoCta());*/
+		
+		// Lote Pruebas1
+		banco1.addTarjeta(tarjeta1); // Asignacion correcta: Tarjeta agregada con exito
+		cajero1.setBancoATM(banco0); // Banco del cajero es La Plaza
+		cajero1.validarBanco(idtarjeta1, 1234); // Banco Provincia: Autenticacion correcta
+		
 		
 	}
 }

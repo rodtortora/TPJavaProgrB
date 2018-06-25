@@ -4,7 +4,7 @@ import java.math.BigInteger;
 public class TarjetaATM {
 	private Usuario usuario;
 	private BigInteger ID;
-	private int PIN;
+	private int PIN, intentosFallidos;
 	private boolean habilitada;
 	public TarjetaATM(BigInteger iD, int pIN, boolean habilitada) {
 		super();
@@ -35,5 +35,14 @@ public class TarjetaATM {
 	}
 	public void setUsuario(Usuario usuario) {
 		this.usuario = usuario;
-	}	
+	}
+	public int getIntentosFallidos() {
+		return intentosFallidos;
+	}
+	public void setIntentosFallidos(int intentosFallidos) {
+		this.intentosFallidos = intentosFallidos;
+	}
+	public void setIntentosFallidos() {
+		this.intentosFallidos++;
+	}
 }

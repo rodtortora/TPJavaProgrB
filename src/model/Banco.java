@@ -3,10 +3,12 @@ package model;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 
 public class Banco {
 	private Collection<Usuario> usuarios = new ArrayList<>();
 	private Collection<TarjetaATM> tarjetas = new ArrayList<>();
+	private TarjetaATM tarjeta;
 	private String nombre;
 	private BigInteger minRango, maxRango;
 	
@@ -16,7 +18,63 @@ public class Banco {
 		this.nombre = nombre;
 		this.minRango = minRango;
 		this.maxRango = maxRango;
+	}
+	
+	public TarjetaATM getTarjetaEvaluada() {
+		return tarjeta;
+	}
+	
+	public void setTarjetaEvaluada(TarjetaATM tarjeta) {
+		this.tarjeta = tarjeta;
+	}
+	
+
+	public boolean validarTarjeta(BigInteger idTarjetaATM, int PIN) {
+		if (cardIsOnWhitelist(idTarjetaATM)) {
+			return validarPIN(PIN);
+		}
+		return false;
 	}	
+	
+	public boolean cardIsOnWhitelist(BigInteger idTarjetaATM) {
+		if ((idTarjetaATM.compareTo(this.getMinRango()) == 0) || (idTarjetaATM.compareTo(this.getMinRango()) == 1)) {
+			if ((idTarjetaATM.compareTo(this.getMaxRango()) == 0) || (idTarjetaATM.compareTo(this.getMaxRango()) == -1)) {
+				Iterator<TarjetaATM> ittarjetas = tarjetas.iterator();
+				while (ittarjetas.hasNext() && idTarjetaATM.compareTo(getTarjetaEvaluada().getID()) != 0) {
+					setTarjetaEvaluada(ittarjetas.next());
+				}
+				if (idTarjetaATM.compareTo(getTarjetaEvaluada().getID()) == 0) {
+					if (!getTarjetaEvaluada().isHabilitada()) {
+						return false;
+					}
+					return true;
+				} else {
+					System.out.println("Error en busqueda de tarjeta"); //TODO: handle error
+					return false;
+				}
+			}
+		}
+		return false;
+		
+	}
+	
+	public boolean validarPIN(int PIN) {
+		while (PIN != getTarjetaEvaluada().getPIN() && getTarjetaEvaluada().getIntentosFallidos() < 3) {
+			//TODO: genera un evento del tipo PinFailedEvent, solicita ingreso de PIN nuevamente a la vista
+			getTarjetaEvaluada().setIntentosFallidos();
+		}
+		if (PIN == tarjeta.getPIN()) {
+			getTarjetaEvaluada().setIntentosFallidos(0);
+			return true;
+		}
+		if (getTarjetaEvaluada().getIntentosFallidos() == 3) {
+			getTarjetaEvaluada().setHabilitada(false);
+			System.out.println("Su tarjeta fue inhabilitada y retenida por el banco"); //TODO: menu tarjeta inhabilitada
+		}
+		return false;
+			
+	}
+	
 	public String getNombre() {
 		return nombre;
 	}
