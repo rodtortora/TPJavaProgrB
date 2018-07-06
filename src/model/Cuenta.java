@@ -10,9 +10,9 @@ public abstract class Cuenta {
 
 	
 	public Cuenta(BigInteger cBU, BigDecimal saldo) {
-		super();
 		CBU = cBU;
 		this.saldo = saldo;
+		this.limiteExtraccion = saldo;
 	}
 	
 	public BigInteger getCBU() {
