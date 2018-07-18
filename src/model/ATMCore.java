@@ -10,6 +10,7 @@ public class ATMCore {
 	private ArrayList<Banco> bancos = new ArrayList<>();
 	private ArrayList<Billetero> billeteros = new ArrayList<>();
 	private int ID;
+	// prueba commit jaj
 	private String ubicacion;
 	private boolean modoMantenimiento;
 	private Banco bancoATM; // Empresa bancaria a la cual pertenece el ATM. Influye en las tarifas de extraccion.
