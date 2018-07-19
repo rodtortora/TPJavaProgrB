@@ -5,14 +5,9 @@ import java.math.BigInteger;
 
 public class CajaAhorro extends Cuenta {
 	
-	public CajaAhorro(BigInteger cBU, BigDecimal saldo, BigDecimal tasaOtroBanco) {
-		super(cBU, saldo);
-		this.setTasaOtroBanco(tasaOtroBanco);
+	public CajaAhorro(BigInteger CBU, BigDecimal mantenimientoMensual, BigDecimal saldo, BigDecimal tasaExtraccOtroBanco, int limiteExtraccionesSC, BigDecimal tasaExtraccion, BigDecimal limiteExtraccionDiario, BigDecimal limiteDescubierto) {
+		super(CBU, mantenimientoMensual, saldo, tasaExtraccOtroBanco, limiteExtraccionesSC, tasaExtraccion, limiteExtraccionDiario, limiteDescubierto);
+		
 	}
 
-
-	@Override
-	public String toString() {
-		return "CajaAhorro";
-	}
 }

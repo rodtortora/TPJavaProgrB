@@ -5,14 +5,19 @@ import java.math.BigInteger;
 
 public abstract class Cuenta {
 	private BigInteger CBU;
-	private BigDecimal saldo, tasaExtraccOtroBanco, mantenimientoMensual, descubierto, tasaExtraccion, limiteExtraccion;
-	private int limiteExtraccionesSC; // Cantidad extracciones sin cargo
+	private BigDecimal saldo, tasaExtraccOtroBanco, mantenimientoMensual, tasaExtraccion, limiteExtraccionDiario, limiteDescubierto;
+	private int limiteExtraccionesSinCargo; // Cantidad extracciones sin cargo
 
 	
-	public Cuenta(BigInteger cBU, BigDecimal saldo) {
-		CBU = cBU;
-		this.saldo = saldo;
-		this.limiteExtraccion = saldo;
+	public Cuenta(BigInteger CBU, BigDecimal mantenimientoMensual, BigDecimal saldo, BigDecimal tasaExtraccOtroBanco, int limiteExtraccionesSC, BigDecimal tasaExtraccion, BigDecimal limiteExtraccionDiario, BigDecimal limiteDescubierto) {
+		this.setCBU(CBU);
+		this.setSaldo(saldo);
+		this.setMantenimientoMensual(mantenimientoMensual);
+		this.setTasaExtraccOtroBanco(tasaExtraccOtroBanco);
+		this.setLimiteExtraccionesSinCargo(limiteExtraccionesSC);
+		this.setTasaExtraccion(tasaExtraccion);
+		this.setLimiteExtraccionDiario(limiteExtraccionDiario);
+		this.setLimiteDescubierto(limiteDescubierto);
 	}
 	
 	public BigInteger getCBU() {
@@ -45,21 +50,13 @@ public abstract class Cuenta {
 	public void setTasaExtraccOtroBanco(BigDecimal tasaExtraccOtroBanco) {
 		this.tasaExtraccOtroBanco = tasaExtraccOtroBanco;
 	}
-	
-	public BigDecimal getDescubierto() {
-		return descubierto;
+
+	public int getLimiteExtraccionesSinCargo() {
+		return limiteExtraccionesSinCargo;
 	}
 
-	public void setDescubierto(BigDecimal descubierto) {
-		this.descubierto = descubierto;
-	}
-
-	public int getLimiteExtraccionesSC() {
-		return limiteExtraccionesSC;
-	}
-
-	public void setLimiteExtraccionesSC(int limiteExtraccionesSC) {
-		this.limiteExtraccionesSC = limiteExtraccionesSC;
+	public void setLimiteExtraccionesSinCargo(int limiteExtraccionesSC) {
+		this.limiteExtraccionesSinCargo = limiteExtraccionesSC;
 	}
 
 	public BigDecimal getTasaExtraccion() {
@@ -70,16 +67,20 @@ public abstract class Cuenta {
 		this.tasaExtraccion = tasaExtraccion;
 	}
 
-	public BigDecimal getLimiteExtraccion() {
-		return limiteExtraccion;
+	public BigDecimal getLimiteExtraccionDiario() {
+		return limiteExtraccionDiario;
 	}
 
-	public void setLimiteExtraccion(BigDecimal limiteExtraccion) {
-		this.limiteExtraccion = limiteExtraccion;
+	public void setLimiteExtraccionDiario(BigDecimal limiteExtraccion) {
+		this.limiteExtraccionDiario = limiteExtraccion;
 	}
 
-	public String tipoCta() {
-		return this.toString();
+	public BigDecimal getLimiteDescubierto() {
+		return limiteDescubierto;
+	}
+
+	public void setLimiteDescubierto(BigDecimal limiteDescubierto) {
+		this.limiteDescubierto = limiteDescubierto;
 	}
 	
 }

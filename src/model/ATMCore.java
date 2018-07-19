@@ -10,7 +10,6 @@ public class ATMCore {
 	private ArrayList<Banco> bancos = new ArrayList<>();
 	private ArrayList<Billetero> billeteros = new ArrayList<>();
 	private int ID;
-	// prueba commit jaj
 	private String ubicacion;
 	private boolean modoMantenimiento;
 	private Banco bancoATM; // Empresa bancaria a la cual pertenece el ATM. Influye en las tarifas de extraccion.
@@ -101,14 +100,16 @@ public class ATMCore {
 		return this.cuentaSeleccionada;
 	}
 	
-	public void calcularLimiteExtraccionCuenta(Cuenta cuenta) { //Calcula limite de extraccion de la cuenta seleccionada.
+/*	public void calcularLimiteExtraccionCuenta(Cuenta cuenta) { //Calcula limite de extraccion de la cuenta seleccionada.
 		if (this.isBancoATMIgualBancoTarjeta()) {
-			this.limiteExtracCuentaSeleccionada = cuenta.getSaldo() + 
+			this.limiteExtracCuentaSeleccionada.add(cuenta.getSaldo().add(cuenta.getLimiteDescubierto()));
+		} if (cuenta.getLimiteExtraccionesSinCargo() <= cuenta.getExtraccionesRealizadas()) {
+			this.limiteExtracCuentaSeleccionada.subtract(cuenta.getTasaExtraccion())
 		}
 		
-	}
+	}*/
 	
-	public void extraer(BigDecimal valor) {
+	/*public void extraer(BigDecimal valor) {
 		if (this.getBancoActual() == null || lector.getTarjetaLeida() == null || this.getCuentaSeleccionada() == null) {
 			System.out.println("ATM: Error: tarjeta, banco o cuenta son null");
 		} else {
@@ -122,7 +123,7 @@ public class ATMCore {
 			// caja de ahorro: no descubierto, 10$ de comision por banco distinto, 150$ mant mensual
 			// cuenta sueldo: caja de ahorro sin comisiones ni mantenimiento, guarda CUIT de la empresa que deposita sueldo
 			// los valores de los cargos se obtienen de una lista de tarifas
-	}
+	}*/
 	
 	
 public static void main (String[] args) {
@@ -179,7 +180,7 @@ public static void main (String[] args) {
 		// Lote Pruebas1
 		banco1.addTarjeta(tarjeta1); // Asignacion correcta: Tarjeta agregada con exito
 		cajero1.setBancoATM(banco0); // Banco del cajero es La Plaza
-		cajero1.validarBanco(idtarjeta1, 1234); // Banco Provincia: Autenticacion correcta
+		//cajero1.validarBanco(idtarjeta1, 1234); // Banco Provincia: Autenticacion correcta
 		
 		
 	}

@@ -1,33 +1,29 @@
 package model;
 
 import java.math.BigInteger;
+import java.util.*;
 
 public class Billetero {
 
-	private int valorBillete, cantidad;
-	private BigInteger saldo;
+	private HashMap<BigInteger, BigInteger> mapBilletes = new HashMap<BigInteger, BigInteger>();
 	
-	public Billetero(int valorBillete, int cantidad) {
-		this.valorBillete = valorBillete;
-		this.cantidad = cantidad;
+	public void agregarBilletes(BigInteger valor, BigInteger cantidad) {
+		mapBilletes.put(valor, cantidad.add(mapBilletes.get(cantidad)));
 	}
-	public int getValorBillete() {
-		return valorBillete;
+	
+	public void sacarBilletes(BigInteger valor, BigInteger cantidad) {
+		if (mapBilletes.get(valor).subtract(cantidad).compareTo(BigInteger.ZERO) == -1) {
+			//devolver error
+		} else {
+			mapBilletes.put(valor, cantidad.subtract(mapBilletes.get(valor)));
+		}		
 	}
-	public void setValorBillete(int valorBillete) {
-		this.valorBillete = valorBillete;
-	}
-	public int getCantidad() {
-		return cantidad;
-	}
-	public void setCantidad(int cantidad) {
-		this.cantidad = cantidad;
-	}
+	
+	
 	public BigInteger getSaldo() {
+		BigInteger saldo = BigInteger.ZERO;
+		mapBilletes.forEach((k,v) -> saldo.add(k.multiply(v)));
 		return saldo;
-	}
-	public void setSaldo(BigInteger saldo) {
-		this.saldo = Math.multiplyExact(this.getCantidad(), this.getValorBillete());
 	}
 
 }
