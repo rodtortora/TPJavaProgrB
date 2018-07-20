@@ -40,7 +40,7 @@ public class Banco {
 		if ((idTarjetaATM.compareTo(this.getMinRango()) == 0) || (idTarjetaATM.compareTo(this.getMinRango()) == 1)) {
 			if ((idTarjetaATM.compareTo(this.getMaxRango()) == 0) || (idTarjetaATM.compareTo(this.getMaxRango()) == -1)) {
 				Iterator<TarjetaATM> ittarjetas = tarjetas.iterator();
-				while (ittarjetas.hasNext() && idTarjetaATM.compareTo(getTarjetaEvaluada().getID()) != 0) {
+				while (ittarjetas.hasNext() && idTarjetaATM.compareTo(getTarjetaEvaluada().getID()) != 0) { //breakpoint
 					setTarjetaEvaluada(ittarjetas.next());
 				}
 				if (idTarjetaATM.compareTo(getTarjetaEvaluada().getID()) == 0) {
