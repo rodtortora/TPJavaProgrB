@@ -6,8 +6,10 @@ import java.util.Iterator;
 import java.util.Scanner;
 
 import controller.AuthenticationController;
+import events.PinRequestEvent;
+import events.PinRequestListener;
 
-public class ATMCore {
+public class ATM {
 	private LectorTarjeta lector = new LectorTarjeta();
 	private ArrayList<Banco> bancos = new ArrayList<>();
 	private ArrayList<Billetero> billeteros = new ArrayList<>();
@@ -20,7 +22,7 @@ public class ATMCore {
 	private Cuenta cuentaSeleccionada; // Cuenta seleccionada de la tarjeta leida
 	private BigDecimal limiteExtracCuentaSeleccionada;
 	
-	public ATMCore(int ID, String ubicacion, Banco bancoATM) {
+	public ATM(int ID, String ubicacion, Banco bancoATM) {
 		this.ID = ID;
 		this.ubicacion = ubicacion;
 		this.bancoATM = bancoATM;
@@ -64,41 +66,46 @@ public class ATMCore {
 	public void setBancoATM(Banco bancoATM) {
 		this.bancoATM = bancoATM;
 	}
-	
 	public void addBanco(Banco banco) {
 		this.bancos.add(banco);
 	}
-
 	public void addBilletero(Billetero billetero) {
 		billeteros.add(billetero);
 	}
 	
-	// Primer metodo que se debe ejecutar
-	public void validarTarjeta(BigInteger idTarjetaATM, int PIN) {
-		if (!this.isModoMantenimiento()) {					
+	/**
+	 * Valida el nro de tarjeta introducido en el lector. La unica responsabilidad del ATM es
+	 * encontrar el banco al cual pertenece la tarjeta.
+	 * @param idTarjetaATM
+	 */
+	
+	public void validarTarjeta(BigInteger idTarjetaATM) {
+		this.setBancoActual(null);
+		if (!this.isModoMantenimiento()) {			
 			lector.setTarjetaLeida(idTarjetaATM);
 			Iterator<Banco> itbancos = bancos.iterator();
 			while (itbancos.hasNext() && this.getBancoActual() == null) {
 				Banco banco = itbancos.next();
-				if (banco.validarTarjeta(lector.getTarjetaLeida(), PIN)) {
-					this.setBancoActual(banco);
-					this.setBancoATMIgualBancoTarjeta(this.getBancoActual() == this.getBancoATM());
-					System.out.println(banco.toString());
-					//TODO: mostrar menu correspondiente para consumir el resto de metodos
-				} else {
-					System.out.println("ATM: Error en validacion tarjeta"); //TODO: hand error
-					if (banco.getTarjetaEvaluada().isHabilitada() == false) {
-						lector.retenerTarjeta(idTarjetaATM);
-						System.out.println("ATM: tarjeta retenida por el banco");
-					} else {
-						System.out.println("ATM: expulsando tarjeta");
-						lector.expulsarTarjeta();
-						
-					}
-					banco.setTarjetaEvaluada(null);
-				}
+				if (banco.cardIsOnWhitelist(lector.getTarjetaLeida())) {
+					this.setBancoActual(banco);									
+				} 
 			}
-		}
+			if (getBancoActual() != null) {
+				this.setBancoATMIgualBancoTarjeta(this.getBancoActual().getNombre().equals(this.getBancoATM().getNombre())); // TODO: revisar	
+				getBancoActual().validarTarjeta();				
+			} else {
+				System.out.println("ATM: Tarjeta no encontrada en ningun banco"); //TODO: revisar
+				lector.expulsarTarjeta();
+			}
+			
+		} else {
+			System.out.println("ATM: Modo mantenimiento" ); //TODO: revisar
+		}		
+	}
+	
+			
+	public void sendPin(int pin) {
+		this.getBancoActual().validarPIN(pin);
 	}
 	
 	public void elegirCuenta(Cuenta cuentaSeleccionada) {

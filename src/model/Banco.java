@@ -4,13 +4,22 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
+
+import events.PinFailedEvent;
+import events.PinFailedListener;
+import events.PinRequestEvent;
+import events.PinRequestListener;
+import events.PinSentListener;
 
 public class Banco {
-	private Collection<Usuario> usuarios = new ArrayList<>();
-	private Collection<TarjetaATM> tarjetas = new ArrayList<>();
+	private List<Usuario> usuarios = new ArrayList<>();
+	private List<TarjetaATM> tarjetas = new ArrayList<>();
 	private TarjetaATM tarjeta;
 	private String nombre;
 	private BigInteger minRango, maxRango;
+	private PinRequestListener pinRequestListener;
+	private PinFailedListener pinFailedListener;
 	
 	public Banco() {};
 	
@@ -27,54 +36,81 @@ public class Banco {
 	public void setTarjetaEvaluada(TarjetaATM tarjeta) {
 		this.tarjeta = tarjeta;
 	}
-	
 
-	public boolean validarTarjeta(BigInteger idTarjetaATM, int PIN) {
-		if (cardIsOnWhitelist(idTarjetaATM)) {
-			return validarPIN(PIN);
-		}
-		return false;
-	}	
+	public void setPinRequestListener(PinRequestListener pinRequestListener) {
+		this.pinRequestListener = pinRequestListener;
+	}
+
+	public void setPinFailedListener(PinFailedListener pinFailedListener) {
+		this.pinFailedListener = pinFailedListener;
+	}
+	
+	/**
+	 * Se valida que la tarjeta consultada al banco existe en la whitelist del banco.
+	 * Si la validación se hace correctamente, se setea el parámetro 'tarjetaEvaluada' 
+	 * @param idTarjetaATM número de tarjeta enviado
+	 * @return retorna true si se pudo validar que la tarjeta existe en el banco.
+	 */
 	
 	public boolean cardIsOnWhitelist(BigInteger idTarjetaATM) {
-		if ((idTarjetaATM.compareTo(this.getMinRango()) == 0) || (idTarjetaATM.compareTo(this.getMinRango()) == 1)) {
-			if ((idTarjetaATM.compareTo(this.getMaxRango()) == 0) || (idTarjetaATM.compareTo(this.getMaxRango()) == -1)) {
+		setTarjetaEvaluada(null);
+		if ((idTarjetaATM.compareTo(this.getMinRango()) >= 0)) {
+			if ((idTarjetaATM.compareTo(this.getMaxRango()) <= 0)) {
 				Iterator<TarjetaATM> ittarjetas = tarjetas.iterator();
-				while (ittarjetas.hasNext() && idTarjetaATM.compareTo(getTarjetaEvaluada().getID()) != 0) { //breakpoint
-					setTarjetaEvaluada(ittarjetas.next());
-				}
-				if (idTarjetaATM.compareTo(getTarjetaEvaluada().getID()) == 0) {
-					if (!getTarjetaEvaluada().isHabilitada()) {
-						return false;
+				TarjetaATM cardIterated;
+				while (ittarjetas.hasNext() && getTarjetaEvaluada() == null) {					
+					cardIterated = ittarjetas.next();
+					if (idTarjetaATM.compareTo(cardIterated.getID()) == 0) {
+						setTarjetaEvaluada(cardIterated);
 					}
+				}
+				if (getTarjetaEvaluada() != null) {
 					return true;
-				} else {
-					System.out.println("Error en busqueda de tarjeta"); //TODO: handle error
-					return false;
 				}
 			}
 		}
-		return false;
-		
+		return false;		
 	}
 	
-	public boolean validarPIN(int PIN) {
-		while (PIN != getTarjetaEvaluada().getPIN() && getTarjetaEvaluada().getIntentosFallidos() < 3) {
-			//TODO: genera un evento del tipo PinFailedEvent, solicita ingreso de PIN nuevamente a la vista
-			getTarjetaEvaluada().setIntentosFallidos();
+	/**
+	 * Se valida si la tarjeta evaluada de la sesión actual, tiene permitido operar en el banco, y solicita el PIN.
+	 * En el caso de que la tarjeta esté inactiva, reportará el error correspondiente.
+	 */
+
+	public void validarTarjeta() {
+		if (getTarjetaEvaluada() != null) {
+			if (!getTarjetaEvaluada().isHabilitada()) {
+				//TODO: Comunicar al ATM que la tarjeta no está habilitada para operar
+			} else {
+				pinRequestListener.listenPinRequestEvent(new PinRequestEvent());			
+			}
 		}
-		if (PIN == tarjeta.getPIN()) {
-			getTarjetaEvaluada().setIntentosFallidos(0);
-			return true;
+	}
+	
+	/**
+	 * Se valida que el PIN introducido sea válido para la tarjeta que está siendo evaluada (getTarjetaEvaluada())
+	 * @param pin
+	 */
+	
+	public void validarPIN(int pin) {
+		if (pin != getTarjetaEvaluada().getPIN() && getTarjetaEvaluada().getIntentosFallidos() < 3) {			
+			getTarjetaEvaluada().setIntentosFallidos(); //intentosfallidos++
+			System.out.println("Banco-Debug: "+getTarjetaEvaluada().getIntentosFallidos());
+			pinFailedListener.listenPinFailedEvent(new PinFailedEvent());
+		}
+		if (pin == tarjeta.getPIN() && tarjeta.isHabilitada()) {
+			getTarjetaEvaluada().setIntentosFallidos(0);	
+			System.out.println("Banco: tarjeta validada");
 		}
 		if (getTarjetaEvaluada().getIntentosFallidos() == 3) {
 			getTarjetaEvaluada().setHabilitada(false);
-			System.out.println("Su tarjeta fue inhabilitada y retenida por el banco"); //TODO: menu tarjeta inhabilitada
-		}
-		return false;
-			
+			System.out.println("Banco: Su tarjeta fue inhabilitada y retenida por el banco"); //TODO: menu tarjeta inhabilitada	
+		}	
 	}
 	
+
+	
+
 	public String getNombre() {
 		return nombre;
 	}
@@ -96,7 +132,7 @@ public class Banco {
 	public Collection<TarjetaATM> getTarjetas() {
 		return tarjetas;
 	}
-	public void setTarjetas(Collection<TarjetaATM> tarjetas) {
+	public void setTarjetas(List<TarjetaATM> tarjetas) {
 		this.tarjetas = tarjetas;
 	}
 	public void addTarjeta(TarjetaATM tarjeta) {
@@ -116,7 +152,7 @@ public class Banco {
 	public Collection<Usuario> getUsuarios() {
 		return usuarios;
 	}
-	public void setUsuarios(Collection<Usuario> usuarios) {
+	public void setUsuarios(List<Usuario> usuarios) {
 		this.usuarios = usuarios;
 	}
 	@Override

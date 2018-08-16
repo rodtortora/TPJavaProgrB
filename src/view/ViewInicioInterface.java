@@ -15,6 +15,7 @@ public interface ViewInicioInterface {
 	 */
 	
 	void setCardReadedListener(CardReadedListener listener);
+	void ocultar();
 	void inicializar();
 
 }

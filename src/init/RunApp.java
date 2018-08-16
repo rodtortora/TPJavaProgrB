@@ -1,8 +1,9 @@
-package controller;
+package init;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
+import controller.AuthenticationController;
 import model.*;
 import view.*;
 
@@ -10,9 +11,6 @@ public class RunApp {
 	
 
 	public static void main (String[] args) {
-		
-
-	
 		
 		// Numeros de tarjeta
 		BigInteger idtarjeta0 = BigInteger.valueOf(1200000); // En whitelist y no existente
@@ -39,7 +37,7 @@ public class RunApp {
 		Banco banco0 = new Banco("La Plaza",inicial,fin);
 		Banco banco1 = new Banco("Provincia",inicial1,fin1);
 		Banco banco2 = new Banco("Frances",inicial2,fin2);
-		ATMCore cajero1 = new ATMCore(1, "Mar del Plata",banco0);
+		ATM cajero1 = new ATM(1, "Mar del Plata",banco0);
 		
 		cajero1.addBanco(banco0);
 		cajero1.addBanco(banco1);
@@ -51,13 +49,7 @@ public class RunApp {
 		TarjetaATM tarjeta5 = new TarjetaATM(idtarjeta5, 1234, true);
 		TarjetaATM tarjetax = new TarjetaATM(idtarjetax, 1234, true);
 		
-		/**
-		 * Asignaciones MVC
-		 */
-		ViewInicioInterface inicioInterface = new Inicio();
-		AuthenticationController controller = new AuthenticationController(cajero1, inicioInterface);
-		inicioInterface.setCardReadedListener(controller); // Se indica que cualquier objeto que sea inicioInterface, va a tener como listener (o sea receptor de sus eventos) a un objeto 'controller'
-		inicioInterface.inicializar();
+
 		
 		// Lote Pruebas
 		/*System.out.println("Prueba 1:");
@@ -80,6 +72,18 @@ public class RunApp {
 		cajero1.setBancoATM(banco0); // Banco del cajero es La Plaza
 		//cajero1.validarBanco(idtarjeta1, 1234); // Banco Provincia: Autenticacion correcta
 		
+		
+		/**
+		 * Asignaciones MVC
+		 */
+		ViewInicioInterface inicioInterface = new Inicio();
+		AskPinInterface askPinInterface = new AskPin();
+		AuthenticationController controller = new AuthenticationController(cajero1, inicioInterface, banco1, askPinInterface);
+		banco1.setPinFailedListener(controller);
+		banco1.setPinRequestListener(controller);
+		inicioInterface.setCardReadedListener(controller); // Se indica X clase que hereda/implementa de la interface inicioInterface, va a tener como listener (o sea receptor de sus eventos) a un objeto 'controller'
+		askPinInterface.setPinListener(controller);
+		inicioInterface.inicializar();
 		
 	}
 

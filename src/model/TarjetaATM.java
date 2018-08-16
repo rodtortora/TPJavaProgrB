@@ -11,6 +11,7 @@ public class TarjetaATM {
 		ID = iD;
 		PIN = pIN;
 		this.habilitada = habilitada;
+		this.setIntentosFallidos(0);
 	}
 	public int getPIN() {
 		return PIN;
