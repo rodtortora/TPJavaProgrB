@@ -92,13 +92,13 @@ public class Banco {
 	 * @param pin
 	 */
 	
-	public void validarPIN(int pin) {
-		if (pin != getTarjetaEvaluada().getPIN() && getTarjetaEvaluada().getIntentosFallidos() < 3) {			
+	public void validarPIN(String pin) {
+		if (!getTarjetaEvaluada().getPIN().equals(pin) && getTarjetaEvaluada().getIntentosFallidos() < 3) {	
 			getTarjetaEvaluada().setIntentosFallidos(); //intentosfallidos++
 			System.out.println("Banco-Debug: "+getTarjetaEvaluada().getIntentosFallidos());
 			pinFailedListener.listenPinFailedEvent(new PinFailedEvent());
 		}
-		if (pin == tarjeta.getPIN() && tarjeta.isHabilitada()) {
+		if (getTarjetaEvaluada().getPIN().equals(pin) && getTarjetaEvaluada().isHabilitada()) {
 			getTarjetaEvaluada().setIntentosFallidos(0);	
 			System.out.println("Banco: tarjeta validada");
 		}

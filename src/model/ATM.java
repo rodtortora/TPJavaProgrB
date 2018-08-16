@@ -104,7 +104,7 @@ public class ATM {
 	}
 	
 			
-	public void sendPin(int pin) {
+	public void sendPin(String pin) {
 		this.getBancoActual().validarPIN(pin);
 	}
 	

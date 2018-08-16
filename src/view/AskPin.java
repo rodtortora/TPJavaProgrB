@@ -18,11 +18,13 @@ import javax.swing.SwingConstants;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.SystemColor;
+import javax.swing.JPasswordField;
 
 public class AskPin extends JFrame implements AskPinInterface {
 	private JPanel contentPane;
 	private PinSentListener pinSentListener;
 	private JLabel lblAdvertencia;
+	private JPasswordField pswPin;
 
 	/**
 	 * Create the frame.
@@ -30,19 +32,19 @@ public class AskPin extends JFrame implements AskPinInterface {
 	public AskPin() {
 		setTitle("Login Area");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 351, 206);
+		setBounds(100, 100, 329, 206);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
 		JLabel lblinsertePin = new JLabel("PIN:");
-		lblinsertePin.setBounds(10, 69, 172, 29);
+		lblinsertePin.setBounds(20, 69, 95, 29);
 		contentPane.add(lblinsertePin);
 		
-		JSpinner spPin = new JSpinner();
-		spPin.setBounds(82, 73, 233, 20);
-		contentPane.add(spPin);
+		pswPin = new JPasswordField();
+		pswPin.setBounds(81, 73, 222, 20);
+		contentPane.add(pswPin);
 		
 		JButton btnCancelar = new JButton("CANCELAR");
 		btnCancelar.addActionListener(new ActionListener() {
@@ -53,10 +55,11 @@ public class AskPin extends JFrame implements AskPinInterface {
 		contentPane.add(btnCancelar);
 		
 		JButton btnConfirmar = new JButton("CONFIRMAR");
-		btnConfirmar.setBounds(205, 133, 110, 23);
+		btnConfirmar.setBounds(193, 133, 110, 23);
 		btnConfirmar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				pinSentListener.listenPinSentEvent(new PinSentEvent((int)spPin.getValue()));
+				String pwd = new String(pswPin.getPassword());
+				pinSentListener.listenPinSentEvent(new PinSentEvent(pwd));
 			}
 		});
 		contentPane.add(btnConfirmar);
@@ -64,9 +67,11 @@ public class AskPin extends JFrame implements AskPinInterface {
 		lblAdvertencia = new JLabel("Advertencia: datos invalidos. Reintroduzca pin");
 		lblAdvertencia.setHorizontalAlignment(SwingConstants.CENTER);
 		lblAdvertencia.setForeground(Color.RED);
-		lblAdvertencia.setBounds(10, 11, 315, 47);
+		lblAdvertencia.setBounds(10, 11, 293, 47);
 		lblAdvertencia.setVisible(false);
 		contentPane.add(lblAdvertencia);
+		
+
 	}
 
 	@Override

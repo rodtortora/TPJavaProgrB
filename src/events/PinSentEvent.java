@@ -2,17 +2,17 @@ package events;
 
 public class PinSentEvent {
 	
-	private int pin;
+	private String pin;
 	
-	public PinSentEvent(int pin) {
+	public PinSentEvent(String pin) {
 		this.setPin(pin);
 	}
 	
-	public int getPin() {
+	public String getPin() {
 		return this.pin;
 	}
 	
-	public void setPin(int pin) {
+	public void setPin(String pin) {
 		this.pin = pin;
 	}
 

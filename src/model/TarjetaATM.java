@@ -4,20 +4,21 @@ import java.math.BigInteger;
 public class TarjetaATM {
 	private Usuario usuario;
 	private BigInteger ID;
-	private int PIN, intentosFallidos;
+	String PIN;
+	private int intentosFallidos;
 	private boolean habilitada;
-	public TarjetaATM(BigInteger iD, int pIN, boolean habilitada) {
+	public TarjetaATM(BigInteger ID, String pin, boolean habilitada) {
 		super();
-		ID = iD;
-		PIN = pIN;
+		this.ID = ID;
+		this.PIN = pin;
 		this.habilitada = habilitada;
 		this.setIntentosFallidos(0);
 	}
-	public int getPIN() {
+	public String getPIN() {
 		return PIN;
 	}
-	public void setPIN(int pIN) {
-		PIN = pIN;
+	public void setPIN(String pin) {
+		this.PIN = pin;
 	}
 	public boolean isHabilitada() {
 		return habilitada;

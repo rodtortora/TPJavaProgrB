@@ -42,12 +42,12 @@ public class RunApp {
 		cajero1.addBanco(banco0);
 		cajero1.addBanco(banco1);
 		cajero1.addBanco(banco2);
-		TarjetaATM tarjeta0 = new TarjetaATM(idtarjeta0, 1234, true);
-		TarjetaATM tarjeta1 = new TarjetaATM(idtarjeta1, 1234, true);
-		TarjetaATM tarjeta2 = new TarjetaATM(idtarjeta2, 1234, true);
-		TarjetaATM tarjeta3 = new TarjetaATM(idtarjeta3, 1234, true);
-		TarjetaATM tarjeta5 = new TarjetaATM(idtarjeta5, 1234, true);
-		TarjetaATM tarjetax = new TarjetaATM(idtarjetax, 1234, true);
+		TarjetaATM tarjeta0 = new TarjetaATM(idtarjeta0, "1234", true);
+		TarjetaATM tarjeta1 = new TarjetaATM(idtarjeta1, "1234", true);
+		TarjetaATM tarjeta2 = new TarjetaATM(idtarjeta2, "1234", true);
+		TarjetaATM tarjeta3 = new TarjetaATM(idtarjeta3, "1234", true);
+		TarjetaATM tarjeta5 = new TarjetaATM(idtarjeta5, "1234", true);
+		TarjetaATM tarjetax = new TarjetaATM(idtarjetax, "1234", true);
 		
 
 		
