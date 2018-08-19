@@ -58,7 +58,7 @@ public class Banco {
 			if ((idTarjetaATM.compareTo(this.getMaxRango()) <= 0)) {
 				Iterator<TarjetaATM> ittarjetas = tarjetas.iterator();
 				TarjetaATM cardIterated;
-				while (ittarjetas.hasNext() && getTarjetaEvaluada() == null) {					
+				while (ittarjetas.hasNext() && this.getTarjetaEvaluada() == null) {					
 					cardIterated = ittarjetas.next();
 					if (idTarjetaATM.compareTo(cardIterated.getID()) == 0) {
 						setTarjetaEvaluada(cardIterated);

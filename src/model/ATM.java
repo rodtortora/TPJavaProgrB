@@ -90,9 +90,9 @@ public class ATM {
 					this.setBancoActual(banco);									
 				} 
 			}
-			if (getBancoActual() != null) {
-				this.setBancoATMIgualBancoTarjeta(this.getBancoActual().getNombre().equals(this.getBancoATM().getNombre())); // TODO: revisar	
-				getBancoActual().validarTarjeta();				
+			if (this.getBancoActual() != null) {
+				this.getBancoActual().validarTarjeta();	
+				this.setBancoATMIgualBancoTarjeta(this.getBancoActual().getNombre().equals(this.getBancoATM().getNombre())); // TODO: revisar								
 			} else {
 				System.out.println("ATM: Tarjeta no encontrada en ningun banco"); //TODO: revisar
 				lector.expulsarTarjeta();
