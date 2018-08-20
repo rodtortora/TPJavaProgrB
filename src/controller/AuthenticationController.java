@@ -33,7 +33,7 @@ public class AuthenticationController implements CardReadedListener, PinSentList
 		try {
 			ATM.validarTarjeta(event.getCard());
 		} catch (CardNotFoundException | ATMisOnMaintenanceException e) {
-			System.out.println("Tarjeta no encontrada"); //TODO enviar a interfaz
+			//TODO enviar a interfaz
 		}		
 	}
 
@@ -43,7 +43,6 @@ public class AuthenticationController implements CardReadedListener, PinSentList
 			this.ATM.sendPin(event.getPin());
 		} catch (WrongPinException e) {
 			this.askPinInterface.mostrarError();
-			System.out.println("Pin invalido");
 		}
 		
 	}
