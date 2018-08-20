@@ -8,6 +8,9 @@ import java.util.Scanner;
 import controller.AuthenticationController;
 import events.PinRequestEvent;
 import events.PinRequestListener;
+import exceptions.ATMisOnMaintenanceException;
+import exceptions.CardNotFoundException;
+import exceptions.WrongPinException;
 
 public class ATM {
 	private LectorTarjeta lector = new LectorTarjeta();
@@ -21,11 +24,30 @@ public class ATM {
 	private boolean bancoATMIgualBancoTarjeta;
 	private Cuenta cuentaSeleccionada; // Cuenta seleccionada de la tarjeta leida
 	private BigDecimal limiteExtracCuentaSeleccionada;
+	private TarjetaATM tarjetaActual;
+	
+	/**
+	 * Constructor
+	 * @param ID
+	 * @param ubicacion
+	 * @param bancoATM
+	 */
 	
 	public ATM(int ID, String ubicacion, Banco bancoATM) {
 		this.ID = ID;
 		this.ubicacion = ubicacion;
 		this.bancoATM = bancoATM;
+	}
+	
+	/**
+	 * Getters & Setters
+	 */
+	
+	public TarjetaATM getTarjetaActual() {
+		return tarjetaActual;
+	}
+	public void setTarjetaActual(TarjetaATM tarjetaActual) {
+		this.tarjetaActual = tarjetaActual;
 	}
 	public int getID() {
 		return ID;
@@ -75,37 +97,47 @@ public class ATM {
 	
 	/**
 	 * Valida el nro de tarjeta introducido en el lector. La unica responsabilidad del ATM es
-	 * encontrar el banco al cual pertenece la tarjeta.
+	 * encontrar el banco al cual pertenece la tarjeta. El método cardIsOnWhitelist() retorna la cuenta del cliente con sus datos.
 	 * @param idTarjetaATM
+	 * @throws CardNotFoundException 
+	 * @throws ATMisOnMaintenanceException 
 	 */
 	
-	public void validarTarjeta(BigInteger idTarjetaATM) {
+	public void validarTarjeta(BigInteger idTarjetaATM) throws CardNotFoundException, ATMisOnMaintenanceException {
 		this.setBancoActual(null);
 		if (!this.isModoMantenimiento()) {			
 			lector.setTarjetaLeida(idTarjetaATM);
 			Iterator<Banco> itbancos = bancos.iterator();
 			while (itbancos.hasNext() && this.getBancoActual() == null) {
 				Banco banco = itbancos.next();
-				if (banco.cardIsOnWhitelist(lector.getTarjetaLeida())) {
-					this.setBancoActual(banco);									
+				if (banco.cardIsOnWhitelist(lector.getTarjetaLeida()) != null) {					
+					this.setBancoActual(banco);	
+					this.setTarjetaActual(banco.cardIsOnWhitelist(lector.getTarjetaLeida()));
 				} 
 			}
-			if (this.getBancoActual() != null) {
-				this.getBancoActual().validarTarjeta();	
-				this.setBancoATMIgualBancoTarjeta(this.getBancoActual().getNombre().equals(this.getBancoATM().getNombre())); // TODO: revisar								
+			if (this.getBancoActual() != null && this.getTarjetaActual() != null) {
+				this.getBancoActual().validarTarjeta(this.getTarjetaActual());	
+				this.setBancoATMIgualBancoTarjeta(this.getBancoActual().getID() == this.getBancoATM().getID()); // TODO: revisar								
 			} else {
-				System.out.println("ATM: Tarjeta no encontrada en ningun banco"); //TODO: revisar
-				lector.expulsarTarjeta();
+				throw new CardNotFoundException();
+				/*System.out.println("ATM: Tarjeta no encontrada en ningun banco"); //TODO: revisar
+				lector.expulsarTarjeta();*/
 			}
 			
 		} else {
-			System.out.println("ATM: Modo mantenimiento" ); //TODO: revisar
+			throw new ATMisOnMaintenanceException();
 		}		
 	}
 	
+	/**
+	 * Envía un PIN al banco perteneciente a la tarjeta.
+	 * @param pin
+	 * @throws WrongPinException 
+	 */
+	
 			
-	public void sendPin(String pin) {
-		this.getBancoActual().validarPIN(pin);
+	public void sendPin(String pin) throws WrongPinException {
+		this.getBancoActual().validarPIN(this.getTarjetaActual(), pin);
 	}
 	
 	public void elegirCuenta(Cuenta cuentaSeleccionada) {

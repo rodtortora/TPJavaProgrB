@@ -34,9 +34,9 @@ public class RunApp {
 		BigDecimal saldo0 = BigDecimal.valueOf(1000.00);
 		
 		// Declaracion de cajeros, bancos y tarjetas
-		Banco banco0 = new Banco("La Plaza",inicial,fin);
-		Banco banco1 = new Banco("Provincia",inicial1,fin1);
-		Banco banco2 = new Banco("Frances",inicial2,fin2);
+		Banco banco0 = new Banco(1,"La Plaza",inicial,fin);
+		Banco banco1 = new Banco(2,"Provincia",inicial1,fin1);
+		Banco banco2 = new Banco(3,"Frances",inicial2,fin2);
 		ATM cajero1 = new ATM(1, "Mar del Plata",banco0);
 		
 		cajero1.addBanco(banco0);
@@ -79,7 +79,6 @@ public class RunApp {
 		ViewInicioInterface inicioInterface = new Inicio();
 		AskPinInterface askPinInterface = new AskPin();
 		AuthenticationController controller = new AuthenticationController(cajero1, inicioInterface, banco1, askPinInterface);
-		banco1.setPinFailedListener(controller);
 		banco1.setPinRequestListener(controller);
 		inicioInterface.setCardReadedListener(controller); // Se indica X clase que hereda/implementa de la interface inicioInterface, va a tener como listener (o sea receptor de sus eventos) a un objeto 'controller'
 		askPinInterface.setPinListener(controller);
