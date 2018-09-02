@@ -21,23 +21,24 @@ import javax.swing.JFormattedTextField;
 import java.awt.Font;
 import javax.swing.JSpinner;
 
-public class Inicio extends JFrame implements ViewInicioInterface {
+public class LectorTarjetaView extends JFrame implements LectorTarjetaInterface {
 
 	private JPanel contentPane;
-	private JLabel lblInserteNroDe;
+	private JLabel lblInserteCard;
 	private CardReadedListener cardReadedListener;
+	JLabel lblTexto = new JLabel(""); //TODO Sustituir de acuerdo al banco
 
 	/**
 	 * Launch the application.
 	 */
-	public void inicializar() {
+	public void mostrar() {
 		setVisible(true);
 	}
 
 	/**
 	 * Create the frame.
 	 */
-	public Inicio() {
+	public LectorTarjetaView() {
 		setTitle("Autenticaci\u00F3n");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 440, 285);
@@ -46,14 +47,14 @@ public class Inicio extends JFrame implements ViewInicioInterface {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
-		JLabel lblIntroduzcaNroDe = new JLabel("Bienvenido"); //TODO Sustituir de acuerdo al banco
-		lblIntroduzcaNroDe.setBounds(10, 11, 404, 64);
-		lblIntroduzcaNroDe.setHorizontalAlignment(SwingConstants.CENTER);
-		contentPane.add(lblIntroduzcaNroDe);
 		
-		lblInserteNroDe = new JLabel("Inserte nro de tarjeta");
-		lblInserteNroDe.setBounds(10, 109, 197, 14);
-		contentPane.add(lblInserteNroDe);
+		lblTexto.setBounds(10, 11, 404, 64);
+		lblTexto.setHorizontalAlignment(SwingConstants.CENTER);
+		contentPane.add(lblTexto);
+		
+		lblInserteCard = new JLabel("Inserte nro de tarjeta");
+		lblInserteCard.setBounds(10, 109, 197, 14);
+		contentPane.add(lblInserteCard);
 		JSpinner spNroTarjeta = new JSpinner();
 		spNroTarjeta.setBounds(10, 142, 404, 20);
 		contentPane.add(spNroTarjeta);
@@ -79,6 +80,12 @@ public class Inicio extends JFrame implements ViewInicioInterface {
 	@Override
 	public void ocultar() {
 		this.setVisible(false);
+		
+	}
+
+	@Override
+	public void editarTexto(String string) {
+		this.lblTexto.setText(string);
 		
 	}
 }

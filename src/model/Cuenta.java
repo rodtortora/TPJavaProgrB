@@ -7,9 +7,24 @@ public abstract class Cuenta {
 	private BigInteger CBU;
 	private BigDecimal saldo, tasaExtraccOtroBanco, mantenimientoMensual, tasaExtraccion, limiteExtraccionDiario, limiteDescubierto;
 	private int limiteExtraccionesSinCargo; // Cantidad extracciones sin cargo
+	private String tipoCuenta;
 
+	/**
+	 * Constructor
+	 * @param CBU: nro de cuenta
+	 * @param mantenimientoMensual
+	 * @param saldo
+	 * @param tasaExtraccOtroBanco: 
+	 * @param limiteExtraccionesSC
+	 * @param tasaExtraccion
+	 * @param limiteExtraccionDiario
+	 * @param limiteDescubierto
+	 * @param tipoCta
+	 */
 	
-	public Cuenta(BigInteger CBU, BigDecimal mantenimientoMensual, BigDecimal saldo, BigDecimal tasaExtraccOtroBanco, int limiteExtraccionesSC, BigDecimal tasaExtraccion, BigDecimal limiteExtraccionDiario, BigDecimal limiteDescubierto) {
+	public Cuenta(BigInteger CBU, BigDecimal mantenimientoMenWsual, BigDecimal saldo, BigDecimal tasaExtraccOtroBanco,
+			int limiteExtraccionesSC, BigDecimal tasaExtraccion, BigDecimal limiteExtraccionDiario, BigDecimal limiteDescubierto,
+			String tipoCta) {
 		this.setCBU(CBU);
 		this.setSaldo(saldo);
 		this.setMantenimientoMensual(mantenimientoMensual);
@@ -18,7 +33,13 @@ public abstract class Cuenta {
 		this.setTasaExtraccion(tasaExtraccion);
 		this.setLimiteExtraccionDiario(limiteExtraccionDiario);
 		this.setLimiteDescubierto(limiteDescubierto);
+		this.setTipoCuenta(tipoCta);
+
 	}
+	
+	/**
+	 * Getters & Setters
+	 */
 	
 	public BigInteger getCBU() {
 		return CBU;
@@ -82,5 +103,23 @@ public abstract class Cuenta {
 	public void setLimiteDescubierto(BigDecimal limiteDescubierto) {
 		this.limiteDescubierto = limiteDescubierto;
 	}
+
+	public String getTipoCuenta() {
+		return tipoCuenta;
+	}
+
+	public void setTipoCuenta(String tipoCuenta) {
+		this.tipoCuenta = tipoCuenta;
+	}
+	
+	/**
+	 * Functions
+	 */
+	
+	@Override
+	public String toString() {
+		return this.CBU.toString() + " - " + this.getTipoCuenta();
+	}
+	
 	
 }

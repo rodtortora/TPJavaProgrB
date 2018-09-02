@@ -6,9 +6,12 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
+import events.CardValidatedEvent;
+import events.CardValidatedListener;
 import events.PinRequestEvent;
 import events.PinRequestListener;
 import events.PinSentListener;
+import exceptions.BlockCardException;
 import exceptions.WrongPinException;
 
 public class Banco {
@@ -19,6 +22,7 @@ public class Banco {
 	private String nombre;
 	private BigInteger minRango, maxRango;
 	private PinRequestListener pinRequestListener;
+	private CardValidatedListener cardValidatedListener;
 	
 	public Banco() {};
 	
@@ -65,16 +69,11 @@ public class Banco {
 	public void setTarjetas(List<TarjetaATM> tarjetas) {
 		this.tarjetas = tarjetas;
 	}
-	public void addTarjeta(TarjetaATM tarjeta) { //TODO
-		if ((tarjeta.getID().compareTo(this.getMinRango()) == 0) || (tarjeta.getID().compareTo(this.getMinRango()) == 1)) {
-			if ((tarjeta.getID().compareTo(this.getMaxRango()) == 0) || (tarjeta.getID().compareTo(this.getMaxRango()) == -1)) {
-				this.tarjetas.add(tarjeta);
-				System.out.println("Tarjeta agregada con exito");
-			} else {
-				System.out.println("Error en banco.setTarjetas");
-			}
-		}
-		else {
+	public void setTarjetas(TarjetaATM tarjeta) { //TODO
+		if ((tarjeta.getID().compareTo(this.getMinRango()) >= 0) && tarjeta.getID().compareTo(this.getMaxRango()) <= 0) {
+			this.tarjetas.add(tarjeta);
+			System.out.println("Tarjeta agregada con exito");
+		} else {
 			System.out.println("Error en banco.setTarjetas");
 		}
 	}
@@ -106,6 +105,14 @@ public class Banco {
 		this.pinRequestListener = pinRequestListener;
 	}
 	
+	public CardValidatedListener getCardValidatedListener() {
+		return cardValidatedListener;
+	}
+
+	public void setCardValidatedListener(CardValidatedListener cardValidatedListener) {
+		this.cardValidatedListener = cardValidatedListener;
+	}
+
 	/**
 	 * Se valida que la tarjeta consultada al banco existe en la whitelist del banco.
 	 * 
@@ -153,18 +160,18 @@ public class Banco {
 	 * @param pin
 	 */
 	
-	public void validarPIN(TarjetaATM tarjetaATM, String pin) throws WrongPinException {
-		if (!tarjetaATM.getPIN().equals(pin) && tarjetaATM.getIntentosFallidos() < 3) {	
+	public void validarPIN(TarjetaATM tarjetaATM, String pin) throws WrongPinException, BlockCardException {
+		if (!tarjetaATM.getPIN().equals(pin) && tarjetaATM.getIntentosFallidos() < 2) {	
 			tarjetaATM.setIntentosFallidos(); //intentosfallidos++
 			throw new WrongPinException();
 		}
 		if (tarjetaATM.getPIN().equals(pin) && tarjetaATM.isHabilitada()) {
 			tarjetaATM.setIntentosFallidos(0);	
-			System.out.println("Banco: tarjeta validada"); //TODO
+			this.getCardValidatedListener().listenCardValidatedEvent(new CardValidatedEvent(tarjetaATM));
 		}
-		if (tarjetaATM.getIntentosFallidos() == 3) {
+		if (tarjetaATM.getIntentosFallidos() == 2) {
 			tarjetaATM.setHabilitada(false);
-			System.out.println("Banco: Su tarjeta fue inhabilitada y retenida por el banco"); //TODO: menu tarjeta inhabilitada	
+			throw new BlockCardException("Su tarjeta fue bloqueda por exceso de intentos de login fallidos");
 		}	
 	}
 	

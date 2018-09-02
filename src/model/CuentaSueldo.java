@@ -9,9 +9,9 @@ public class CuentaSueldo extends CajaAhorro {
 
 	public CuentaSueldo(BigInteger CBU, BigDecimal mantenimientoMensual, BigDecimal saldo,
 			BigDecimal tasaExtraccOtroBanco, int limiteExtraccionesSC, BigDecimal tasaExtraccion,
-			BigDecimal limiteExtraccionDiario, String cuitEmpresa, BigDecimal limiteDescubierto) {
+			BigDecimal limiteExtraccionDiario, String cuitEmpresa, BigDecimal limiteDescubierto, String tipoCuenta) {
 		super(CBU, mantenimientoMensual, saldo, tasaExtraccOtroBanco, limiteExtraccionesSC, tasaExtraccion,
-				limiteExtraccionDiario, limiteDescubierto);
+				limiteExtraccionDiario, limiteDescubierto, tipoCuenta);
 		this.setCuitEmpresa(cuitEmpresa);
 
 	}

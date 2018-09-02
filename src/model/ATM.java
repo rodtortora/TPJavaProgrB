@@ -9,6 +9,7 @@ import controller.AuthenticationController;
 import events.PinRequestEvent;
 import events.PinRequestListener;
 import exceptions.ATMisOnMaintenanceException;
+import exceptions.BlockCardException;
 import exceptions.CardNotFoundException;
 import exceptions.WrongPinException;
 
@@ -33,15 +34,30 @@ public class ATM {
 	 * @param bancoATM
 	 */
 	
-	public ATM(int ID, String ubicacion, Banco bancoATM) {
+	public ATM(int ID, String ubicacion, Banco bancoATM, ArrayList<Banco> bancos) {
 		this.ID = ID;
 		this.ubicacion = ubicacion;
 		this.bancoATM = bancoATM;
+		this.setBancos(bancos);
 	}
 	
+
+
 	/**
 	 * Getters & Setters
 	 */
+	
+	public ArrayList<Banco> getBancos() {
+		return bancos;
+	}
+
+	public void setBancos(ArrayList<Banco> bancos) {
+		this.bancos = bancos;
+	}
+	
+	public void setBancos(Banco banco) {
+		this.bancos.add(banco);
+	}
 	
 	public TarjetaATM getTarjetaActual() {
 		return tarjetaActual;
@@ -88,12 +104,14 @@ public class ATM {
 	public void setBancoATM(Banco bancoATM) {
 		this.bancoATM = bancoATM;
 	}
-	public void addBanco(Banco banco) {
-		this.bancos.add(banco);
-	}
+
 	public void addBilletero(Billetero billetero) {
 		billeteros.add(billetero);
 	}
+	
+	/**
+	 * Functions
+	 */
 	
 	/**
 	 * Valida el nro de tarjeta introducido en el lector. La unica responsabilidad del ATM es
@@ -117,15 +135,15 @@ public class ATM {
 			}
 			if (this.getBancoActual() != null && this.getTarjetaActual() != null) {
 				this.getBancoActual().validarTarjeta(this.getTarjetaActual());	
-				this.setBancoATMIgualBancoTarjeta(this.getBancoActual().getID() == this.getBancoATM().getID()); // TODO: revisar								
+				this.setBancoATMIgualBancoTarjeta(this.getBancoActual().getID() == this.getBancoATM().getID());								
 			} else {
-				throw new CardNotFoundException();
-				/*System.out.println("ATM: Tarjeta no encontrada en ningun banco"); //TODO: revisar
-				lector.expulsarTarjeta();*/
+				lector.expulsarTarjeta();
+				throw new CardNotFoundException("Tarjeta no encontrada");	
 			}
 			
 		} else {
-			throw new ATMisOnMaintenanceException();
+			lector.expulsarTarjeta();
+			throw new ATMisOnMaintenanceException("ATM en mantenimiento, reintente mas tarde");
 		}		
 	}
 	
@@ -133,15 +151,17 @@ public class ATM {
 	 * Envía un PIN al banco perteneciente a la tarjeta.
 	 * @param pin
 	 * @throws WrongPinException 
+	 * @throws BlockCardException 
 	 */
 	
 			
-	public void sendPin(String pin) throws WrongPinException {
+	public void sendPin(String pin) throws WrongPinException, BlockCardException {
 		this.getBancoActual().validarPIN(this.getTarjetaActual(), pin);
 	}
 	
+	
 	public void elegirCuenta(Cuenta cuentaSeleccionada) {
-		if (getBancoActual().getTarjetaEvaluada().getUsuario().getCuenta().size() > 1) {
+		if (getBancoActual().getTarjetaEvaluada().getUsuario().getCuentas().size() > 1) {
 			this.cuentaSeleccionada = cuentaSeleccionada;
 		} else {
 			System.out.println("ATM: No hay otra cuenta para elegir");
@@ -177,6 +197,9 @@ public class ATM {
 			// los valores de los cargos se obtienen de una lista de tarifas
 	}*/
 	
-	
+	@Override
+	public String toString() {
+		return this.ubicacion;
+	}
 
 }

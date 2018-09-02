@@ -31,7 +31,7 @@ public class Usuario {
 	public void setNombre(String nombre) {
 		this.nombre = nombre;
 	}
-	public ArrayList<Cuenta> getCuenta() {
+	public ArrayList<Cuenta> getCuentas() {
 		return cuentas;
 	}
 	public Cuenta getCuentaEspecifica(int e) {

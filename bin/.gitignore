@@ -1,1 +1,6 @@
 /controller/
+/model/
+/events/
+/view/
+/init/
+/exceptions/

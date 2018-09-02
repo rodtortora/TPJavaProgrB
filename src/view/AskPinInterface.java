@@ -2,11 +2,9 @@ package view;
 
 import events.PinSentListener;
 
-public interface AskPinInterface {
+public interface AskPinInterface extends Visible {
 	
 	void setPinListener(PinSentListener listener);
-	void mostrar();
-	void ocultar();
 	void mostrarError();
 
 }
