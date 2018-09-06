@@ -160,12 +160,20 @@ public class Banco {
 	 * @param pin
 	 */
 	
-	public void validarPIN(TarjetaATM tarjetaATM, String pin) throws WrongPinException, BlockCardException {
-		if (!tarjetaATM.getPIN().equals(pin) && tarjetaATM.getIntentosFallidos() < 2) {	
-			tarjetaATM.setIntentosFallidos(); //intentosfallidos++
-			throw new WrongPinException();
+	private boolean isInputPinEqualPinCard(TarjetaATM tarjetaATM, String pin) {
+		if (tarjetaATM.getPIN().equals(pin)) {
+			return true;
+		} else {
+			return false;
 		}
-		if (tarjetaATM.getPIN().equals(pin) && tarjetaATM.isHabilitada()) {
+	}
+	
+	public void validarPIN(TarjetaATM tarjetaATM, String pin) throws WrongPinException, BlockCardException {
+		if (!this.isInputPinEqualPinCard(tarjetaATM, pin) && tarjetaATM.getIntentosFallidos() < 2) {	
+			tarjetaATM.setIntentosFallidos(); //intentosfallidos++
+			throw new WrongPinException("PIN incorrecto");
+		}
+		if (isInputPinEqualPinCard(tarjetaATM, pin) && tarjetaATM.isHabilitada()) {
 			tarjetaATM.setIntentosFallidos(0);	
 			this.getCardValidatedListener().listenCardValidatedEvent(new CardValidatedEvent(tarjetaATM));
 		}
@@ -176,11 +184,26 @@ public class Banco {
 	}
 	
 
-	
+	public void changePIN(TarjetaATM tarjeta, String pinActual, String newPin) throws WrongPinException, BlockCardException {
+		if (!this.isInputPinEqualPinCard(tarjeta, pinActual) && tarjeta.getIntentosFallidos() < 2) {
+			tarjeta.setIntentosFallidos(); //intentosfallidos++
+			throw new WrongPinException("PIN incorrecto");
+		}
+		if (isInputPinEqualPinCard(tarjeta, pinActual) && tarjeta.isHabilitada()) {
+			tarjeta.setIntentosFallidos(0);
+			tarjeta.setPIN(newPin);
+		}
+		if (tarjeta.getIntentosFallidos() == 2) {
+			tarjeta.setHabilitada(false);
+			throw new BlockCardException("Su tarjeta fue bloqueda por exceso de introduccion de PINs fallidos");
+		}	
+	}
 
 
 	@Override
 	public String toString() {
 		return "Banco " + getNombre();
 	}
+
+
 }

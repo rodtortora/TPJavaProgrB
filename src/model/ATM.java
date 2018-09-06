@@ -11,6 +11,7 @@ import events.PinRequestListener;
 import exceptions.ATMisOnMaintenanceException;
 import exceptions.BlockCardException;
 import exceptions.CardNotFoundException;
+import exceptions.InvalidNewPinException;
 import exceptions.WrongPinException;
 
 public class ATM {
@@ -161,15 +162,20 @@ public class ATM {
 	
 	
 	public void elegirCuenta(Cuenta cuentaSeleccionada) {
-		if (getBancoActual().getTarjetaEvaluada().getUsuario().getCuentas().size() > 1) {
-			this.cuentaSeleccionada = cuentaSeleccionada;
-		} else {
-			System.out.println("ATM: No hay otra cuenta para elegir");
-		}
+		this.cuentaSeleccionada = cuentaSeleccionada;
 	}
 	
 	public Cuenta getCuentaSeleccionada() {
 		return this.cuentaSeleccionada;
+	}
+	
+	public void ChangePIN(String pinActual, String newPin, String confirmNewPin) throws InvalidNewPinException, WrongPinException, BlockCardException {
+		if (newPin.equals(confirmNewPin)) {
+			this.getBancoActual().changePIN(this.getTarjetaActual(), pinActual, newPin);
+		} else {
+			throw new InvalidNewPinException("El nuevo PIN es invalido");
+		}
+		
 	}
 	
 /*	public void calcularLimiteExtraccionCuenta(Cuenta cuenta) { //Calcula limite de extraccion de la cuenta seleccionada.

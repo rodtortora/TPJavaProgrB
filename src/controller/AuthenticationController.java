@@ -97,7 +97,7 @@ public class AuthenticationController implements CardReadedListener, PinSentList
 	@Override
 	public void listenPinSentEvent(PinSentEvent event) {
 		try {
-			this.getSessionAtm().sendPin(event.getPin());getClass();
+			this.getSessionAtm().sendPin(event.getPin());
 			this.askPinInterface.ocultar();
 		} catch (WrongPinException e) {
 			this.askPinInterface.mostrarError();
@@ -130,6 +130,8 @@ public class AuthenticationController implements CardReadedListener, PinSentList
 
 	@Override
 	public void ListenAccountSelectedEvent(AccountSelectedEvent e) {
+		this.getSessionAtm().elegirCuenta(e.getCuenta());
+		this.menuInterface.setLblBanco(this.getSessionAtm().getBancoActual().toString());
 		this.menuInterface.mostrar();
 		
 	}

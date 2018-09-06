@@ -6,13 +6,23 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+
+import controller.MenuController;
+import events.MenuEvent;
+import events.MenuEventListener;
+
 import javax.swing.JLabel;
 import javax.swing.JButton;
+import javax.swing.SwingConstants;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class PrincipalMenu extends JFrame implements PrincipalMenuInterface {
 
 	private JPanel contentPane;
-	private JLabel lblBanco = new JLabel(); 
+	private JLabel lblBanco = new JLabel();
+	private MenuEventListener menuEventListener;
+	private Visible changePassInterface = new ChangePass();
 	
 	@Override
 	public void mostrar() {
@@ -37,11 +47,17 @@ public class PrincipalMenu extends JFrame implements PrincipalMenuInterface {
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
+		lblBanco.setHorizontalAlignment(SwingConstants.CENTER);
 		
 		lblBanco.setBounds(10, 11, 414, 14);
 		contentPane.add(lblBanco);
 		
 		JButton btnNewButton = new JButton("Cambiar clave");
+		btnNewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				menuEventListener.listenMenuEvent(new MenuEvent(changePassInterface));
+			}
+		});
 		btnNewButton.setBounds(10, 53, 414, 23);
 		contentPane.add(btnNewButton);
 		
@@ -68,6 +84,12 @@ public class PrincipalMenu extends JFrame implements PrincipalMenuInterface {
 		JButton btnSalir = new JButton("Salir");
 		btnSalir.setBounds(10, 261, 414, 23);
 		contentPane.add(btnSalir);
+	}
+
+	@Override
+	public void setMenuEventListener(MenuEventListener e) {
+		this.menuEventListener = e;
+		
 	}
 
 

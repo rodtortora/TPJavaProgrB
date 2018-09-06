@@ -5,6 +5,8 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 
 import controller.AuthenticationController;
+import controller.ChangePassController;
+import controller.MenuController;
 import model.*;
 import view.*;
 
@@ -46,7 +48,7 @@ public class RunApp {
 				"Cuenta Corriente"));
 		cuentas.add(new CuentaSueldo(BigInteger.valueOf(2), BigDecimal.valueOf(100), BigDecimal.valueOf(50), BigDecimal.valueOf(10),
 				2, BigDecimal.valueOf(15), BigDecimal.valueOf(100), "20-500-1", BigDecimal.valueOf(40),
-				"Cuenta Corriente"));
+				"Cuenta Sueldo"));
 		
 		usuarios.add(new Usuario(1,"Tortora","Rodrigo"));
 		usuarios.get(0).setCuenta(cuentas);
@@ -65,27 +67,32 @@ public class RunApp {
 		MessageInterface messageInterface = new Message();
 		PrincipalMenuInterface principalMenu = new PrincipalMenu();
 		SelectorCuentaInterface selectorCuentaInterface = new SelectorCuenta();
+		ChangePassInterface changePassInterface = new ChangePass();
 		
 		
 		/**
 		 * Creacion de controladores
 		 */
 		
-		AuthenticationController controller = new AuthenticationController(ATMs, lectorTarjetaInterface, bancos, askPinInterface, 
+		AuthenticationController authenticationController = new AuthenticationController(ATMs, lectorTarjetaInterface, bancos, askPinInterface, 
 			selectorCuentaInterface, messageInterface, principalMenu);
+		MenuController menuController = new MenuController(principalMenu);
+		ChangePassController changePassControler = new ChangePassController(authenticationController, messageInterface);
 		
 		/**
 		 * Asignaciones para comunicacion MVC
 		 */
 		
 		for (Banco banco : bancos) {
-			banco.setPinRequestListener(controller);
-			banco.setCardValidatedListener(controller);
+			banco.setPinRequestListener(authenticationController);
+			banco.setCardValidatedListener(authenticationController);
 		}		
-		lectorTarjetaInterface.setCardReadedListener(controller);
-		askPinInterface.setPinListener(controller);
-		atmSelectorInterface.setAtmSelectedListener(controller);
-		selectorCuentaInterface.setAccountSelectedListener(controller);
+		lectorTarjetaInterface.setCardReadedListener(authenticationController);
+		askPinInterface.setPinListener(authenticationController);
+		atmSelectorInterface.setAtmSelectedListener(authenticationController);
+		selectorCuentaInterface.setAccountSelectedListener(authenticationController);
+		principalMenu.setMenuEventListener(menuController);
+		changePassInterface.setChangePassListener(changePassControler);
 		
 		/**
 		 * Inicializacion
