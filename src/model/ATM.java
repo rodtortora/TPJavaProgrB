@@ -2,12 +2,8 @@ package model;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Scanner;
-
-import controller.AuthenticationController;
-import events.PinRequestEvent;
-import events.PinRequestListener;
 import exceptions.ATMisOnMaintenanceException;
 import exceptions.BlockCardException;
 import exceptions.CardNotFoundException;
@@ -18,6 +14,7 @@ public class ATM {
 	private LectorTarjeta lector = new LectorTarjeta();
 	private ArrayList<Banco> bancos = new ArrayList<>();
 	private ArrayList<Billetero> billeteros = new ArrayList<>();
+	private HashMap<String, Tarifa> tarifas = new HashMap <String, Tarifa> ();
 	private int ID;
 	private String ubicacion;
 	private boolean modoMantenimiento;
@@ -43,7 +40,6 @@ public class ATM {
 	}
 	
 
-
 	/**
 	 * Getters & Setters
 	 */
@@ -60,6 +56,15 @@ public class ATM {
 		this.bancos.add(banco);
 	}
 	
+	public HashMap<String, Tarifa> getTarifas() {
+		return tarifas;
+	}
+
+
+	public void setTarifas(HashMap<String, Tarifa> tarifas) {
+		this.tarifas = tarifas;
+	}
+
 	public TarjetaATM getTarjetaActual() {
 		return tarjetaActual;
 	}
@@ -75,6 +80,9 @@ public class ATM {
 	public void setUbicacion(String ubicacion) {
 		this.ubicacion = ubicacion;
 	}
+	public Cuenta getCuentaSeleccionada() {
+		return this.cuentaSeleccionada;
+	}	
 	public BigDecimal getLimiteExtracCuentaSeleccionada() {
 		return limiteExtracCuentaSeleccionada;
 	}
@@ -120,9 +128,10 @@ public class ATM {
 	 * @param idTarjetaATM
 	 * @throws CardNotFoundException 
 	 * @throws ATMisOnMaintenanceException 
+	 * @throws BlockCardException 
 	 */
 	
-	public void validarTarjeta(BigInteger idTarjetaATM) throws CardNotFoundException, ATMisOnMaintenanceException {
+	public void validarTarjeta(BigInteger idTarjetaATM) throws CardNotFoundException, ATMisOnMaintenanceException, BlockCardException {
 		this.setBancoActual(null);
 		if (!this.isModoMantenimiento()) {			
 			lector.setTarjetaLeida(idTarjetaATM);
@@ -157,7 +166,7 @@ public class ATM {
 	
 			
 	public void sendPin(String pin) throws WrongPinException, BlockCardException {
-		this.getBancoActual().validarPIN(this.getTarjetaActual(), pin);
+		this.getBancoActual().login(this.getTarjetaActual(), pin);
 	}
 	
 	
@@ -165,9 +174,7 @@ public class ATM {
 		this.cuentaSeleccionada = cuentaSeleccionada;
 	}
 	
-	public Cuenta getCuentaSeleccionada() {
-		return this.cuentaSeleccionada;
-	}
+
 	
 	public void ChangePIN(String pinActual, String newPin, String confirmNewPin) throws InvalidNewPinException, WrongPinException, BlockCardException {
 		if (newPin.equals(confirmNewPin)) {
@@ -176,6 +183,10 @@ public class ATM {
 			throw new InvalidNewPinException("El nuevo PIN es invalido");
 		}
 		
+	}
+	
+	public BigDecimal consultaSaldo() {
+		return this.getBancoActual().obtenerSaldo(this.getTarjetaActual(), this.getCuentaSeleccionada());
 	}
 	
 /*	public void calcularLimiteExtraccionCuenta(Cuenta cuenta) { //Calcula limite de extraccion de la cuenta seleccionada.

@@ -1,5 +1,7 @@
 package model;
 
+import java.io.Serializable;
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -14,7 +16,8 @@ import events.PinSentListener;
 import exceptions.BlockCardException;
 import exceptions.WrongPinException;
 
-public class Banco {
+public class Banco implements Serializable {
+	private static final long serialVersionUID = -2071330853728301386L;
 	private List<Usuario> usuarios = new ArrayList<>();
 	private List<TarjetaATM> tarjetas = new ArrayList<>();
 	private int ID;
@@ -146,9 +149,9 @@ public class Banco {
 	 * @param tarjetaATM 
 	 */
 
-	public void validarTarjeta(TarjetaATM tarjetaATM) {
+	public void validarTarjeta(TarjetaATM tarjetaATM) throws BlockCardException {
 		if (!tarjetaATM.isHabilitada()) {
-			//TODO: Comunicar al ATM que la tarjeta no está habilitada para operar
+			throw new BlockCardException();
 		} else {
 			pinRequestListener.listenPinRequestEvent(new PinRequestEvent());			
 		}
@@ -156,11 +159,11 @@ public class Banco {
 	}
 	
 	/**
-	 * Se valida que el PIN introducido sea válido para la tarjeta
+	 * Se valida que el PIN introducido sea igual que el de la tarjeta
 	 * @param pin
 	 */
 	
-	private boolean isInputPinEqualPinCard(TarjetaATM tarjetaATM, String pin) {
+	private boolean validarPIN(TarjetaATM tarjetaATM, String pin) {
 		if (tarjetaATM.getPIN().equals(pin)) {
 			return true;
 		} else {
@@ -168,42 +171,54 @@ public class Banco {
 		}
 	}
 	
-	public void validarPIN(TarjetaATM tarjetaATM, String pin) throws WrongPinException, BlockCardException {
-		if (!this.isInputPinEqualPinCard(tarjetaATM, pin) && tarjetaATM.getIntentosFallidos() < 2) {	
-			tarjetaATM.setIntentosFallidos(); //intentosfallidos++
-			throw new WrongPinException("PIN incorrecto");
-		}
-		if (isInputPinEqualPinCard(tarjetaATM, pin) && tarjetaATM.isHabilitada()) {
-			tarjetaATM.setIntentosFallidos(0);	
+	/**
+	 * Valida que la tarjeta y el PIN sean correctos para logearse	 
+	 */
+
+	public void login(TarjetaATM tarjetaATM, String pin) throws WrongPinException, BlockCardException {
+		if (validarPIN(tarjetaATM,pin) && tarjetaATM.getIntentosFallidos() < 2) {
+			tarjetaATM.setIntentosFallidos(0);
 			this.getCardValidatedListener().listenCardValidatedEvent(new CardValidatedEvent(tarjetaATM));
+		} else {
+			if (tarjetaATM.getIntentosFallidos() < 2) {
+				tarjetaATM.setIntentosFallidos(); // Intentos fallidos ++
+				throw new WrongPinException("PIN incorrecto");
+			} else {
+				tarjetaATM.setHabilitada(false);
+				throw new BlockCardException("Su tarjeta fue bloqueda por exceso de introduccion de PINs fallidos");
+			}
 		}
-		if (tarjetaATM.getIntentosFallidos() == 2) {
-			tarjetaATM.setHabilitada(false);
-			throw new BlockCardException("Su tarjeta fue bloqueda por exceso de intentos de login fallidos");
-		}	
 	}
 	
+	/**
+	 * Valida que la tarjeta y el PIN sean correctos para cambiar el PIN	 
+	 */
 
 	public void changePIN(TarjetaATM tarjeta, String pinActual, String newPin) throws WrongPinException, BlockCardException {
-		if (!this.isInputPinEqualPinCard(tarjeta, pinActual) && tarjeta.getIntentosFallidos() < 2) {
-			tarjeta.setIntentosFallidos(); //intentosfallidos++
-			throw new WrongPinException("PIN incorrecto");
-		}
-		if (isInputPinEqualPinCard(tarjeta, pinActual) && tarjeta.isHabilitada()) {
+		if (validarPIN(tarjeta,pinActual) && tarjeta.getIntentosFallidos() < 2) {
 			tarjeta.setIntentosFallidos(0);
 			tarjeta.setPIN(newPin);
+		} else {
+			if (tarjeta.getIntentosFallidos() < 2) {
+				tarjeta.setIntentosFallidos(); // Intentos fallidos ++
+				throw new WrongPinException("PIN incorrecto");
+			} else {
+				tarjeta.setHabilitada(false);
+				throw new BlockCardException("Su tarjeta fue bloqueda por exceso de introduccion de PINs fallidos");
+			}
 		}
-		if (tarjeta.getIntentosFallidos() == 2) {
-			tarjeta.setHabilitada(false);
-			throw new BlockCardException("Su tarjeta fue bloqueda por exceso de introduccion de PINs fallidos");
-		}	
 	}
 
+	public BigDecimal obtenerSaldo(TarjetaATM tarjeta, Cuenta cuenta) {
+		return tarjeta.getUsuario().getCuentas(cuenta).getSaldo();
+	}
 
 	@Override
 	public String toString() {
 		return "Banco " + getNombre();
 	}
+
+
 
 
 }

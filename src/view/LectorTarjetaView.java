@@ -28,11 +28,10 @@ public class LectorTarjetaView extends JFrame implements LectorTarjetaInterface 
 	private CardReadedListener cardReadedListener;
 	JLabel lblTexto = new JLabel(""); //TODO Sustituir de acuerdo al banco
 
-	/**
-	 * Launch the application.
-	 */
-	public void mostrar() {
-		setVisible(true);
+	@Override
+	public void mostrar(boolean e) {
+		this.setVisible(e);
+		
 	}
 
 	/**
@@ -64,7 +63,6 @@ public class LectorTarjetaView extends JFrame implements LectorTarjetaInterface 
 			public void actionPerformed(ActionEvent e) {
 				BigInteger nroTarjeta = BigInteger.valueOf((int)spNroTarjeta.getValue());
 				cardReadedListener.listenCardReadedEvent(new CardReadedEvent(nroTarjeta));
-				ocultar();
 			}
 		});
 		btnConfirmar.setBounds(117, 212, 202, 23);
@@ -74,12 +72,6 @@ public class LectorTarjetaView extends JFrame implements LectorTarjetaInterface 
 	@Override
 	public void setCardReadedListener(CardReadedListener listener) {
 		this.cardReadedListener = listener;
-		
-	}
-
-	@Override
-	public void ocultar() {
-		this.setVisible(false);
 		
 	}
 

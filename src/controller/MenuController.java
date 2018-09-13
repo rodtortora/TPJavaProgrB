@@ -22,7 +22,7 @@ public class MenuController implements MenuEventListener {
 
 	@Override
 	public void listenMenuEvent(MenuEvent e) {
-		e.getVisible().mostrar();		
+		e.getVisible().mostrar(true);		
 	}
 
 }

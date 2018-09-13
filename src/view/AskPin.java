@@ -81,8 +81,8 @@ public class AskPin extends JFrame implements AskPinInterface {
 	}
 
 	@Override
-	public void mostrar() {
-		this.setVisible(true);
+	public void mostrar(boolean e) {
+		this.setVisible(e);
 		
 	}
 
@@ -90,12 +90,6 @@ public class AskPin extends JFrame implements AskPinInterface {
 	public void mostrarError() {		
 		this.lblAdvertencia.setVisible(true);
 		
-		
-	}
-
-	@Override
-	public void ocultar() {
-		this.setVisible(false);
 		
 	}
 }

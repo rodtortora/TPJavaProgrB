@@ -22,7 +22,7 @@ public abstract class Cuenta {
 	 * @param tipoCta
 	 */
 	
-	public Cuenta(BigInteger CBU, BigDecimal mantenimientoMenWsual, BigDecimal saldo, BigDecimal tasaExtraccOtroBanco,
+	public Cuenta(BigInteger CBU, BigDecimal mantenimientoMensual, BigDecimal saldo, BigDecimal tasaExtraccOtroBanco,
 			int limiteExtraccionesSC, BigDecimal tasaExtraccion, BigDecimal limiteExtraccionDiario, BigDecimal limiteDescubierto,
 			String tipoCta) {
 		this.setCBU(CBU);

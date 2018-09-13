@@ -1,12 +1,15 @@
 package init;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import controller.AuthenticationController;
 import controller.ChangePassController;
 import controller.MenuController;
+import controller.SerializeController;
 import model.*;
 import view.*;
 
@@ -24,13 +27,22 @@ public class RunApp {
 		ArrayList<ATM> ATMs = new ArrayList<>();
 		ArrayList<Cuenta> cuentas = new ArrayList<>();
 		ArrayList<Usuario> usuarios = new ArrayList<>();
+		HashMap<String, Tarifa> tarifas = new HashMap<String, Tarifa>();
 		
 		bancos.add(new Banco(1,"La Plaza",BigInteger.valueOf(5),BigInteger.valueOf(20)));
 		bancos.add(new Banco(2,"Provincia",BigInteger.valueOf(21),BigInteger.valueOf(30)));
 		bancos.add(new Banco(3,"Frances",BigInteger.valueOf(31),BigInteger.valueOf(80)));
 		
-		ATMs.add(new ATM(1, "Mar del Plata",bancos.get(0),bancos));
-		ATMs.add(new ATM(2,"Buenos Aires",bancos.get(1),bancos));
+		ATM atmMdq = new ATM(1, "Mar del Plata",bancos.get(0),bancos);
+		ATM atmBsAs = new ATM(2,"Buenos Aires",bancos.get(1),bancos);
+		
+		ATMs.add(atmMdq);
+		ATMs.add(atmBsAs);
+		
+		Tarifa tarifa = new Tarifa("CajaAhorroExtraccionForanea",BigDecimal.valueOf(10));
+		tarifas.put(tarifa.getTipoTarifa(), tarifa);
+		
+		atmMdq.setTarifas(tarifas);
 						
 		tarjetas.add(new TarjetaATM(BigInteger.valueOf(10), "1234", true));
 		tarjetas.add(new TarjetaATM(BigInteger.valueOf(20), "1234", true));
@@ -38,6 +50,11 @@ public class RunApp {
 		tarjetas.add(new TarjetaATM(BigInteger.valueOf(40), "1234", true));
 		tarjetas.add(new TarjetaATM(BigInteger.valueOf(50), "1234", true));
 		tarjetas.add(new TarjetaATM(BigInteger.valueOf(60), "1234", true));
+		try {
+			SerializeController.escribir(tarjetas);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 
 		bancos.get(0).setTarjetas(tarjetas);
 		bancos.get(1).setTarjetas(tarjetas);
@@ -65,10 +82,9 @@ public class RunApp {
 		atmSelectorInterface.llenarCombobox(ATMs);
 		LectorTarjetaInterface lectorTarjetaInterface = new LectorTarjetaView();
 		MessageInterface messageInterface = new Message();
-		PrincipalMenuInterface principalMenu = new PrincipalMenu();
 		SelectorCuentaInterface selectorCuentaInterface = new SelectorCuenta();
 		ChangePassInterface changePassInterface = new ChangePass();
-		
+		PrincipalMenuInterface principalMenu = new PrincipalMenu(changePassInterface);
 		
 		/**
 		 * Creacion de controladores
@@ -77,7 +93,7 @@ public class RunApp {
 		AuthenticationController authenticationController = new AuthenticationController(ATMs, lectorTarjetaInterface, bancos, askPinInterface, 
 			selectorCuentaInterface, messageInterface, principalMenu);
 		MenuController menuController = new MenuController(principalMenu);
-		ChangePassController changePassControler = new ChangePassController(authenticationController, messageInterface);
+		ChangePassController changePassController = new ChangePassController(authenticationController, messageInterface);
 		
 		/**
 		 * Asignaciones para comunicacion MVC
@@ -92,13 +108,13 @@ public class RunApp {
 		atmSelectorInterface.setAtmSelectedListener(authenticationController);
 		selectorCuentaInterface.setAccountSelectedListener(authenticationController);
 		principalMenu.setMenuEventListener(menuController);
-		changePassInterface.setChangePassListener(changePassControler);
+		changePassInterface.setChangePassListener(changePassController);
 		
 		/**
 		 * Inicializacion
 		 */
 		
-		atmSelectorInterface.mostrar();
+		atmSelectorInterface.mostrar(true);
 		
 	}
 

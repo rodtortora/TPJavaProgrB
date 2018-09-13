@@ -29,12 +29,10 @@ public class SelectorCuenta extends JFrame implements SelectorCuentaInterface {
 	 * Launch the application.
 	 */
 	
-	public void mostrar() {
-		this.setVisible(true);
-	}
-	
-	public void ocultar() {
-		this.setVisible(false);
+	@Override
+	public void mostrar(boolean e) {
+		this.setVisible(e);
+		
 	}
 	
 	@Override

@@ -15,15 +15,10 @@ public class Message extends JFrame implements MessageInterface {
 	private JLabel lbl1 = new JLabel();
 	private JLabel lbl2 = new JLabel();
 
-	/**
-	 * Launch the application.
-	 */
-	public void mostrar() {
-		this.setVisible(true);
-	}
-	
-	public void ocultar() {
-		this.setVisible(false);
+	@Override
+	public void mostrar(boolean e) {
+		this.setVisible(e);
+		
 	}
 	
 	public void setMessage(String message, String message1) {		
@@ -36,7 +31,7 @@ public class Message extends JFrame implements MessageInterface {
 	 */
 	public Message() {
 		setTitle("Log");
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 		setBounds(100, 100, 450, 133);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));

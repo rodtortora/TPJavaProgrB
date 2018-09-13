@@ -85,12 +85,9 @@ public class AuthenticationController implements CardReadedListener, PinSentList
 	public void listenCardReadedEvent(CardReadedEvent event) {
 		try {
 			this.getSessionAtm().validarTarjeta(event.getCard());
-		} catch (CardNotFoundException e) {
+		} catch (CardNotFoundException | ATMisOnMaintenanceException | BlockCardException e) {
 			this.messageInterface.setMessage("Error",e.getMessage());
-			this.messageInterface.mostrar();
-		} catch (ATMisOnMaintenanceException e) {
-			this.messageInterface.setMessage("Error",e.getMessage());
-			this.messageInterface.mostrar();
+			this.messageInterface.mostrar(true);
 		}
 	}
 
@@ -98,25 +95,22 @@ public class AuthenticationController implements CardReadedListener, PinSentList
 	public void listenPinSentEvent(PinSentEvent event) {
 		try {
 			this.getSessionAtm().sendPin(event.getPin());
-			this.askPinInterface.ocultar();
-		} catch (WrongPinException e) {
-			this.askPinInterface.mostrarError();
-		} catch (BlockCardException e) {
+			this.askPinInterface.mostrar(false);
+		} catch (WrongPinException | BlockCardException e) {
 			this.messageInterface.setMessage("Error",e.getMessage());
-			this.messageInterface.mostrar();
-		}
-		
+			this.messageInterface.mostrar(true);
+		}		
 	}
 
 	@Override
 	public void listenPinRequestEvent(PinRequestEvent event) {
-		this.askPinInterface.mostrar();
+		this.askPinInterface.mostrar(true);
 		
 	}
 
 	@Override
 	public void listenCardValidatedEvent(CardValidatedEvent event) {
-		this.selectorCuentaInterface.mostrar();
+		this.selectorCuentaInterface.mostrar(true);
 		this.selectorCuentaInterface.llenarCombobox(event.getCard().getUsuario().getCuentas());
 		
 	}
@@ -124,7 +118,7 @@ public class AuthenticationController implements CardReadedListener, PinSentList
 	@Override
 	public void listenAtmSelectedEvent(AtmSelectedEvent e) {	
 		this.lectorTarjetaInterface.editarTexto(e.getAtm().toString());
-		this.lectorTarjetaInterface.mostrar();
+		this.lectorTarjetaInterface.mostrar(true);
 		this.setSessionAtm(e.getAtm());
 	}
 
@@ -132,7 +126,7 @@ public class AuthenticationController implements CardReadedListener, PinSentList
 	public void ListenAccountSelectedEvent(AccountSelectedEvent e) {
 		this.getSessionAtm().elegirCuenta(e.getCuenta());
 		this.menuInterface.setLblBanco(this.getSessionAtm().getBancoActual().toString());
-		this.menuInterface.mostrar();
+		this.menuInterface.mostrar(true);
 		
 	}
 

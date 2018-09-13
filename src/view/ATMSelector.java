@@ -29,14 +29,8 @@ public class ATMSelector extends JFrame implements ATMSelectorInterface {
 	 */
 	
 	@Override
-	public void mostrar() {
-		this.setVisible(true);
-		
-	}
-
-	@Override
-	public void ocultar() {
-		this.setVisible(false);
+	public void mostrar(boolean e) {
+		this.setVisible(e);
 		
 	}
 	
@@ -72,7 +66,6 @@ public class ATMSelector extends JFrame implements ATMSelectorInterface {
 		btnConfirmar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				atmSelectedListener.listenAtmSelectedEvent(new AtmSelectedEvent((ATM) ATMcomboBox.getSelectedItem()));
-				ocultar();
 			}
 		});
 		btnConfirmar.setBounds(10, 102, 414, 23);

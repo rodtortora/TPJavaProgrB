@@ -1,14 +1,15 @@
 package model;
+import java.io.Serializable;
 import java.math.BigInteger;
 
-public class TarjetaATM {
+public class TarjetaATM implements Serializable {
+	private static final long serialVersionUID = 4496602886083425348L;
 	private Usuario usuario;
 	private BigInteger ID;
 	String PIN;
 	private int intentosFallidos;
 	private boolean habilitada;
 	public TarjetaATM(BigInteger ID, String pin, boolean habilitada) {
-		super();
 		this.ID = ID;
 		this.PIN = pin;
 		this.habilitada = habilitada;
@@ -46,5 +47,14 @@ public class TarjetaATM {
 	}
 	public void setIntentosFallidos() {
 		this.intentosFallidos++;
+	}
+	
+	/**
+	 * Functions
+	 */
+	
+	@Override
+	public String toString() {
+		return this.ID.toString();
 	}
 }

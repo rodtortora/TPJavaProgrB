@@ -8,7 +8,6 @@ package view;
 
 public interface Visible {
 	
-	void mostrar();
-	void ocultar();
+	void mostrar(boolean e);
 
 }
