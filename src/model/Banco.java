@@ -1,10 +1,13 @@
 package model;
 
+import java.util.Calendar;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
@@ -14,6 +17,7 @@ import events.PinRequestEvent;
 import events.PinRequestListener;
 import events.PinSentListener;
 import exceptions.BlockCardException;
+import exceptions.NotEnoughBalanceException;
 import exceptions.WrongPinException;
 
 public class Banco implements Serializable {
@@ -216,6 +220,27 @@ public class Banco implements Serializable {
 	@Override
 	public String toString() {
 		return "Banco " + getNombre();
+	}
+
+	public void extraer(BigDecimal cantidadExtraer, ArrayList<Tarifa> tarifasTransaccion, Cuenta cuenta) throws NotEnoughBalanceException {
+		BigDecimal impuestoTransaccion = BigDecimal.ZERO;
+		if (tarifasTransaccion != null) {
+			for(Tarifa tarifa : tarifasTransaccion) {
+				impuestoTransaccion.add(tarifa.getValor());
+			}	
+		}
+		if (cuenta.getSaldo().add(cuenta.getLimiteDescubierto()).subtract(impuestoTransaccion).compareTo(cantidadExtraer) >= 0) { /** El saldo junto 
+		con el limite descubierto es mayor a la cantidad a extraer */
+			cuenta.setSaldo(cuenta.getSaldo().subtract(cantidadExtraer.add(impuestoTransaccion)));
+			Calendar fecha = new GregorianCalendar();
+			cuenta.addTransaction(new Transaction(Calendar.YEAR,Calendar.MONTH,Calendar.DAY_OF_MONTH,Calendar.HOUR_OF_DAY,Calendar.MINUTE,Calendar.SECOND,
+					tarifasTransaccion, cantidadExtraer));
+			
+		} else {
+			throw new NotEnoughBalanceException();
+		}
+
+		
 	}
 
 

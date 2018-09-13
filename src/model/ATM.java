@@ -8,6 +8,7 @@ import exceptions.ATMisOnMaintenanceException;
 import exceptions.BlockCardException;
 import exceptions.CardNotFoundException;
 import exceptions.InvalidNewPinException;
+import exceptions.NotEnoughBalanceException;
 import exceptions.WrongPinException;
 
 public class ATM {
@@ -22,7 +23,6 @@ public class ATM {
 	private Banco bancoActual; // Banco al que pertenece la tarjeta leida
 	private boolean bancoATMIgualBancoTarjeta;
 	private Cuenta cuentaSeleccionada; // Cuenta seleccionada de la tarjeta leida
-	private BigDecimal limiteExtracCuentaSeleccionada;
 	private TarjetaATM tarjetaActual;
 	
 	/**
@@ -83,12 +83,6 @@ public class ATM {
 	public Cuenta getCuentaSeleccionada() {
 		return this.cuentaSeleccionada;
 	}	
-	public BigDecimal getLimiteExtracCuentaSeleccionada() {
-		return limiteExtracCuentaSeleccionada;
-	}
-	public void setLimiteExtracCuentaSeleccionada(BigDecimal limiteExtracCuentaSeleccionada) {
-		this.limiteExtracCuentaSeleccionada = limiteExtracCuentaSeleccionada;
-	}
 	public boolean isModoMantenimiento() {
 		return modoMantenimiento;
 	}
@@ -130,6 +124,10 @@ public class ATM {
 	 * @throws ATMisOnMaintenanceException 
 	 * @throws BlockCardException 
 	 */
+	
+	public BigDecimal getLimiteExtraccionCajero() {
+		
+	}
 	
 	public void validarTarjeta(BigInteger idTarjetaATM) throws CardNotFoundException, ATMisOnMaintenanceException, BlockCardException {
 		this.setBancoActual(null);
@@ -185,8 +183,42 @@ public class ATM {
 		
 	}
 	
+	/**
+	 * @return saldo total de la cuenta seleccionada.
+	 */
+	
 	public BigDecimal consultaSaldo() {
 		return this.getBancoActual().obtenerSaldo(this.getTarjetaActual(), this.getCuentaSeleccionada());
+	}
+	
+	
+	public void pedidoExtraccion(BigDecimal cantidad) throws NotEnoughBalanceException {
+		ArrayList<Tarifa> tarifasTransaccion = new ArrayList<>();
+		
+		if (this.getLimiteExtracCajero() >= cantidad) {
+			if (this.getCuentaSeleccionada().getTipoCuenta() == 1) { /** 1 = CAJA AHORRO, 2 = CUENTA SUELDO, 3 = CUENTA CORRIENTE */
+				if (!this.isBancoATMIgualBancoTarjeta()) {
+					tarifasTransaccion.add(this.getTarifas().get("CajaAhorroExtraccionForanea"));
+				}
+			} else {
+				if (this.getCuentaSeleccionada().getTipoCuenta() == 3) {
+					if (!this.isBancoATMIgualBancoTarjeta()) {
+						tarifasTransaccion.add(this.getTarifas().get("CuentaCorrienteExtraccionForanea"));			
+					}	
+				}
+			}
+			if (this.getCuentaSeleccionada().getCantTransaccionesMes() >= this.getCuentaSeleccionada().getLimiteExtraccionesSinCargo()) {
+				tarifasTransaccion.add(this.getTarifas().get("ImpuestoExtraccion"));
+			}	
+			
+			this.getBancoActual().extraer(cantidad,tarifasTransaccion,this.getCuentaSeleccionada());
+			
+		}
+	}
+		
+	
+	public void extraerDinero(BigDecimal cantidad) {
+		
 	}
 	
 /*	public void calcularLimiteExtraccionCuenta(Cuenta cuenta) { //Calcula limite de extraccion de la cuenta seleccionada.

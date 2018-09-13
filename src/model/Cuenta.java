@@ -2,12 +2,13 @@ package model;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.ArrayList;
 
 public abstract class Cuenta {
 	private BigInteger CBU;
 	private BigDecimal saldo, tasaExtraccOtroBanco, mantenimientoMensual, tasaExtraccion, limiteExtraccionDiario, limiteDescubierto;
-	private int limiteExtraccionesSinCargo; // Cantidad extracciones sin cargo
-	private String tipoCuenta;
+	private int limiteExtraccionesSinCargo, tipoCuenta, cantTransaccionesUltMes; // Cantidad extracciones sin cargo
+	private ArrayList<Transaction> transacciones = new ArrayList<>();
 
 	/**
 	 * Constructor
@@ -24,7 +25,7 @@ public abstract class Cuenta {
 	
 	public Cuenta(BigInteger CBU, BigDecimal mantenimientoMensual, BigDecimal saldo, BigDecimal tasaExtraccOtroBanco,
 			int limiteExtraccionesSC, BigDecimal tasaExtraccion, BigDecimal limiteExtraccionDiario, BigDecimal limiteDescubierto,
-			String tipoCta) {
+			int tipoCta) {
 		this.setCBU(CBU);
 		this.setSaldo(saldo);
 		this.setMantenimientoMensual(mantenimientoMensual);
@@ -104,22 +105,39 @@ public abstract class Cuenta {
 		this.limiteDescubierto = limiteDescubierto;
 	}
 
-	public String getTipoCuenta() {
+	public int getTipoCuenta() {
 		return tipoCuenta;
 	}
 
-	public void setTipoCuenta(String tipoCuenta) {
-		this.tipoCuenta = tipoCuenta;
+	public void setTipoCuenta(int tipoCta) {
+		this.tipoCuenta = tipoCta;
 	}
+	
+	public void setTransaccionUltMes() {		
+		cantTransaccionesUltMes++;
+	}
+	
+	public int getCantTransaccionesMes() {		
+		return cantTransaccionesUltMes;
+	}
+	
 	
 	/**
 	 * Functions
 	 */
 	
+	public void addTransaction(Transaction transaction) {
+		this.transacciones.add(transaction);
+	}
+	
 	@Override
 	public String toString() {
 		return this.CBU.toString() + " - " + this.getTipoCuenta();
 	}
+
+
+
+
 	
 	
 }
