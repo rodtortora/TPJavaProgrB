@@ -222,19 +222,19 @@ public class Banco implements Serializable {
 		return "Banco " + getNombre();
 	}
 
-	public void extraer(BigDecimal cantidadExtraer, ArrayList<Tarifa> tarifasTransaccion, Cuenta cuenta) throws NotEnoughBalanceException {
+	public void extraer(BigInteger moneyAmount, ArrayList<Tarifa> tarifasTransaccion, Cuenta cuenta) throws NotEnoughBalanceException {
 		BigDecimal impuestoTransaccion = BigDecimal.ZERO;
 		if (tarifasTransaccion != null) {
 			for(Tarifa tarifa : tarifasTransaccion) {
 				impuestoTransaccion.add(tarifa.getValor());
 			}	
 		}
-		if (cuenta.getSaldo().add(cuenta.getLimiteDescubierto()).subtract(impuestoTransaccion).compareTo(cantidadExtraer) >= 0) { /** El saldo junto 
-		con el limite descubierto es mayor a la cantidad a extraer */
-			cuenta.setSaldo(cuenta.getSaldo().subtract(cantidadExtraer.add(impuestoTransaccion)));
+		if (cuenta.getSaldo().add(cuenta.getLimiteDescubierto()).subtract(impuestoTransaccion).compareTo(moneyAmount) >= 0) { 
+			/** El saldo junto con el limite descubierto disponible, es suficiente para la cantidad a extraer */
+			cuenta.setSaldo(cuenta.getSaldo().subtract(moneyAmount.add(impuestoTransaccion)));
 			Calendar fecha = new GregorianCalendar();
 			cuenta.addTransaction(new Transaction(Calendar.YEAR,Calendar.MONTH,Calendar.DAY_OF_MONTH,Calendar.HOUR_OF_DAY,Calendar.MINUTE,Calendar.SECOND,
-					tarifasTransaccion, cantidadExtraer));
+					tarifasTransaccion, moneyAmount));
 			
 		} else {
 			throw new NotEnoughBalanceException();
