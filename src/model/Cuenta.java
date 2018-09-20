@@ -6,9 +6,10 @@ import java.util.ArrayList;
 
 public abstract class Cuenta {
 	private BigInteger CBU;
-	private BigDecimal saldo, tasaExtraccOtroBanco, mantenimientoMensual, tasaExtraccion, limiteExtraccionDiario, limiteDescubierto;
-	private int limiteExtraccionesSinCargo, tipoCuenta, cantTransaccionesUltMes; // Cantidad extracciones sin cargo
+	private BigDecimal saldo, mantenimientoMensual, limiteExtraccionDiario, limiteDescubierto;
+	private int limiteExtraccionesSinCargo, cantTransaccionesUltMes; // Cantidad extracciones sin cargo
 	private ArrayList<Transaction> transacciones = new ArrayList<>();
+	private String tipoCuenta;
 
 	/**
 	 * Constructor
@@ -23,18 +24,14 @@ public abstract class Cuenta {
 	 * @param tipoCta
 	 */
 	
-	public Cuenta(BigInteger CBU, BigDecimal mantenimientoMensual, BigDecimal saldo, BigDecimal tasaExtraccOtroBanco,
-			int limiteExtraccionesSC, BigDecimal tasaExtraccion, BigDecimal limiteExtraccionDiario, BigDecimal limiteDescubierto,
-			int tipoCta) {
+	public Cuenta(BigInteger CBU, BigDecimal mantenimientoMensual, BigDecimal saldo, BigDecimal limiteExtraccionDiario, BigDecimal limiteDescubierto, String tipoCta, int limiteExtraccionesSC) {
 		this.setCBU(CBU);
 		this.setSaldo(saldo);
 		this.setMantenimientoMensual(mantenimientoMensual);
-		this.setTasaExtraccOtroBanco(tasaExtraccOtroBanco);
-		this.setLimiteExtraccionesSinCargo(limiteExtraccionesSC);
-		this.setTasaExtraccion(tasaExtraccion);
 		this.setLimiteExtraccionDiario(limiteExtraccionDiario);
 		this.setLimiteDescubierto(limiteDescubierto);
 		this.setTipoCuenta(tipoCta);
+		this.setLimiteExtraccionesSinCargo(limiteExtraccionesSC);
 
 	}
 	
@@ -65,13 +62,6 @@ public abstract class Cuenta {
 	public void setMantenimientoMensual(BigDecimal mantenimientoMensual) {
 		this.mantenimientoMensual = mantenimientoMensual;
 	}
-	public BigDecimal getTasaExtraccOtroBanco() {
-		return tasaExtraccOtroBanco;
-	}
-
-	public void setTasaExtraccOtroBanco(BigDecimal tasaExtraccOtroBanco) {
-		this.tasaExtraccOtroBanco = tasaExtraccOtroBanco;
-	}
 
 	public int getLimiteExtraccionesSinCargo() {
 		return limiteExtraccionesSinCargo;
@@ -79,14 +69,6 @@ public abstract class Cuenta {
 
 	public void setLimiteExtraccionesSinCargo(int limiteExtraccionesSC) {
 		this.limiteExtraccionesSinCargo = limiteExtraccionesSC;
-	}
-
-	public BigDecimal getTasaExtraccion() {
-		return tasaExtraccion;
-	}
-
-	public void setTasaExtraccion(BigDecimal tasaExtraccion) {
-		this.tasaExtraccion = tasaExtraccion;
 	}
 
 	public BigDecimal getLimiteExtraccionDiario() {
@@ -105,11 +87,11 @@ public abstract class Cuenta {
 		this.limiteDescubierto = limiteDescubierto;
 	}
 
-	public int getTipoCuenta() {
+	public String getTipoCuenta() {
 		return tipoCuenta;
 	}
 
-	public void setTipoCuenta(int tipoCta) {
+	public void setTipoCuenta(String tipoCta) {
 		this.tipoCuenta = tipoCta;
 	}
 	

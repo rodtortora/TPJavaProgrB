@@ -40,7 +40,7 @@ public class AuthenticationController implements CardReadedListener, PinSentList
 
 	public AuthenticationController(ArrayList<ATM> atms, LectorTarjetaInterface inicioInterface, ArrayList<Banco> bancos, AskPinInterface askPinInterface,
 			SelectorCuentaInterface selectorCuentaInterface, MessageInterface messageInterface, PrincipalMenuInterface menuInterface) {
-		this.ATMs = atms;
+		//this.ATMs = atms;
 		this.bancos = bancos;
 		this.lectorTarjetaInterface = inicioInterface;	
 		this.askPinInterface = askPinInterface;

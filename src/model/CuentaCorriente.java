@@ -5,11 +5,8 @@ import java.math.BigInteger;
 
 public class CuentaCorriente extends Cuenta {
 
-	public CuentaCorriente(BigInteger CBU, BigDecimal mantenimientoMensual, BigDecimal saldo,
-			BigDecimal tasaExtraccOtroBanco, int limiteExtraccionesSC, BigDecimal tasaExtraccion,
-			BigDecimal limiteExtraccionDiario, BigDecimal limiteDescubierto, String tipoCuenta) {
-		super(CBU, mantenimientoMensual, saldo, tasaExtraccOtroBanco, limiteExtraccionesSC, tasaExtraccion,
-				limiteExtraccionDiario, limiteDescubierto, tipoCuenta);
+	public CuentaCorriente(BigInteger CBU, BigDecimal mantenimientoMensual, BigDecimal saldo, BigDecimal limiteExtraccionDiario, BigDecimal limiteDescubierto, String tipoCta, int limiteExtraccionesSC) {
+		super(CBU, mantenimientoMensual, saldo,limiteExtraccionDiario,limiteDescubierto, tipoCta, limiteExtraccionesSC);
 		// TODO Auto-generated constructor stub
 	}
 

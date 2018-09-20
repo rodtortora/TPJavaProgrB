@@ -13,10 +13,13 @@ import java.util.List;
 
 import events.CardValidatedEvent;
 import events.CardValidatedListener;
+import events.ExtractionAcceptedEvent;
+import events.ExtractionAcceptedListener;
 import events.PinRequestEvent;
 import events.PinRequestListener;
 import events.PinSentListener;
 import exceptions.BlockCardException;
+import exceptions.ExtractionLimitExceeded;
 import exceptions.NotEnoughBalanceException;
 import exceptions.WrongPinException;
 
@@ -30,6 +33,7 @@ public class Banco implements Serializable {
 	private BigInteger minRango, maxRango;
 	private PinRequestListener pinRequestListener;
 	private CardValidatedListener cardValidatedListener;
+	private ExtractionAcceptedListener extractionAcceptedListener;
 	
 	public Banco() {};
 	
@@ -52,6 +56,10 @@ public class Banco implements Serializable {
 	 * Getters & Setters
 	 */
 	
+	public void setExtractionAcceptedListener(ExtractionAcceptedListener extractionAcceptedListener) {
+		this.extractionAcceptedListener = extractionAcceptedListener;
+	}
+		
 	public String getNombre() {
 		return nombre;
 	}
@@ -222,22 +230,32 @@ public class Banco implements Serializable {
 		return "Banco " + getNombre();
 	}
 
-	public void extraer(BigInteger moneyAmount, ArrayList<Tarifa> tarifasTransaccion, Cuenta cuenta) throws NotEnoughBalanceException {
-		BigDecimal impuestoTransaccion = BigDecimal.ZERO;
-		if (tarifasTransaccion != null) {
+	public void extraer(BigDecimal moneyAmount, ArrayList<Tarifa> tarifasTransaccion, Cuenta cuenta) throws NotEnoughBalanceException, ExtractionLimitExceeded {
+		
+		if (moneyAmount.compareTo(cuenta.getLimiteExtraccionDiario()) > 0) {
+			throw new ExtractionLimitExceeded("Supero el limite de extraccion diario");
+		}
+		
+		BigDecimal impuestoTransaccion = new BigDecimal(0);
+		if (!tarifasTransaccion.isEmpty()) {
 			for(Tarifa tarifa : tarifasTransaccion) {
-				impuestoTransaccion.add(tarifa.getValor());
+				if (tarifa != null) {
+					impuestoTransaccion = impuestoTransaccion.add(tarifa.getValor());
+				}				
 			}	
 		}
+		
 		if (cuenta.getSaldo().add(cuenta.getLimiteDescubierto()).subtract(impuestoTransaccion).compareTo(moneyAmount) >= 0) { 
 			/** El saldo junto con el limite descubierto disponible, es suficiente para la cantidad a extraer */
 			cuenta.setSaldo(cuenta.getSaldo().subtract(moneyAmount.add(impuestoTransaccion)));
-			Calendar fecha = new GregorianCalendar();
-			cuenta.addTransaction(new Transaction(Calendar.YEAR,Calendar.MONTH,Calendar.DAY_OF_MONTH,Calendar.HOUR_OF_DAY,Calendar.MINUTE,Calendar.SECOND,
-					tarifasTransaccion, moneyAmount));
+		    Calendar fechaTransaccion = new Calendar.Builder().setCalendarType("iso8601").setFields(Calendar.YEAR, Calendar.MONTH, Calendar.DAY_OF_MONTH, Calendar.HOUR_OF_DAY, Calendar.MINUTE, Calendar.SECOND).build();
+			cuenta.addTransaction(new Transaction(fechaTransaccion, tarifasTransaccion, moneyAmount));
+			cuenta.setLimiteExtraccionDiario(cuenta.getLimiteExtraccionDiario().subtract(moneyAmount));
+			this.extractionAcceptedListener.listenExtractionAcceptedEvent(new ExtractionAcceptedEvent(moneyAmount, cuenta.getSaldo()));
+			
 			
 		} else {
-			throw new NotEnoughBalanceException();
+			throw new NotEnoughBalanceException("Saldo insuficiente");
 		}
 
 		

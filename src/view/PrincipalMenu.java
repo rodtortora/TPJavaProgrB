@@ -35,7 +35,7 @@ public class PrincipalMenu extends JFrame implements PrincipalMenuInterface {
 		this.lblBanco.setText(message);
 	}
 
-	public PrincipalMenu(ChangePassInterface changePassInterface) {
+	public PrincipalMenu(ChangePassInterface changePassInterface, ExtraccionInterface extraccionInterface) {
 		setTitle("Menu");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 333);
@@ -58,10 +58,20 @@ public class PrincipalMenu extends JFrame implements PrincipalMenuInterface {
 		contentPane.add(btnCambiarClave);
 		
 		JButton btnConsultarSaldo = new JButton("Consultar Saldo");
+		btnConsultarSaldo.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				//TODO
+			}
+		});
 		btnConsultarSaldo.setBounds(10, 87, 414, 23);
 		contentPane.add(btnConsultarSaldo);
 		
 		JButton btnRetirarDinero = new JButton("Retirar dinero");
+		btnRetirarDinero.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				extraccionInterface.mostrar(true);
+			}
+		});
 		btnRetirarDinero.setBounds(10, 121, 414, 23);
 		contentPane.add(btnRetirarDinero);
 		

@@ -9,11 +9,10 @@ import java.util.Map.Entry;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-import events.MoneyExtractionEvent;
-import events.MoneyExtractionListener;
 import exceptions.ATMisOnMaintenanceException;
 import exceptions.BlockCardException;
 import exceptions.CardNotFoundException;
+import exceptions.ExtractionLimitExceeded;
 import exceptions.InvalidNewPinException;
 import exceptions.NotEnoughBalanceException;
 import exceptions.WrongPinException;
@@ -23,7 +22,6 @@ public class ATM {
 	private ArrayList<Banco> bancos = new ArrayList<>();
 	private SortedMap<BigInteger, Billetero> billeteros = new TreeMap(java.util.Collections.reverseOrder());
 	private HashMap<String, Tarifa> tarifas = new HashMap <String, Tarifa> ();
-	private MoneyExtractionListener moneyExtractionListener;
 	private int ID;
 	private String ubicacion;
 	private boolean modoMantenimiento;
@@ -115,9 +113,11 @@ public class ATM {
 	public void setBancoATM(Banco bancoATM) {
 		this.bancoATM = bancoATM;
 	}
-
-	public void addBilletero(Billetero billetero) {
-		billeteros.put(billetero.getValorBillete(), billetero);
+	public SortedMap<BigInteger, Billetero> getBilleteros() {
+		return billeteros;
+	}
+	public void setBilleteros(SortedMap<BigInteger, Billetero> billeteros) {
+		this.billeteros = billeteros;
 	}
 	
 	/**
@@ -197,7 +197,7 @@ public class ATM {
 	}
 	
 	
-	public void pedidoExtraccion(BigInteger moneyAmount) throws NotEnoughBalanceException {
+	public void pedidoExtraccion(BigInteger moneyAmount) throws NotEnoughBalanceException, ExtractionLimitExceeded {
 		ArrayList<Tarifa> tarifasTransaccion = new ArrayList<>();
 		Collection c = billeteros.values();
 		Iterator billeterositr = c.iterator();
@@ -222,29 +222,38 @@ public class ATM {
 				 * disponible y se actualiza aux.
 				 */
 				billetero.setCantidadBilletesReservados(billetero.getCantidadBilletes());
-				aux.subtract(resultado[0].multiply(billetero.getCantidadBilletes()));
+				aux = aux.subtract(billetero.getValorBillete().multiply(billetero.getCantidadBilletes()));
 			}
 		}
-		if (aux.equals(0)) {
-			if (this.getCuentaSeleccionada().getTipoCuenta() == 1) { /** 1 = CAJA AHORRO, 2 = CUENTA SUELDO, 3 = CUENTA CORRIENTE */
+		if (aux.compareTo(BigInteger.valueOf(0)) == 0) { // Si se cumple es que el ATM no tiene inconvenientes de dinero para hacer la extracción
+			/**
+			 * Aplicación de tarifas
+			 */
+			if (this.getCuentaSeleccionada().getTipoCuenta() == "CAJA AHORRO") {
 				if (!this.isBancoATMIgualBancoTarjeta()) {
 					tarifasTransaccion.add(this.getTarifas().get("CajaAhorroExtraccionForanea"));
 				}
 			} else {
-				if (this.getCuentaSeleccionada().getTipoCuenta() == 3) {
+				if (this.getCuentaSeleccionada().getTipoCuenta() == "CUENTA CORRIENTE") {
 					if (!this.isBancoATMIgualBancoTarjeta()) {
 						tarifasTransaccion.add(this.getTarifas().get("CuentaCorrienteExtraccionForanea"));			
 					}	
 				}
 			}
 			if (this.getCuentaSeleccionada().getCantTransaccionesMes() >= this.getCuentaSeleccionada().getLimiteExtraccionesSinCargo()) {
-				tarifasTransaccion.add(this.getTarifas().get("ImpuestoExtraccion"));
+				if (this.getCuentaSeleccionada().getLimiteExtraccionesSinCargo() != 0) {
+					tarifasTransaccion.add(this.getTarifas().get("ImpuestoExtraccion"));
+				}	
 			}	
 			
-			this.getBancoActual().extraer(moneyAmount,tarifasTransaccion,this.getCuentaSeleccionada());
+			/**
+			 * Pedido de autorización al banco para hacer la extracción
+			 */
+			
+			this.getBancoActual().extraer(BigDecimal.valueOf(moneyAmount.floatValue()),tarifasTransaccion,this.getCuentaSeleccionada());
 			
 		} else {
-			throw new NotEnoughBalanceException();
+			throw new NotEnoughBalanceException("No es posible extraer esta cantidad.");
 		}
 	}
 	
@@ -255,18 +264,17 @@ public class ATM {
 		while (billeterositr.hasNext()) {
 			Billetero billetero = (Billetero) billeterositr.next();
 			billetero.expulsarDineroReservado();
-			sumatoria.add(billetero.getCantidadBilletesReservados().multiply(billetero.getValorBillete()));
-			//DEBUG
-			System.out.println("ATM-Debug: Cantidad Billetes " + billetero.getValorBillete() + ": " + billetero.getCantidadBilletesReservados());
+			sumatoria.add(billetero.getCantidadBilletesReservados().multiply(billetero.getValorBillete()));		
 			billetero.setCantidadBilletesReservados(BigInteger.ZERO);
-		}
-		this.moneyExtractionListener.listenMoneyExtractionEvent(new MoneyExtractionEvent(sumatoria));
-		
+		}		
 	}
 
 	@Override
 	public String toString() {
 		return this.ubicacion;
 	}
+
+
+
 
 }

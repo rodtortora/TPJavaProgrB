@@ -11,7 +11,7 @@ import view.MessageInterface;
 public class ChangePassController implements ChangePassListener {
 	
 	private AuthenticationController authController;
-	private MessageInterface messageInterface = new Message();
+	private MessageInterface messageInterface;
 	
 	public ChangePassController(AuthenticationController authControler, MessageInterface messageInterface) {
 		this.messageInterface = messageInterface;
@@ -23,12 +23,15 @@ public class ChangePassController implements ChangePassListener {
 		try {
 			authController.getSessionAtm().ChangePIN(event.getPassActual(),event.getPassNew(),event.getConfirmPass());
 		} catch (InvalidNewPinException e) {
+			messageInterface.mostrar(true);
 			messageInterface.setMessage("Error", e.getMessage());
 			
 		} catch (WrongPinException e) {
+			messageInterface.mostrar(true);
 			messageInterface.setMessage("Error", e.getMessage());
 
 		} catch (BlockCardException e) {
+			messageInterface.mostrar(true);
 			messageInterface.setMessage("Error", e.getMessage());
 
 		}
