@@ -18,7 +18,7 @@ import javax.swing.SwingConstants;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
-public class PrincipalMenu extends JFrame implements PrincipalMenuInterface {
+public class PrincipalMenuView extends JFrame implements PrincipalMenuInterface {
 
 	private JPanel contentPane;
 	private JLabel lblBanco = new JLabel();
@@ -35,7 +35,7 @@ public class PrincipalMenu extends JFrame implements PrincipalMenuInterface {
 		this.lblBanco.setText(message);
 	}
 
-	public PrincipalMenu(ChangePassInterface changePassInterface, ExtraccionInterface extraccionInterface) {
+	public PrincipalMenuView(ChangePassInterface changePassInterface, ExtraccionInterface extraccionInterface) {
 		setTitle("Menu");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 333);

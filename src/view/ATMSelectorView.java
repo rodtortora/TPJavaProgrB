@@ -18,7 +18,7 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.awt.event.ActionEvent;
 
-public class ATMSelector extends JFrame implements ATMSelectorInterface {
+public class ATMSelectorView extends JFrame implements ATMSelectorInterface {
 
 	private JPanel contentPane;
 	private JComboBox<ATM> ATMcomboBox = new JComboBox<ATM>();
@@ -46,7 +46,7 @@ public class ATMSelector extends JFrame implements ATMSelectorInterface {
 	/**
 	 * Create the frame.
 	 */
-	public ATMSelector() {
+	public ATMSelectorView() {
 		setTitle("Simulador de seleccion de ATM");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 202);

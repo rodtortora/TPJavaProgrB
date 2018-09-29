@@ -19,7 +19,7 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.awt.event.ActionEvent;
 
-public class SelectorCuenta extends JFrame implements SelectorCuentaInterface {
+public class SelectorCuentaView extends JFrame implements SelectorCuentaInterface {
 
 	private JPanel contentPane;
 	private JComboBox<Cuenta> cuentaComboBox = new JComboBox<Cuenta>();
@@ -47,7 +47,7 @@ public class SelectorCuenta extends JFrame implements SelectorCuentaInterface {
 	/**
 	 * Create the frame.
 	 */
-	public SelectorCuenta() {
+	public SelectorCuentaView() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 248);
 		contentPane = new JPanel();

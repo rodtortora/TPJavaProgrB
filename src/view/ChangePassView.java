@@ -16,7 +16,7 @@ import javax.swing.JPasswordField;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
-public class ChangePass extends JFrame implements ChangePassInterface {
+public class ChangePassView extends JFrame implements ChangePassInterface {
 
 	private JPanel contentPane;
 	private JPasswordField claveActual;
@@ -24,7 +24,7 @@ public class ChangePass extends JFrame implements ChangePassInterface {
 	private JPasswordField confirmClaveNueva;
 	private ChangePassListener changePassListener;
 
-	public ChangePass() {
+	public ChangePassView() {
 		this.changePassListener = changePassListener;
 		setTitle("Cambio de clave");
 		setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);

@@ -20,7 +20,7 @@ import java.awt.event.ActionEvent;
 import java.awt.SystemColor;
 import javax.swing.JPasswordField;
 
-public class AskPin extends JFrame implements AskPinInterface {
+public class AskPinView extends JFrame implements AskPinInterface {
 	private JPanel contentPane;
 	private PinSentListener pinSentListener;
 	private JLabel lblAdvertencia;
@@ -29,7 +29,7 @@ public class AskPin extends JFrame implements AskPinInterface {
 	/**
 	 * Create the frame.
 	 */
-	public AskPin() {
+	public AskPinView() {
 		setTitle("Login Area");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 329, 206);

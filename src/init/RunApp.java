@@ -85,15 +85,15 @@ public class RunApp {
 		 * Creacion de interfaces
 		 */
 		
-		AskPinInterface askPinInterface = new AskPin();
-		ATMSelectorInterface atmSelectorInterface = new ATMSelector();
+		AskPinInterface askPinInterface = new AskPinView();
+		ATMSelectorInterface atmSelectorInterface = new ATMSelectorView();
 		atmSelectorInterface.llenarCombobox(ATMs);
 		LectorTarjetaInterface lectorTarjetaInterface = new LectorTarjetaView();
-		MessageInterface messageInterface = new Message();
-		SelectorCuentaInterface selectorCuentaInterface = new SelectorCuenta();
-		ChangePassInterface changePassInterface = new ChangePass();
-		ExtraccionInterface extraccionInterface = new Extraccion();
-		PrincipalMenuInterface principalMenu = new PrincipalMenu(changePassInterface,extraccionInterface);
+		MessageInterface messageInterface = new MessageView();
+		SelectorCuentaInterface selectorCuentaInterface = new SelectorCuentaView();
+		ChangePassInterface changePassInterface = new ChangePassView();
+		ExtraccionInterface extraccionInterface = new ExtraccionView();
+		PrincipalMenuInterface principalMenu = new PrincipalMenuView(changePassInterface,extraccionInterface);
 		
 		/**
 		 * Creacion de controladores

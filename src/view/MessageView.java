@@ -9,7 +9,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.JLabel;
 import javax.swing.JPasswordField;
 
-public class Message extends JFrame implements MessageInterface {
+public class MessageView extends JFrame implements MessageInterface {
 
 	private JPanel contentPane;
 	private JLabel lbl1 = new JLabel();
@@ -29,7 +29,7 @@ public class Message extends JFrame implements MessageInterface {
 	/**
 	 * Create the frame.
 	 */
-	public Message() {
+	public MessageView() {
 		setTitle("Log");
 		setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 		setBounds(100, 100, 450, 133);

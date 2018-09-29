@@ -18,7 +18,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.awt.event.ActionEvent;
 
-public class Extraccion extends JFrame implements ExtraccionInterface {
+public class ExtraccionView extends JFrame implements ExtraccionInterface {
 
 	private JPanel contentPane;
 	private ExtractionRequestEventListener extractionRequestEventListener;
@@ -26,7 +26,7 @@ public class Extraccion extends JFrame implements ExtraccionInterface {
 	/**
 	 * Create the frame.
 	 */
-	public Extraccion() {
+	public ExtraccionView() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 188);
 		contentPane = new JPanel();

@@ -196,6 +196,13 @@ public class ATM {
 		return this.getBancoActual().obtenerSaldo(this.getTarjetaActual(), this.getCuentaSeleccionada());
 	}
 	
+	/**
+	 * Con el metodo pedidoExtraccion() y expulsarDinero() se realiza el circuito de extraccion de dinero del cajero
+	 * @param moneyAmount
+	 * @throws NotEnoughBalanceException
+	 * @throws ExtractionLimitExceeded
+	 */
+	
 	
 	public void pedidoExtraccion(BigInteger moneyAmount) throws NotEnoughBalanceException, ExtractionLimitExceeded {
 		ArrayList<Tarifa> tarifasTransaccion = new ArrayList<>();
@@ -257,6 +264,7 @@ public class ATM {
 		}
 	}
 	
+	
 	public void expulsarDineroReservado() {
 		BigInteger sumatoria = BigInteger.valueOf(0);
 		Collection c = billeteros.values();
@@ -268,6 +276,8 @@ public class ATM {
 			billetero.setCantidadBilletesReservados(BigInteger.ZERO);
 		}		
 	}
+	
+	
 
 	@Override
 	public String toString() {

@@ -5,7 +5,7 @@ import events.ChangePassListener;
 import exceptions.BlockCardException;
 import exceptions.InvalidNewPinException;
 import exceptions.WrongPinException;
-import view.Message;
+import view.MessageView;
 import view.MessageInterface;
 
 public class ChangePassController implements ChangePassListener {
