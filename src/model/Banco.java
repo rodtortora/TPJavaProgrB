@@ -261,6 +261,13 @@ public class Banco implements Serializable {
 		
 	}
 
+	public void depositar(BigDecimal moneyAmount, Cuenta cuenta) {
+		cuenta.setSaldo(cuenta.getSaldo().add(moneyAmount));
+		Calendar fechaTransaccion = new Calendar.Builder().setCalendarType("iso8601").setFields(Calendar.YEAR, Calendar.MONTH, Calendar.DAY_OF_MONTH, Calendar.HOUR_OF_DAY, Calendar.MINUTE, Calendar.SECOND).build();
+		cuenta.addTransaction(new Transaction(fechaTransaccion, moneyAmount));
+		
+	}
+
 
 
 

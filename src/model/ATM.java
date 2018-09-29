@@ -30,6 +30,7 @@ public class ATM {
 	private boolean bancoATMIgualBancoTarjeta;
 	private Cuenta cuentaSeleccionada; // Cuenta seleccionada de la tarjeta leida
 	private TarjetaATM tarjetaActual;
+	private ReconocedorBilletes reconocedorBilletes;
 	
 	/**
 	 * Constructor
@@ -118,6 +119,9 @@ public class ATM {
 	}
 	public void setBilleteros(SortedMap<BigInteger, Billetero> billeteros) {
 		this.billeteros = billeteros;
+	}
+	public void setReconocedorBilletes(ReconocedorBilletes reconocedorBilletes) {
+		this.reconocedorBilletes = reconocedorBilletes;
 	}
 	
 	/**
@@ -275,6 +279,12 @@ public class ATM {
 			sumatoria.add(billetero.getCantidadBilletesReservados().multiply(billetero.getValorBillete()));		
 			billetero.setCantidadBilletesReservados(BigInteger.ZERO);
 		}		
+	}
+	
+	public void depositarDinero(BigInteger valorBillete, BigInteger cantidadBilletes) {
+		if (reconocedorBilletes.validar(valorBillete, cantidadBilletes)) {
+			this.getBancoActual().depositar(BigDecimal.valueOf(valorBillete.multiply(cantidadBilletes).floatValue()), this.getCuentaSeleccionada());
+		}
 	}
 	
 	

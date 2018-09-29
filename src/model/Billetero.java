@@ -41,7 +41,3 @@ public class Billetero {
 	}
 	
 }
-//3*100
-//1*500
-//1*1000
-//que pasa si quiero extraer 1400??

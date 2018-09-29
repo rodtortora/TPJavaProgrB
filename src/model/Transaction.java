@@ -12,11 +12,11 @@ public class Transaction {
 	private BigDecimal moneyAmount;
 	private String notas;
 	
-	public Transaction(Calendar fechaTransaccion, ArrayList<Tarifa> tarifasTransaccion, BigDecimal moneyAmount) {
+	public Transaction(Calendar fechaTransaccion, ArrayList<Tarifa> tarifasTransaccion, BigDecimal moneyAmount, String tipoTransaccion) {
 		this.setFechaTransaccion(fechaTransaccion);
 		this.setTarifas(tarifasTransaccion);
 		this.setMoneyAmount(moneyAmount);
-		this.setNotas(notas);
+		this.setNotas(tipoTransaccion);
 	}
 
 	public Calendar getFechaTransaccion() {
