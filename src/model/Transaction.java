@@ -8,15 +8,13 @@ import java.util.Calendar;
 
 public class Transaction {
 	private Calendar fechaTransaccion;
-	private ArrayList<Tarifa> tarifas;
 	private BigDecimal moneyAmount;
-	private String notas;
+	private int tipoTransaccion;
 	
-	public Transaction(Calendar fechaTransaccion, ArrayList<Tarifa> tarifasTransaccion, BigDecimal moneyAmount, String tipoTransaccion) {
+	public Transaction(Calendar fechaTransaccion, BigDecimal moneyAmount, int tipoTransaccion) {
 		this.setFechaTransaccion(fechaTransaccion);
-		this.setTarifas(tarifasTransaccion);
 		this.setMoneyAmount(moneyAmount);
-		this.setNotas(tipoTransaccion);
+		this.setTipoTransaccion(tipoTransaccion);
 	}
 
 	public Calendar getFechaTransaccion() {
@@ -27,14 +25,6 @@ public class Transaction {
 		this.fechaTransaccion = fechaTransaccion;
 	}
 
-	public ArrayList<Tarifa> getTarifas() {
-		return tarifas;
-	}
-
-	public void setTarifas(ArrayList<Tarifa> tarifas) {
-		this.tarifas = tarifas;
-	}
-
 	public BigDecimal getMoneyAmount() {
 		return moneyAmount;
 	}
@@ -43,12 +33,12 @@ public class Transaction {
 		this.moneyAmount = moneyAmount;
 	}
 
-	public String getNotas() {
-		return notas;
+	public int getTipoTransaccion() {
+		return tipoTransaccion;
 	}
 
-	public void setNotas(String notas) {
-		this.notas = notas;
+	public void setTipoTransaccion(int tipoTransaccion) {
+		this.tipoTransaccion = tipoTransaccion;
 	}
 
 }

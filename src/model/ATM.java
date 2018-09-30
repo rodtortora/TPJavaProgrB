@@ -54,20 +54,15 @@ public class ATM {
 	public ArrayList<Banco> getBancos() {
 		return bancos;
 	}
-
 	public void setBancos(ArrayList<Banco> bancos) {
 		this.bancos = bancos;
 	}
-	
 	public void setBancos(Banco banco) {
 		this.bancos.add(banco);
 	}
-	
 	public HashMap<String, Tarifa> getTarifas() {
 		return tarifas;
 	}
-
-
 	public void setTarifas(HashMap<String, Tarifa> tarifas) {
 		this.tarifas = tarifas;
 	}
@@ -213,6 +208,9 @@ public class ATM {
 		Collection c = billeteros.values();
 		Iterator billeterositr = c.iterator();
 		BigInteger aux = moneyAmount;
+		/**
+		 * Verificar que el cajero tenga la combinacion de dinero para realizar la extraccion
+		 */
 		while(billeterositr.hasNext() && !aux.equals(0)) {
 			Billetero billetero = (Billetero) billeterositr.next();
 			BigInteger[] resultado = aux.divideAndRemainder(billetero.getValorBillete());
@@ -236,24 +234,29 @@ public class ATM {
 				aux = aux.subtract(billetero.getValorBillete().multiply(billetero.getCantidadBilletes()));
 			}
 		}
-		if (aux.compareTo(BigInteger.valueOf(0)) == 0) { // Si se cumple es que el ATM no tiene inconvenientes de dinero para hacer la extracción
+		if (aux.compareTo(BigInteger.valueOf(0)) == 0) { /** Si se cumple es que el ATM no tiene inconvenientes de dinero para hacer la extracción */
 			/**
 			 * Aplicación de tarifas
 			 */
+			BigDecimal sumaPrecioTarifas = BigDecimal.ZERO;
 			if (this.getCuentaSeleccionada().getTipoCuenta() == "CAJA AHORRO") {
 				if (!this.isBancoATMIgualBancoTarjeta()) {
 					tarifasTransaccion.add(this.getTarifas().get("CajaAhorroExtraccionForanea"));
+					sumaPrecioTarifas = sumaPrecioTarifas.add(this.getTarifas().get("CajaAhorroExtraccionForanea").getValor());
 				}
 			} else {
 				if (this.getCuentaSeleccionada().getTipoCuenta() == "CUENTA CORRIENTE") {
 					if (!this.isBancoATMIgualBancoTarjeta()) {
-						tarifasTransaccion.add(this.getTarifas().get("CuentaCorrienteExtraccionForanea"));			
+						tarifasTransaccion.add(this.getTarifas().get("CuentaCorrienteExtraccionForanea"));
+						sumaPrecioTarifas = sumaPrecioTarifas.add(this.getTarifas().get("CuentaCorrienteExtraccionForanea").getValor());
+						
 					}	
 				}
 			}
-			if (this.getCuentaSeleccionada().getCantTransaccionesMes() >= this.getCuentaSeleccionada().getLimiteExtraccionesSinCargo()) {
-				if (this.getCuentaSeleccionada().getLimiteExtraccionesSinCargo() != 0) {
+			if (this.getCuentaSeleccionada().getCantTransaccionesUltMes(TipoTransaccion.extraccion) >= this.getCuentaSeleccionada().getLimiteExtraccionesSinCargoMensual()) {
+				if (this.getCuentaSeleccionada().getLimiteExtraccionesSinCargoMensual() != 0) {
 					tarifasTransaccion.add(this.getTarifas().get("ImpuestoExtraccion"));
+					sumaPrecioTarifas = sumaPrecioTarifas.add(this.getTarifas().get("ImpuestoExtraccion").getValor());
 				}	
 			}	
 			
@@ -261,7 +264,7 @@ public class ATM {
 			 * Pedido de autorización al banco para hacer la extracción
 			 */
 			
-			this.getBancoActual().extraer(BigDecimal.valueOf(moneyAmount.floatValue()),tarifasTransaccion,this.getCuentaSeleccionada());
+			this.getBancoActual().extraer(BigDecimal.valueOf(moneyAmount.floatValue()),tarifasTransaccion,this.getCuentaSeleccionada(),sumaPrecioTarifas);
 			
 		} else {
 			throw new NotEnoughBalanceException("No es posible extraer esta cantidad.");
@@ -272,9 +275,9 @@ public class ATM {
 	public void expulsarDineroReservado() {
 		BigInteger sumatoria = BigInteger.valueOf(0);
 		Collection c = billeteros.values();
-		Iterator billeterositr = c.iterator();
+		Iterator<Billetero> billeterositr = c.iterator();
 		while (billeterositr.hasNext()) {
-			Billetero billetero = (Billetero) billeterositr.next();
+			Billetero billetero = billeterositr.next();
 			billetero.expulsarDineroReservado();
 			sumatoria.add(billetero.getCantidadBilletesReservados().multiply(billetero.getValorBillete()));		
 			billetero.setCantidadBilletesReservados(BigInteger.ZERO);
@@ -282,8 +285,23 @@ public class ATM {
 	}
 	
 	public void depositarDinero(BigInteger valorBillete, BigInteger cantidadBilletes) {
+		ArrayList<Tarifa> tarifasTransaccion = new ArrayList<>();
+		/**
+		 * Aplicación de tarifas
+		 */
+		if (this.getCuentaSeleccionada().getTipoCuenta() == "CAJA AHORRO") {
+			if (!this.isBancoATMIgualBancoTarjeta()) {
+				tarifasTransaccion.add(this.getTarifas().get("CajaAhorroExtraccionForanea"));
+			}
+		} else {
+			if (this.getCuentaSeleccionada().getTipoCuenta() == "CUENTA CORRIENTE") {
+				if (!this.isBancoATMIgualBancoTarjeta()) {
+					tarifasTransaccion.add(this.getTarifas().get("CuentaCorrienteExtraccionForanea"));			
+				}	
+			}
+		}
 		if (reconocedorBilletes.validar(valorBillete, cantidadBilletes)) {
-			this.getBancoActual().depositar(BigDecimal.valueOf(valorBillete.multiply(cantidadBilletes).floatValue()), this.getCuentaSeleccionada());
+			//this.getBancoActual().depositar(BigDecimal.valueOf(valorBillete.multiply(cantidadBilletes).floatValue()), tarifasTransaccion, this.getCuentaSeleccionada());
 		}
 	}
 	

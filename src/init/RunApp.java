@@ -43,9 +43,9 @@ public class RunApp {
 		ATMs.add(atmMdq);
 		ATMs.add(atmBsAs);
 		
-		Tarifa cajaAhorroExtraccionForanea = new Tarifa("CajaAhorroTransaccionForanea",BigDecimal.valueOf(10));
-		Tarifa cuentaCorrienteExtraccionForanea = new Tarifa("CuentaCorrienteTransaccionForanea",BigDecimal.valueOf(30));
-		Tarifa extraccion = new Tarifa("Extraccion",BigDecimal.valueOf(15));
+		Tarifa cajaAhorroExtraccionForanea = new Tarifa("CajaAhorroTransaccionForanea",BigDecimal.valueOf(10), TipoTransaccion.cargoBancoForaneo);
+		Tarifa cuentaCorrienteExtraccionForanea = new Tarifa("CuentaCorrienteTransaccionForanea",BigDecimal.valueOf(30), TipoTransaccion.cargoBancoForaneo);
+		Tarifa extraccion = new Tarifa("Extraccion",BigDecimal.valueOf(15), TipoTransaccion.cargoExtraccion);
 		tarifas.put(cajaAhorroExtraccionForanea.getTipoTarifa(), cajaAhorroExtraccionForanea);
 		tarifas.put(cuentaCorrienteExtraccionForanea.getTipoTarifa(), cuentaCorrienteExtraccionForanea);
 		tarifas.put(extraccion.getTipoTarifa(), extraccion);

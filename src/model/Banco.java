@@ -230,26 +230,24 @@ public class Banco implements Serializable {
 		return "Banco " + getNombre();
 	}
 
-	public void extraer(BigDecimal moneyAmount, ArrayList<Tarifa> tarifasTransaccion, Cuenta cuenta) throws NotEnoughBalanceException, ExtractionLimitExceeded {
+	public void extraer(BigDecimal moneyAmount, ArrayList<Tarifa> tarifasTransaccion, Cuenta cuenta, BigDecimal impuestoTransaccion) throws NotEnoughBalanceException, ExtractionLimitExceeded {
 		
 		if (moneyAmount.compareTo(cuenta.getLimiteExtraccionDiario()) > 0) {
 			throw new ExtractionLimitExceeded("Supero el limite de extraccion diario");
 		}
 		
-		BigDecimal impuestoTransaccion = new BigDecimal(0);
-		if (!tarifasTransaccion.isEmpty()) {
-			for(Tarifa tarifa : tarifasTransaccion) {
-				if (tarifa != null) {
-					impuestoTransaccion = impuestoTransaccion.add(tarifa.getValor());
-				}				
-			}	
-		}
-		
 		if (cuenta.getSaldo().add(cuenta.getLimiteDescubierto()).subtract(impuestoTransaccion).compareTo(moneyAmount) >= 0) { 
-			/** El saldo junto con el limite descubierto disponible, es suficiente para la cantidad a extraer */
+			/** El saldo junto con el limite descubierto disponible, es suficiente para la cantidad a extraer y pagar las tarifas */
 			cuenta.setSaldo(cuenta.getSaldo().subtract(moneyAmount.add(impuestoTransaccion)));
-		    Calendar fechaTransaccion = new Calendar.Builder().setCalendarType("iso8601").setFields(Calendar.YEAR, Calendar.MONTH, Calendar.DAY_OF_MONTH, Calendar.HOUR_OF_DAY, Calendar.MINUTE, Calendar.SECOND).build();
-			cuenta.addTransaction(new Transaction(fechaTransaccion, tarifasTransaccion, moneyAmount));
+			Calendar fechaTransaccion = Calendar.getInstance();		  
+			cuenta.addTransaction(new Transaction(fechaTransaccion, moneyAmount, TipoTransaccion.extraccion));
+			if (!tarifasTransaccion.isEmpty()) {
+				for(Tarifa tarifa : tarifasTransaccion) {
+					if (tarifa != null) {
+						cuenta.addTransaction(new Transaction(fechaTransaccion,tarifa.getValor(),tarifa.getTipoTransaccion()));
+					}				
+				}	
+			}
 			cuenta.setLimiteExtraccionDiario(cuenta.getLimiteExtraccionDiario().subtract(moneyAmount));
 			this.extractionAcceptedListener.listenExtractionAcceptedEvent(new ExtractionAcceptedEvent(moneyAmount, cuenta.getSaldo()));
 			
@@ -263,8 +261,8 @@ public class Banco implements Serializable {
 
 	public void depositar(BigDecimal moneyAmount, Cuenta cuenta) {
 		cuenta.setSaldo(cuenta.getSaldo().add(moneyAmount));
-		Calendar fechaTransaccion = new Calendar.Builder().setCalendarType("iso8601").setFields(Calendar.YEAR, Calendar.MONTH, Calendar.DAY_OF_MONTH, Calendar.HOUR_OF_DAY, Calendar.MINUTE, Calendar.SECOND).build();
-		cuenta.addTransaction(new Transaction(fechaTransaccion, moneyAmount));
+		Calendar fechaTransaccion = Calendar.getInstance();	
+		//cuenta.addTransaction(new Transaction(fechaTransaccion, moneyAmount));
 		
 	}
 

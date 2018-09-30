@@ -15,10 +15,12 @@ public class Tarifa {
 	
 	private BigDecimal valor;
 	private String tipoTarifa;
+	private int tipoTransaccion;
 	
-	public Tarifa(String tipoTarifa, BigDecimal valor) {
+	public Tarifa(String tipoTarifa, BigDecimal valor, int tipoTransaccion) {
 		this.setValor(valor);
 		this.setTipoTarifa(tipoTarifa);
+		this.setTipoTransaccion(tipoTransaccion);
 	}
 
 	public String getTipoTarifa() {
@@ -35,6 +37,14 @@ public class Tarifa {
 
 	public void setValor(BigDecimal valor) {
 		this.valor = valor;
+	}
+
+	public int getTipoTransaccion() {
+		return tipoTransaccion;
+	}
+
+	public void setTipoTransaccion(int tipoTransaccion) {
+		this.tipoTransaccion = tipoTransaccion;
 	}
 
 }

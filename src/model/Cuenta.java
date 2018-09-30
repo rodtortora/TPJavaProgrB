@@ -3,11 +3,13 @@ package model;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Iterator;
 
 public abstract class Cuenta {
 	private BigInteger CBU;
 	private BigDecimal saldo, mantenimientoMensual, limiteExtraccionDiario, limiteDescubierto;
-	private int limiteExtraccionesSinCargo, cantTransaccionesUltMes; // Cantidad extracciones sin cargo
+	private int limiteExtraccionesMensualSinCargo; // Cantidad extracciones sin cargo por mes
 	private ArrayList<Transaction> transacciones = new ArrayList<>();
 	private String tipoCuenta;
 
@@ -31,7 +33,7 @@ public abstract class Cuenta {
 		this.setLimiteExtraccionDiario(limiteExtraccionDiario);
 		this.setLimiteDescubierto(limiteDescubierto);
 		this.setTipoCuenta(tipoCta);
-		this.setLimiteExtraccionesSinCargo(limiteExtraccionesSC);
+		this.setLimiteExtraccionesMensualSinCargo(limiteExtraccionesSC);
 
 	}
 	
@@ -45,6 +47,10 @@ public abstract class Cuenta {
 
 	public void setCBU(BigInteger CBU) {
 		this.CBU = CBU;
+	}
+	
+	public ArrayList<Transaction> getTransacciones() {
+		return transacciones;
 	}
 
 	public BigDecimal getSaldo() { // Saldo total
@@ -63,12 +69,12 @@ public abstract class Cuenta {
 		this.mantenimientoMensual = mantenimientoMensual;
 	}
 
-	public int getLimiteExtraccionesSinCargo() {
-		return limiteExtraccionesSinCargo;
+	public int getLimiteExtraccionesSinCargoMensual() {
+		return limiteExtraccionesMensualSinCargo;
 	}
 
-	public void setLimiteExtraccionesSinCargo(int limiteExtraccionesSC) {
-		this.limiteExtraccionesSinCargo = limiteExtraccionesSC;
+	public void setLimiteExtraccionesMensualSinCargo(int limiteExtraccionesSC) {
+		this.limiteExtraccionesMensualSinCargo = limiteExtraccionesSC;
 	}
 
 	public BigDecimal getLimiteExtraccionDiario() {
@@ -95,18 +101,37 @@ public abstract class Cuenta {
 		this.tipoCuenta = tipoCta;
 	}
 	
-	public void setTransaccionUltMes() {		
-		cantTransaccionesUltMes++;
-	}
-	
-	public int getCantTransaccionesMes() {		
-		return cantTransaccionesUltMes;
-	}
-	
 	
 	/**
 	 * Functions
 	 */
+	
+	public int getCantTransaccionesUltMes() {
+		int count = 0;
+		Calendar fechaActual = Calendar.getInstance();
+		Iterator<Transaction> itTransacciones = this.getTransacciones().iterator();		
+		while (itTransacciones.hasNext()) {
+			Transaction transaction = itTransacciones.next();
+			if (transaction.getFechaTransaccion().get(Calendar.MONTH) == fechaActual.get(Calendar.MONTH)) {
+				count++;
+			}
+		}
+		return count;
+	}
+	
+	public int getCantTransaccionesUltMes(int tipoTransaccion) {
+		int count = 0;
+		Calendar fechaActual = Calendar.getInstance();
+		Iterator<Transaction> itTransacciones = this.getTransacciones().iterator();		
+		while (itTransacciones.hasNext()) {
+			Transaction transaction = itTransacciones.next();
+			if (transaction.getFechaTransaccion().get(Calendar.MONTH) == fechaActual.get(Calendar.MONTH) && transaction.getTipoTransaccion() == tipoTransaccion) {
+				count++;
+			}
+		}
+		return count;
+	}
+	
 	
 	public void addTransaction(Transaction transaction) {
 		this.transacciones.add(transaction);
