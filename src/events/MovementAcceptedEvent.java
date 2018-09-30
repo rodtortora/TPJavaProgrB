@@ -2,11 +2,11 @@ package events;
 
 import java.math.BigDecimal;
 
-public class ExtractionAcceptedEvent {
+public class MovementAcceptedEvent {
 	
 	private BigDecimal cantidadExtraida, SaldoRestante;
 
-	public ExtractionAcceptedEvent(BigDecimal cantidadExtraida, BigDecimal saldoRestante) {
+	public MovementAcceptedEvent(BigDecimal cantidadExtraida, BigDecimal saldoRestante) {
 		this.setCantidadExtraida(cantidadExtraida);
 		this.setSaldoRestante(saldoRestante);
 

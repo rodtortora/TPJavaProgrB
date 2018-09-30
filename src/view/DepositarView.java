@@ -19,7 +19,7 @@ public class DepositarView extends JFrame implements DepositarInterface {
 	 * Create the frame.
 	 */
 	public DepositarView() {
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 		setBounds(100, 100, 235, 232);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));

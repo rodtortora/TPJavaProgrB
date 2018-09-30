@@ -30,12 +30,18 @@ public class RunApp {
 		ArrayList<ATM> ATMs = new ArrayList<>();
 		ArrayList<Cuenta> cuentas = new ArrayList<>();
 		ArrayList<Usuario> usuarios = new ArrayList<>();
-		HashMap<String, Tarifa> tarifas = new HashMap<String, Tarifa>();
 		SortedMap<BigInteger, Billetero> billeteros = new TreeMap(java.util.Collections.reverseOrder());
 		
-		bancos.add(new Banco(1,"La Plaza",BigInteger.valueOf(5),BigInteger.valueOf(20)));
-		bancos.add(new Banco(2,"Provincia",BigInteger.valueOf(5),BigInteger.valueOf(30)));
-		bancos.add(new Banco(3,"Frances",BigInteger.valueOf(31),BigInteger.valueOf(80)));
+		cuentas.add(new CuentaCorriente(BigInteger.valueOf(1),BigDecimal.valueOf(0),BigDecimal.valueOf(15000), BigDecimal.valueOf(10000), BigDecimal.valueOf(500), "CUENTA CORRIENTE", 3));
+		cuentas.add(new CuentaSueldo(BigInteger.valueOf(2),BigDecimal.valueOf(0),BigDecimal.valueOf(50000), BigDecimal.valueOf(10000), BigDecimal.valueOf(0), "CUENTA SUELDO", 0, "231312"));
+		
+		usuarios.add(new Usuario(1,"Tortora","Rodrigo"));
+		usuarios.get(0).setCuenta(cuentas);
+		
+		
+		bancos.add(new Banco(1,"La Plaza",BigInteger.valueOf(5),BigInteger.valueOf(20), cuentas, true));
+		bancos.add(new Banco(2,"Provincia",BigInteger.valueOf(21),BigInteger.valueOf(30), null, false));
+		bancos.add(new Banco(3,"Frances",BigInteger.valueOf(31),BigInteger.valueOf(80), null, false));
 		
 		ATM atmMdq = new ATM(1, "Mar del Plata",bancos.get(1),bancos);
 		ATM atmBsAs = new ATM(2,"Buenos Aires",bancos.get(1),bancos);
@@ -43,17 +49,10 @@ public class RunApp {
 		ATMs.add(atmMdq);
 		ATMs.add(atmBsAs);
 		
-		Tarifa cajaAhorroExtraccionForanea = new Tarifa("CajaAhorroTransaccionForanea",BigDecimal.valueOf(10), TipoTransaccion.cargoBancoForaneo);
-		Tarifa cuentaCorrienteExtraccionForanea = new Tarifa("CuentaCorrienteTransaccionForanea",BigDecimal.valueOf(30), TipoTransaccion.cargoBancoForaneo);
-		Tarifa extraccion = new Tarifa("Extraccion",BigDecimal.valueOf(15), TipoTransaccion.cargoExtraccion);
-		tarifas.put(cajaAhorroExtraccionForanea.getTipoTarifa(), cajaAhorroExtraccionForanea);
-		tarifas.put(cuentaCorrienteExtraccionForanea.getTipoTarifa(), cuentaCorrienteExtraccionForanea);
-		tarifas.put(extraccion.getTipoTarifa(), extraccion);
-		
+
 		billeteros.put(BigInteger.valueOf(100), new Billetero(BigInteger.valueOf(100),BigInteger.valueOf(60)));
 		billeteros.put(BigInteger.valueOf(500), new Billetero(BigInteger.valueOf(500),BigInteger.valueOf(20)));
 		
-		atmMdq.setTarifas(tarifas);
 		atmMdq.setBilleteros(billeteros);
 						
 		tarjetas.add(new TarjetaATM(BigInteger.valueOf(10), "1234", true));
@@ -62,6 +61,9 @@ public class RunApp {
 		tarjetas.add(new TarjetaATM(BigInteger.valueOf(40), "1234", true));
 		tarjetas.add(new TarjetaATM(BigInteger.valueOf(50), "1234", true));
 		tarjetas.add(new TarjetaATM(BigInteger.valueOf(60), "1234", true));
+		
+		tarjetas.get(0).setUsuario(usuarios.get(0));
+		
 		try {
 			SerializeController.escribir(tarjetas);
 		} catch (IOException e) {
@@ -72,12 +74,7 @@ public class RunApp {
 		bancos.get(1).setTarjetas(tarjetas);
 		bancos.get(2).setTarjetas(tarjetas);	
 		
-		cuentas.add(new CuentaCorriente(BigInteger.valueOf(1),BigDecimal.valueOf(0),BigDecimal.valueOf(15000), BigDecimal.valueOf(10000), BigDecimal.valueOf(500), "CUENTA CORRIENTE", 3));
-		cuentas.add(new CuentaSueldo(BigInteger.valueOf(2),BigDecimal.valueOf(0),BigDecimal.valueOf(50000), BigDecimal.valueOf(10000), BigDecimal.valueOf(0), "CUENTA SUELDO", 0, "231312"));
-		
-		usuarios.add(new Usuario(1,"Tortora","Rodrigo"));
-		usuarios.get(0).setCuenta(cuentas);
-		tarjetas.get(0).setUsuario(usuarios.get(0));
+
 		
 		
 		

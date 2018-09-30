@@ -1,6 +1,6 @@
 package controller;
 
-import events.ExtractionAcceptedEvent;
+import events.MovementAcceptedEvent;
 import events.ExtractionAcceptedListener;
 import events.ExtractionRequestEvent;
 import events.ExtractionRequestEventListener;
@@ -36,7 +36,7 @@ public class TransactionController implements ExtractionRequestEventListener, Ex
 	}
 
 	@Override
-	public void listenExtractionAcceptedEvent(ExtractionAcceptedEvent event) {
+	public void listenMovementAcceptedEvent(MovementAcceptedEvent event) {
 		authController.getSessionAtm().expulsarDineroReservado();
 		messageInterface.mostrar(true);
 		messageInterface.setMessage("Operacion completada", "Saldo extraido: " + event.getCantidadExtraida() + ". Saldo restante: " + event.getSaldoRestante());

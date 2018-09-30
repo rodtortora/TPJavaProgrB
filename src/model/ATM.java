@@ -9,11 +9,13 @@ import java.util.Map.Entry;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import exceptions.AccountNotFoundException;
 import exceptions.ATMisOnMaintenanceException;
 import exceptions.BlockCardException;
 import exceptions.CardNotFoundException;
 import exceptions.ExtractionLimitExceeded;
 import exceptions.InvalidNewPinException;
+import exceptions.NotAllowedOperation;
 import exceptions.NotEnoughBalanceException;
 import exceptions.WrongPinException;
 
@@ -239,27 +241,23 @@ public class ATM {
 			 * Aplicación de tarifas
 			 */
 			BigDecimal sumaPrecioTarifas = BigDecimal.ZERO;
-			if (this.getCuentaSeleccionada().getTipoCuenta() == "CAJA AHORRO") {
-				if (!this.isBancoATMIgualBancoTarjeta()) {
-					tarifasTransaccion.add(this.getTarifas().get("CajaAhorroExtraccionForanea"));
-					sumaPrecioTarifas = sumaPrecioTarifas.add(this.getTarifas().get("CajaAhorroExtraccionForanea").getValor());
+			if (!this.isBancoATMIgualBancoTarjeta()) {
+				if (this.getCuentaSeleccionada().getTipoCuenta() == "CAJA AHORRO") {
+					tarifasTransaccion.add(new Tarifa(Tarifa.cajaAhorroTransaccionForanea, TipoTransaccion.extraccion));
+					sumaPrecioTarifas = sumaPrecioTarifas.add(Tarifa.cajaAhorroTransaccionForanea);
+				} else if (this.getCuentaSeleccionada().getTipoCuenta() == "CUENTA CORRIENTE") {
+					tarifasTransaccion.add(new Tarifa(Tarifa.cuentaCorrienteTransaccionForanea, TipoTransaccion.extraccion));
+					sumaPrecioTarifas = sumaPrecioTarifas.add(Tarifa.cuentaCorrienteTransaccionForanea);
 				}
-			} else {
-				if (this.getCuentaSeleccionada().getTipoCuenta() == "CUENTA CORRIENTE") {
-					if (!this.isBancoATMIgualBancoTarjeta()) {
-						tarifasTransaccion.add(this.getTarifas().get("CuentaCorrienteExtraccionForanea"));
-						sumaPrecioTarifas = sumaPrecioTarifas.add(this.getTarifas().get("CuentaCorrienteExtraccionForanea").getValor());
-						
-					}	
-				}
+				
 			}
+			
 			if (this.getCuentaSeleccionada().getCantTransaccionesUltMes(TipoTransaccion.extraccion) >= this.getCuentaSeleccionada().getLimiteExtraccionesSinCargoMensual()) {
 				if (this.getCuentaSeleccionada().getLimiteExtraccionesSinCargoMensual() != 0) {
-					tarifasTransaccion.add(this.getTarifas().get("ImpuestoExtraccion"));
-					sumaPrecioTarifas = sumaPrecioTarifas.add(this.getTarifas().get("ImpuestoExtraccion").getValor());
+					tarifasTransaccion.add(new Tarifa(Tarifa.extraccion, TipoTransaccion.extraccion));
+					sumaPrecioTarifas = sumaPrecioTarifas.add(Tarifa.extraccion);
 				}	
-			}	
-			
+			}		
 			/**
 			 * Pedido de autorización al banco para hacer la extracción
 			 */
@@ -286,26 +284,33 @@ public class ATM {
 	
 	public void depositarDinero(BigInteger valorBillete, BigInteger cantidadBilletes) {
 		ArrayList<Tarifa> tarifasTransaccion = new ArrayList<>();
+		BigDecimal sumaPrecioTarifas = BigDecimal.ZERO;
 		/**
 		 * Aplicación de tarifas
 		 */
-		if (this.getCuentaSeleccionada().getTipoCuenta() == "CAJA AHORRO") {
-			if (!this.isBancoATMIgualBancoTarjeta()) {
-				tarifasTransaccion.add(this.getTarifas().get("CajaAhorroExtraccionForanea"));
-			}
-		} else {
-			if (this.getCuentaSeleccionada().getTipoCuenta() == "CUENTA CORRIENTE") {
-				if (!this.isBancoATMIgualBancoTarjeta()) {
-					tarifasTransaccion.add(this.getTarifas().get("CuentaCorrienteExtraccionForanea"));			
-				}	
-			}
+		if (!this.isBancoATMIgualBancoTarjeta()) {
+			
+			if (this.getCuentaSeleccionada().getTipoCuenta() == "CAJA AHORRO") {
+				tarifasTransaccion.add(new Tarifa(Tarifa.cajaAhorroTransaccionForanea, TipoTransaccion.depositoEfectivo));
+				sumaPrecioTarifas = sumaPrecioTarifas.add(Tarifa.cajaAhorroTransaccionForanea);
+			} else if (this.getCuentaSeleccionada().getTipoCuenta() == "CUENTA CORRIENTE") {
+				tarifasTransaccion.add(new Tarifa(Tarifa.cuentaCorrienteTransaccionForanea, TipoTransaccion.depositoEfectivo));
+				sumaPrecioTarifas = sumaPrecioTarifas.add(Tarifa.cuentaCorrienteTransaccionForanea);
+			}			
 		}
+
 		if (reconocedorBilletes.validar(valorBillete, cantidadBilletes)) {
-			//this.getBancoActual().depositar(BigDecimal.valueOf(valorBillete.multiply(cantidadBilletes).floatValue()), tarifasTransaccion, this.getCuentaSeleccionada());
+			this.getBancoActual().depositar(BigDecimal.valueOf(valorBillete.multiply(cantidadBilletes).floatValue()), tarifasTransaccion, this.getCuentaSeleccionada(), sumaPrecioTarifas);
 		}
 	}
 	
+	public void transferencia(BigInteger nroCbuDestino, BigDecimal moneyAmount) throws AccountNotFoundException, NotEnoughBalanceException {
+		this.getBancoActual().transferirDinero(moneyAmount, this.getCuentaSeleccionada(), nroCbuDestino);
+	}
 	
+	public void consultarMovimientos(int mes) throws NotAllowedOperation {
+		this.getBancoActual().consultarMovimientos(mes, this.getCuentaSeleccionada());
+	}
 
 	@Override
 	public String toString() {

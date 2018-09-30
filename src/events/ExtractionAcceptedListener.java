@@ -2,6 +2,6 @@ package events;
 
 public interface ExtractionAcceptedListener {
 	
-	void listenExtractionAcceptedEvent(ExtractionAcceptedEvent event);
+	void listenMovementAcceptedEvent(MovementAcceptedEvent event);
 
 }

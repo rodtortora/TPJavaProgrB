@@ -13,18 +13,21 @@ import java.util.List;
 
 import events.CardValidatedEvent;
 import events.CardValidatedListener;
-import events.ExtractionAcceptedEvent;
+import events.MovementAcceptedEvent;
 import events.ExtractionAcceptedListener;
 import events.PinRequestEvent;
 import events.PinRequestListener;
 import events.PinSentListener;
+import exceptions.AccountNotFoundException;
 import exceptions.BlockCardException;
 import exceptions.ExtractionLimitExceeded;
+import exceptions.NotAllowedOperation;
 import exceptions.NotEnoughBalanceException;
 import exceptions.WrongPinException;
 
 public class Banco implements Serializable {
 	private static final long serialVersionUID = -2071330853728301386L;
+	private List<Cuenta> cuentas = new ArrayList<>();
 	private List<Usuario> usuarios = new ArrayList<>();
 	private List<TarjetaATM> tarjetas = new ArrayList<>();
 	private int ID;
@@ -33,7 +36,9 @@ public class Banco implements Serializable {
 	private BigInteger minRango, maxRango;
 	private PinRequestListener pinRequestListener;
 	private CardValidatedListener cardValidatedListener;
-	private ExtractionAcceptedListener extractionAcceptedListener;
+	private ExtractionAcceptedListener movementAcceptedListener;
+	private boolean permiteMostrarMovimientos;
+
 	
 	public Banco() {};
 	
@@ -45,11 +50,13 @@ public class Banco implements Serializable {
 	 * @param maxRango
 	 */
 	
-	public Banco(int ID, String nombre, BigInteger minRango, BigInteger maxRango) {
+	public Banco(int ID, String nombre, BigInteger minRango, BigInteger maxRango, List<Cuenta> cuentas, boolean permiteMostrarMovimientos) {
 		this.ID = ID;
 		this.nombre = nombre;
 		this.minRango = minRango;
 		this.maxRango = maxRango;
+		this.cuentas = cuentas;
+		this.setPermiteMostrarMovimientos(permiteMostrarMovimientos);
 	}
 	
 	/**
@@ -57,7 +64,7 @@ public class Banco implements Serializable {
 	 */
 	
 	public void setExtractionAcceptedListener(ExtractionAcceptedListener extractionAcceptedListener) {
-		this.extractionAcceptedListener = extractionAcceptedListener;
+		this.movementAcceptedListener = extractionAcceptedListener;
 	}
 		
 	public String getNombre() {
@@ -249,7 +256,7 @@ public class Banco implements Serializable {
 				}	
 			}
 			cuenta.setLimiteExtraccionDiario(cuenta.getLimiteExtraccionDiario().subtract(moneyAmount));
-			this.extractionAcceptedListener.listenExtractionAcceptedEvent(new ExtractionAcceptedEvent(moneyAmount, cuenta.getSaldo()));
+			this.movementAcceptedListener.listenMovementAcceptedEvent(new MovementAcceptedEvent(moneyAmount, cuenta.getSaldo()));
 			
 			
 		} else {
@@ -259,14 +266,86 @@ public class Banco implements Serializable {
 		
 	}
 
-	public void depositar(BigDecimal moneyAmount, Cuenta cuenta) {
-		cuenta.setSaldo(cuenta.getSaldo().add(moneyAmount));
+	public void depositar(BigDecimal moneyAmount, ArrayList<Tarifa> tarifasTransaccion, Cuenta cuenta, BigDecimal impuestoTransaccion) {
+		cuenta.setSaldo(cuenta.getSaldo().add(moneyAmount.subtract(impuestoTransaccion)));
 		Calendar fechaTransaccion = Calendar.getInstance();	
-		//cuenta.addTransaction(new Transaction(fechaTransaccion, moneyAmount));
-		
+		cuenta.addTransaction(new Transaction(fechaTransaccion, moneyAmount, TipoTransaccion.depositoEfectivo));
+		if (!tarifasTransaccion.isEmpty()) {
+			for(Tarifa tarifa : tarifasTransaccion) {
+				if (tarifa != null) {
+					cuenta.addTransaction(new Transaction(fechaTransaccion,tarifa.getValor(),tarifa.getTipoTransaccion()));
+				}				
+			}	
+		}
+		this.movementAcceptedListener.listenMovementAcceptedEvent(new MovementAcceptedEvent(moneyAmount, cuenta.getSaldo()));
+	}
+	
+	public Cuenta buscarCuenta(BigInteger cbu) {
+		Iterator<Cuenta> itCuentas = cuentas.iterator();
+		Cuenta c = null;
+		boolean cuentaEncontrada = false;
+		while (itCuentas.hasNext() && cuentaEncontrada == false) {
+			c = itCuentas.next();
+			if (c.getCBU().compareTo(cbu) == 0) {
+				cuentaEncontrada = true;
+			}
+		}
+		if (cuentaEncontrada == true) {
+			return c;
+		}
+		return null;
 	}
 
+	public void transferirDinero(BigDecimal moneyAmount, Cuenta cuentaOrigen, BigInteger nroCbuDestino) throws NotEnoughBalanceException, AccountNotFoundException {
+		Cuenta cuentaDestino;
+		cuentaDestino = buscarCuenta(nroCbuDestino);
+		if (cuentaDestino != null) {
+			if (cuentaOrigen.getSaldo().add(cuentaOrigen.getLimiteDescubierto()).compareTo(moneyAmount) >= 0) { 
+				/** El saldo junto con el limite descubierto disponible, es suficiente para la cantidad a transferir */
+				cuentaOrigen.setSaldo(cuentaOrigen.getSaldo().subtract(moneyAmount));
+				Calendar fechaTransaccion = Calendar.getInstance();		  
+				cuentaOrigen.addTransaction(new Transaction(fechaTransaccion, moneyAmount, TipoTransaccion.transferenciaEnviar));
+				cuentaDestino.setSaldo(cuentaDestino.getSaldo().add(moneyAmount));
+				cuentaDestino.addTransaction(new Transaction(fechaTransaccion, moneyAmount, TipoTransaccion.transferenciaRecibir));
+				this.movementAcceptedListener.listenMovementAcceptedEvent(new MovementAcceptedEvent(moneyAmount, cuentaOrigen.getSaldo()));	
+			} else {
+				throw new NotEnoughBalanceException("Saldo insuficiente");
+			}			
+		} else {
+			throw new AccountNotFoundException("Cuenta destino no encontrada");
+		}
+				
+	}
+	
 
+	public List<Cuenta> getCuentas() {
+		return cuentas;
+	}
 
+	public void setCuentas(List<Cuenta> cuentas) {
+		this.cuentas = cuentas;
+	}
 
+	public ArrayList<Transaction> consultarMovimientos(int mes, Cuenta cuenta) throws NotAllowedOperation {
+		ArrayList<Transaction> transacciones = new ArrayList<>();
+		if (this.isPermiteMostrarMovimientos()) {
+			for (Transaction transaccion : cuenta.getTransacciones()) {
+				if (transaccion.getFechaTransaccion().get(Calendar.MONTH) == mes) {
+					transacciones.add(transaccion);
+				}
+			}
+			return transacciones;
+		} else {
+			throw new NotAllowedOperation();
+		}
+				
+	}
+
+	public boolean isPermiteMostrarMovimientos() {
+		return permiteMostrarMovimientos;
+	}
+
+	public void setPermiteMostrarMovimientos(boolean permiteMostrarMovimientos) {
+		this.permiteMostrarMovimientos = permiteMostrarMovimientos;
+	}
 }
