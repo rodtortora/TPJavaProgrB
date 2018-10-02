@@ -326,11 +326,11 @@ public class Banco implements Serializable {
 		this.cuentas = cuentas;
 	}
 
-	public ArrayList<Transaction> consultarMovimientos(int mes, Cuenta cuenta) throws NotAllowedOperation {
+	public ArrayList<Transaction> consultarMovimientos(int ano, int mes, Cuenta cuenta) throws NotAllowedOperation {
 		ArrayList<Transaction> transacciones = new ArrayList<>();
-		if (this.isPermiteMostrarMovimientos()) {
+		if (this.permiteMostrarMovimientos()) {
 			for (Transaction transaccion : cuenta.getTransacciones()) {
-				if (transaccion.getFechaTransaccion().get(Calendar.MONTH) == mes) {
+				if (transaccion.getFechaTransaccion().get(Calendar.MONTH) == mes && transaccion.getFechaTransaccion().get(Calendar.YEAR) == ano) {
 					transacciones.add(transaccion);
 				}
 			}
@@ -341,7 +341,7 @@ public class Banco implements Serializable {
 				
 	}
 
-	public boolean isPermiteMostrarMovimientos() {
+	public boolean permiteMostrarMovimientos() {
 		return permiteMostrarMovimientos;
 	}
 

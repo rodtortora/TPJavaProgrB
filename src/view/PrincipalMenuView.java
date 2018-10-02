@@ -8,9 +8,11 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import controller.MenuController;
+import events.BalanceCheckEvent;
+import events.BalanceCheckListener;
 import events.ChangePassListener;
 import events.MenuEvent;
-import events.MenuEventListener;
+import events.MenuListener;
 
 import javax.swing.JLabel;
 import javax.swing.JButton;
@@ -22,7 +24,8 @@ public class PrincipalMenuView extends JFrame implements PrincipalMenuInterface 
 
 	private JPanel contentPane;
 	private JLabel lblBanco = new JLabel();
-	private MenuEventListener menuEventListener;
+	private MenuListener menuListener;
+	private BalanceCheckListener balanceCheckListener;
 	
 	@Override
 	public void mostrar(boolean e) {
@@ -35,7 +38,7 @@ public class PrincipalMenuView extends JFrame implements PrincipalMenuInterface 
 		this.lblBanco.setText(message);
 	}
 
-	public PrincipalMenuView(ChangePassInterface changePassInterface, ExtraccionInterface extraccionInterface) {
+	public PrincipalMenuView(ChangePassInterface changePassInterface, ExtraccionInterface extraccionInterface, DepositarInterface depositarInterface, TransferenciaInterface transferenciaInterface, ConsultarMovimientosInterface consultarMovimientosInterface) {
 		setTitle("Menu");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 333);
@@ -60,13 +63,13 @@ public class PrincipalMenuView extends JFrame implements PrincipalMenuInterface 
 		JButton btnConsultarSaldo = new JButton("Consultar Saldo");
 		btnConsultarSaldo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				//TODO
+				balanceCheckListener.listenBalanceCheckEvent(new BalanceCheckEvent());
 			}
 		});
 		btnConsultarSaldo.setBounds(10, 87, 414, 23);
 		contentPane.add(btnConsultarSaldo);
 		
-		JButton btnRetirarDinero = new JButton("Retirar dinero");
+		JButton btnRetirarDinero = new JButton("Extracci\u00F3n");
 		btnRetirarDinero.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				extraccionInterface.mostrar(true);
@@ -75,27 +78,50 @@ public class PrincipalMenuView extends JFrame implements PrincipalMenuInterface 
 		btnRetirarDinero.setBounds(10, 121, 414, 23);
 		contentPane.add(btnRetirarDinero);
 		
-		JButton btnDepositarDinero = new JButton("Depositar dinero");
-		btnDepositarDinero.setBounds(10, 155, 414, 23);
-		contentPane.add(btnDepositarDinero);
-		
 		JButton btnTransferencia = new JButton("Transferencia");
+		btnTransferencia.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				transferenciaInterface.mostrar(true);
+			}
+		});
 		btnTransferencia.setBounds(10, 189, 414, 23);
 		contentPane.add(btnTransferencia);
 		
 		JButton btnConsultaDeMovimientos = new JButton("Consulta de movimientos");
+		btnConsultaDeMovimientos.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				consultarMovimientosInterface.mostrar(true);
+			}
+		});
 		btnConsultaDeMovimientos.setBounds(10, 227, 414, 23);
 		contentPane.add(btnConsultaDeMovimientos);
 		
 		JButton btnSalir = new JButton("Salir");
 		btnSalir.setBounds(10, 261, 414, 23);
 		contentPane.add(btnSalir);
+		
+		JButton btnDepositar = new JButton("Dep\u00F3sito");
+		btnDepositar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				depositarInterface.mostrar(true);
+			}
+		});
+		btnDepositar.setBounds(10, 155, 414, 23);
+		contentPane.add(btnDepositar);
 	}
 
 	@Override
-	public void setMenuEventListener(MenuEventListener e) {
-		this.menuEventListener = e;
+	public void setMenuEventListener(MenuListener e) {
+		this.menuListener = e;
 		
+	}
+
+	public BalanceCheckListener getBalanceCheckListener() {
+		return balanceCheckListener;
+	}
+
+	public void setBalanceCheckListener(BalanceCheckListener balanceCheckListener) {
+		this.balanceCheckListener = balanceCheckListener;
 	}
 
 

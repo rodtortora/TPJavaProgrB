@@ -1,11 +1,15 @@
 package view;
 
-import events.MenuEventListener;
+import controller.MenuController;
+import events.BalanceCheckListener;
+import events.MenuListener;
 
 public interface PrincipalMenuInterface extends Visible {
 
 	void setLblBanco(String message);
 
-	void setMenuEventListener(MenuEventListener menuController);
+	void setMenuEventListener(MenuListener balanceCheckListener);
+
+	void setBalanceCheckListener(BalanceCheckListener balanceCheckListener);
 	
 }

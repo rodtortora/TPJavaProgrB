@@ -1,6 +1,6 @@
 package events;
 
-public interface MenuEventListener {
+public interface MenuListener {
 
 	void listenMenuEvent(MenuEvent e);
 	

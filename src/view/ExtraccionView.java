@@ -28,7 +28,7 @@ public class ExtraccionView extends JFrame implements ExtraccionInterface {
 	 */
 	public ExtraccionView() {
 		setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-		setBounds(100, 100, 450, 188);
+		setBounds(100, 100, 450, 158);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -49,7 +49,7 @@ public class ExtraccionView extends JFrame implements ExtraccionInterface {
 				extractionRequestEventListener.listenExtractionRequestEvent(new ExtractionRequestEvent(moneyAmount));
 			}
 		});
-		btnConfirmExtraction.setBounds(10, 115, 414, 23);
+		btnConfirmExtraction.setBounds(10, 83, 414, 23);
 		contentPane.add(btnConfirmExtraction);
 	}
 

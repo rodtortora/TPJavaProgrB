@@ -25,6 +25,7 @@ public class RunApp {
 		 * Listas de bancos, tarjetas, etc
 		 */
 		
+		ArrayList<BigInteger> billetes = new ArrayList<>();
 		ArrayList<Banco> bancos = new ArrayList<>();
 		ArrayList<TarjetaATM> tarjetas = new ArrayList<>();
 		ArrayList<ATM> ATMs = new ArrayList<>();
@@ -32,28 +33,53 @@ public class RunApp {
 		ArrayList<Usuario> usuarios = new ArrayList<>();
 		SortedMap<BigInteger, Billetero> billeteros = new TreeMap(java.util.Collections.reverseOrder());
 		
+		/**
+		 * Billetes aceptados
+		 */
+		billetes.add(BigInteger.valueOf(10));
+		billetes.add(BigInteger.valueOf(20));
+		billetes.add(BigInteger.valueOf(50));
+		billetes.add(BigInteger.valueOf(100));
+		billetes.add(BigInteger.valueOf(200));
+		billetes.add(BigInteger.valueOf(500));
+		billetes.add(BigInteger.valueOf(1000));
+		
+		/**
+		 * Cuentas y usuarios
+		 */
+		
 		cuentas.add(new CuentaCorriente(BigInteger.valueOf(1),BigDecimal.valueOf(0),BigDecimal.valueOf(15000), BigDecimal.valueOf(10000), BigDecimal.valueOf(500), "CUENTA CORRIENTE", 3));
 		cuentas.add(new CuentaSueldo(BigInteger.valueOf(2),BigDecimal.valueOf(0),BigDecimal.valueOf(50000), BigDecimal.valueOf(10000), BigDecimal.valueOf(0), "CUENTA SUELDO", 0, "231312"));
 		
 		usuarios.add(new Usuario(1,"Tortora","Rodrigo"));
 		usuarios.get(0).setCuenta(cuentas);
 		
+		/**
+		 * Bancos
+		 */
 		
 		bancos.add(new Banco(1,"La Plaza",BigInteger.valueOf(5),BigInteger.valueOf(20), cuentas, true));
 		bancos.add(new Banco(2,"Provincia",BigInteger.valueOf(21),BigInteger.valueOf(30), null, false));
 		bancos.add(new Banco(3,"Frances",BigInteger.valueOf(31),BigInteger.valueOf(80), null, false));
 		
-		ATM atmMdq = new ATM(1, "Mar del Plata",bancos.get(1),bancos);
-		ATM atmBsAs = new ATM(2,"Buenos Aires",bancos.get(1),bancos);
+		/**
+		 * Billeteros, reconocedor de billetes y ATMs
+		 */
+		
+		billeteros.put(BigInteger.valueOf(100), new Billetero(BigInteger.valueOf(100),BigInteger.valueOf(60)));
+		billeteros.put(BigInteger.valueOf(500), new Billetero(BigInteger.valueOf(500),BigInteger.valueOf(20)));
+		
+		ReconocedorBilletes reconocedorBilletes = new ReconocedorBilletes(billetes);
+		
+		ATM atmMdq = new ATM(1, "Mar del Plata",bancos.get(1),bancos, billeteros, reconocedorBilletes);
+		ATM atmBsAs = new ATM(2,"Buenos Aires",bancos.get(1),bancos, billeteros, reconocedorBilletes);
 		
 		ATMs.add(atmMdq);
 		ATMs.add(atmBsAs);
 		
-
-		billeteros.put(BigInteger.valueOf(100), new Billetero(BigInteger.valueOf(100),BigInteger.valueOf(60)));
-		billeteros.put(BigInteger.valueOf(500), new Billetero(BigInteger.valueOf(500),BigInteger.valueOf(20)));
-		
-		atmMdq.setBilleteros(billeteros);
+		/**
+		 * Tarjetas
+		 */
 						
 		tarjetas.add(new TarjetaATM(BigInteger.valueOf(10), "1234", true));
 		tarjetas.add(new TarjetaATM(BigInteger.valueOf(20), "1234", true));
@@ -64,11 +90,11 @@ public class RunApp {
 		
 		tarjetas.get(0).setUsuario(usuarios.get(0));
 		
-		try {
+	/*	try {
 			SerializeController.escribir(tarjetas);
 		} catch (IOException e) {
 			e.printStackTrace();
-		}
+		}*/
 
 		bancos.get(0).setTarjetas(tarjetas);
 		bancos.get(1).setTarjetas(tarjetas);
@@ -90,7 +116,11 @@ public class RunApp {
 		SelectorCuentaInterface selectorCuentaInterface = new SelectorCuentaView();
 		ChangePassInterface changePassInterface = new ChangePassView();
 		ExtraccionInterface extraccionInterface = new ExtraccionView();
-		PrincipalMenuInterface principalMenu = new PrincipalMenuView(changePassInterface,extraccionInterface);
+		ConsultarMovimientosInterface consultarMovimientosInterface = new ConsultarMovimientosView();
+		DepositarInterface depositarInterface = new DepositarView();
+		TransferenciaInterface transferenciaInterface = new TransferenciaView();
+		PrincipalMenuInterface principalMenu = new PrincipalMenuView(changePassInterface, extraccionInterface, depositarInterface, transferenciaInterface, consultarMovimientosInterface);
+
 		
 		/**
 		 * Creacion de controladores
@@ -98,7 +128,7 @@ public class RunApp {
 		
 		AuthenticationController authenticationController = new AuthenticationController(ATMs, lectorTarjetaInterface, bancos, askPinInterface, 
 			selectorCuentaInterface, messageInterface, principalMenu);
-		MenuController menuController = new MenuController(principalMenu);
+		MenuController menuController = new MenuController(authenticationController, principalMenu, messageInterface);
 		ChangePassController changePassController = new ChangePassController(authenticationController, messageInterface);
 		TransactionController transactionController = new TransactionController(authenticationController, messageInterface);
 		
@@ -116,8 +146,10 @@ public class RunApp {
 		atmSelectorInterface.setAtmSelectedListener(authenticationController);
 		selectorCuentaInterface.setAccountSelectedListener(authenticationController);
 		principalMenu.setMenuEventListener(menuController);
+		principalMenu.setBalanceCheckListener(menuController);
 		changePassInterface.setChangePassListener(changePassController);
 		extraccionInterface.setExtractionRequestEventListener(transactionController);
+		depositarInterface.setDepositRequestListener(transactionController);
 		
 		/**
 		 * Inicializacion

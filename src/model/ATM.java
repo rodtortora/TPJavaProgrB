@@ -39,13 +39,17 @@ public class ATM {
 	 * @param ID
 	 * @param ubicacion
 	 * @param bancoATM
+	 * @param reconocedorBilletes
+	 * @param billeteros
 	 */
 	
-	public ATM(int ID, String ubicacion, Banco bancoATM, ArrayList<Banco> bancos) {
+	public ATM(int ID, String ubicacion, Banco bancoATM, ArrayList<Banco> bancos, SortedMap<BigInteger, Billetero> billeteros, ReconocedorBilletes reconocedorBilletes) {
 		this.ID = ID;
 		this.ubicacion = ubicacion;
 		this.bancoATM = bancoATM;
 		this.setBancos(bancos);
+		this.setBilleteros(billeteros);
+		this.setReconocedorBilletes(reconocedorBilletes);
 	}
 	
 
@@ -308,8 +312,8 @@ public class ATM {
 		this.getBancoActual().transferirDinero(moneyAmount, this.getCuentaSeleccionada(), nroCbuDestino);
 	}
 	
-	public void consultarMovimientos(int mes) throws NotAllowedOperation {
-		this.getBancoActual().consultarMovimientos(mes, this.getCuentaSeleccionada());
+	public void consultarMovimientos(int ano, int mes) throws NotAllowedOperation {
+		this.getBancoActual().consultarMovimientos(ano, mes, this.getCuentaSeleccionada());
 	}
 
 	@Override
