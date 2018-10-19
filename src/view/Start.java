@@ -1,22 +1,31 @@
 package view;
 
+import java.awt.BorderLayout;
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JButton;
-import javax.swing.JSpinner;
+import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
 
 import events.CardReadedEvent;
-
-import java.awt.Component;
+import events.CardReadedListener;
+import javax.swing.JLabel;
+import javax.swing.SwingConstants;
+import javax.swing.JPasswordField;
+import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.math.BigInteger;
 import java.awt.event.ActionEvent;
+import javax.swing.JTextField;
+import javax.swing.JFormattedTextField;
+import java.awt.Font;
+import javax.swing.JSpinner;
 
-public class Start extends Ventana {
+public class LectorTarjetaView extends Ventana implements LectorTarjetaInterface  {
+	
+	private CardReadedListener cardReadedListener;
 
-	public Start(String title, String subtitle, String message) {
+	public LectorTarjetaView(String title, String subtitle, String message) {
 		super(title, subtitle, message);
 		
 		JButton btnConfirmar = new JButton("CONFIRMAR");
@@ -33,5 +42,23 @@ public class Start extends Ventana {
 		spNroTarjeta.setBounds(370, 267, 260, 20);
 		getContentPane().add(spNroTarjeta);
 
+	}
+	
+	@Override
+	public void setCardReadedListener(CardReadedListener listener) {
+		this.cardReadedListener = listener;
+		
+	}
+
+	@Override
+	public void editarTexto(String string) {
+		this.lblTexto.setText(string);
+		
+	}
+	
+	@Override
+	public void mostrar(boolean e) {
+		this.setVisible(e);
+		
 	}
 }
