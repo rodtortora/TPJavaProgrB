@@ -10,11 +10,13 @@ public class Transaction {
 	private Calendar fechaTransaccion;
 	private BigDecimal moneyAmount;
 	private int tipoTransaccion;
+	private boolean esDebito;
 	
-	public Transaction(Calendar fechaTransaccion, BigDecimal moneyAmount, int tipoTransaccion) {
+	public Transaction(Calendar fechaTransaccion, BigDecimal moneyAmount, int tipoTransaccion, boolean esDebito) {
 		this.setFechaTransaccion(fechaTransaccion);
 		this.setMoneyAmount(moneyAmount);
 		this.setTipoTransaccion(tipoTransaccion);
+		this.setEsDebito(esDebito);
 	}
 
 	public Calendar getFechaTransaccion() {
@@ -39,6 +41,14 @@ public class Transaction {
 
 	public void setTipoTransaccion(int tipoTransaccion) {
 		this.tipoTransaccion = tipoTransaccion;
+	}
+
+	public boolean isDebito() {
+		return esDebito;
+	}
+
+	public void setEsDebito(boolean esDebito) {
+		this.esDebito = esDebito;
 	}
 
 }

@@ -247,11 +247,11 @@ public class Banco implements Serializable {
 			/** El saldo junto con el limite descubierto disponible, es suficiente para la cantidad a extraer y pagar las tarifas */
 			cuenta.setSaldo(cuenta.getSaldo().subtract(moneyAmount.add(impuestoTransaccion)));
 			Calendar fechaTransaccion = Calendar.getInstance();		  
-			cuenta.addTransaction(new Transaction(fechaTransaccion, moneyAmount, TipoTransaccion.extraccion));
+			cuenta.addTransaction(new Transaction(fechaTransaccion, moneyAmount, TipoTransaccion.extraccion, true));
 			if (!tarifasTransaccion.isEmpty()) {
 				for(Tarifa tarifa : tarifasTransaccion) {
 					if (tarifa != null) {
-						cuenta.addTransaction(new Transaction(fechaTransaccion,tarifa.getValor(),tarifa.getTipoTransaccion()));
+						cuenta.addTransaction(new Transaction(fechaTransaccion,tarifa.getValor(),tarifa.getTipoTransaccion(), true));
 					}				
 				}	
 			}
@@ -269,11 +269,11 @@ public class Banco implements Serializable {
 	public void depositar(BigDecimal moneyAmount, ArrayList<Tarifa> tarifasTransaccion, Cuenta cuenta, BigDecimal impuestoTransaccion) {
 		cuenta.setSaldo(cuenta.getSaldo().add(moneyAmount.subtract(impuestoTransaccion)));
 		Calendar fechaTransaccion = Calendar.getInstance();	
-		cuenta.addTransaction(new Transaction(fechaTransaccion, moneyAmount, TipoTransaccion.depositoEfectivo));
+		cuenta.addTransaction(new Transaction(fechaTransaccion, moneyAmount, TipoTransaccion.depositoEfectivo, false));
 		if (!tarifasTransaccion.isEmpty()) {
 			for(Tarifa tarifa : tarifasTransaccion) {
 				if (tarifa != null) {
-					cuenta.addTransaction(new Transaction(fechaTransaccion,tarifa.getValor(),tarifa.getTipoTransaccion()));
+					cuenta.addTransaction(new Transaction(fechaTransaccion,tarifa.getValor(),tarifa.getTipoTransaccion(), true));
 				}				
 			}	
 		}
@@ -304,9 +304,9 @@ public class Banco implements Serializable {
 				/** El saldo junto con el limite descubierto disponible, es suficiente para la cantidad a transferir */
 				cuentaOrigen.setSaldo(cuentaOrigen.getSaldo().subtract(moneyAmount));
 				Calendar fechaTransaccion = Calendar.getInstance();		  
-				cuentaOrigen.addTransaction(new Transaction(fechaTransaccion, moneyAmount, TipoTransaccion.transferenciaEnviar));
+				cuentaOrigen.addTransaction(new Transferencia(fechaTransaccion, moneyAmount, TipoTransaccion.transferenciaEnviar, true, cuentaOrigen, cuentaDestino));
 				cuentaDestino.setSaldo(cuentaDestino.getSaldo().add(moneyAmount));
-				cuentaDestino.addTransaction(new Transaction(fechaTransaccion, moneyAmount, TipoTransaccion.transferenciaRecibir));
+				cuentaDestino.addTransaction(new Transferencia(fechaTransaccion, moneyAmount, TipoTransaccion.transferenciaRecibir, false, cuentaOrigen, cuentaDestino));
 				this.movementAcceptedListener.listenMovementAcceptedEvent(new MovementAcceptedEvent(moneyAmount, cuentaOrigen.getSaldo()));	
 			} else {
 				throw new NotEnoughBalanceException("Saldo insuficiente");
