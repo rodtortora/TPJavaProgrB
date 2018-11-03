@@ -23,6 +23,7 @@ public class DepositarView extends JFrame implements DepositarInterface {
 
 	private JPanel contentPane;
 	private DepositRequestListener depositRequestListener;
+	private PrincipalMenuInterface principalMenuInterface;
 	
 
 	/**
@@ -30,7 +31,7 @@ public class DepositarView extends JFrame implements DepositarInterface {
 	 */
 	public DepositarView() {
 		setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-		setBounds(100, 100, 235, 232);
+		setBounds(100, 100, 235, 263);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -64,6 +65,16 @@ public class DepositarView extends JFrame implements DepositarInterface {
 		lblCantidad.setBounds(10, 77, 203, 14);
 		contentPane.add(lblCantidad);
 		
+		JButton btnVolverAlMenu = new JButton("VOLVER AL MENU");
+		btnVolverAlMenu.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				principalMenuInterface.mostrar(true);
+				mostrar(false);
+			}
+		});
+		btnVolverAlMenu.setBounds(10, 185, 203, 23);
+		contentPane.add(btnVolverAlMenu);
+		
 
 	}
 
@@ -76,6 +87,12 @@ public class DepositarView extends JFrame implements DepositarInterface {
 	@Override
 	public void setDepositRequestListener(DepositRequestListener listener) {
 		this.depositRequestListener = listener;
+		
+	}
+	
+	@Override
+	public void setPrincipalMenuInterface(PrincipalMenuInterface principalMenuInterface) {
+		this.principalMenuInterface = principalMenuInterface;
 		
 	}
 }

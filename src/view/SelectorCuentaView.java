@@ -24,6 +24,7 @@ public class SelectorCuentaView extends JFrame implements SelectorCuentaInterfac
 	private JPanel contentPane;
 	private JComboBox<Cuenta> cuentaComboBox = new JComboBox<Cuenta>();
 	private AccountSelectedListener accountSelectedListener;
+	private ATMSelectorInterface atmSelectorInterface;
 
 	/**
 	 * Launch the application.
@@ -60,13 +61,22 @@ public class SelectorCuentaView extends JFrame implements SelectorCuentaInterfac
 		contentPane.add(lblSeleccioneSuCuenta);
 		
 		JButton btnCancelar = new JButton("Cancelar");
+		btnCancelar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				mostrar(false);
+				vaciarCombobox();
+				atmSelectorInterface.mostrar(true);
+			}
+		});
 		btnCancelar.setBounds(5, 181, 424, 23);
 		contentPane.add(btnCancelar);
 		
 		JButton btnConfirmar = new JButton("Confirmar");
 		btnConfirmar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				accountSelectedListener.ListenAccountSelectedEvent(new AccountSelectedEvent((Cuenta) cuentaComboBox.getSelectedItem()));				
+				accountSelectedListener.ListenAccountSelectedEvent(new AccountSelectedEvent((Cuenta) cuentaComboBox.getSelectedItem()));		
+				mostrar(false);
+				vaciarCombobox();				
 			}
 		});
 		btnConfirmar.setBounds(5, 152, 424, 23);
@@ -80,6 +90,16 @@ public class SelectorCuentaView extends JFrame implements SelectorCuentaInterfac
 	@Override
 	public void setAccountSelectedListener(AccountSelectedListener accountSelectedListener) {
 		this.accountSelectedListener = accountSelectedListener;
+		
+	}
+	
+	@Override
+	public void setAtmSelectorInterface(ATMSelectorInterface atmSelectorInterface) {
+		this.atmSelectorInterface = atmSelectorInterface;
+	}
+
+	public void vaciarCombobox() {
+		this.cuentaComboBox.removeAllItems();
 		
 	}
 

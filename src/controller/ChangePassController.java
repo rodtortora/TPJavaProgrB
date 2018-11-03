@@ -22,6 +22,8 @@ public class ChangePassController implements ChangePassListener {
 	public void listenChangePassEvent(ChangePassEvent event) {
 		try {
 			authController.getSessionAtm().ChangePIN(event.getPassActual(),event.getPassNew(),event.getConfirmPass());
+			messageInterface.mostrar(true);
+			messageInterface.setMessage("Modificaste tu clave");
 		} catch (InvalidNewPinException e) {
 			messageInterface.mostrar(true);
 			messageInterface.setMessage("Error", e.getMessage());
@@ -35,6 +37,8 @@ public class ChangePassController implements ChangePassListener {
 			messageInterface.setMessage("Error", e.getMessage());
 
 		}
+		
+		
 		
 	}
 }

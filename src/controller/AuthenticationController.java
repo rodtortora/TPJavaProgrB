@@ -85,6 +85,7 @@ public class AuthenticationController implements CardReadedListener, PinSentList
 	public void listenCardReadedEvent(CardReadedEvent event) {
 		try {
 			this.getSessionAtm().validarTarjeta(event.getCard());
+			this.lectorTarjetaInterface.mostrar(false);
 		} catch (CardNotFoundException | ATMisOnMaintenanceException | BlockCardException e) {
 			this.messageInterface.setMessage("Error",e.getMessage());
 			this.messageInterface.mostrar(true);

@@ -11,4 +11,6 @@ public interface SelectorCuentaInterface extends Visible {
 
 	public void setAccountSelectedListener(AccountSelectedListener e);
 
+	void setAtmSelectorInterface(ATMSelectorInterface atmSelectorInterface);
+
 }

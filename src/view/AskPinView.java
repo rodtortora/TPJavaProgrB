@@ -25,6 +25,7 @@ public class AskPinView extends JFrame implements AskPinInterface {
 	private PinSentListener pinSentListener;
 	private JLabel lblAdvertencia;
 	private JPasswordField pswPin;
+	private ATMSelectorInterface atmSelectorInterface;
 
 	/**
 	 * Create the frame.
@@ -49,6 +50,9 @@ public class AskPinView extends JFrame implements AskPinInterface {
 		JButton btnCancelar = new JButton("CANCELAR");
 		btnCancelar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				pswPin.setText("");
+				mostrar(false);
+				atmSelectorInterface.mostrar(true);
 			}
 		});
 		btnCancelar.setBounds(10, 133, 110, 23);
@@ -60,6 +64,7 @@ public class AskPinView extends JFrame implements AskPinInterface {
 			public void actionPerformed(ActionEvent e) {
 				String pwd = new String(pswPin.getPassword());
 				pinSentListener.listenPinSentEvent(new PinSentEvent(pwd));
+				pswPin.setText("");
 			}
 		});
 		contentPane.add(btnConfirmar);
@@ -91,5 +96,10 @@ public class AskPinView extends JFrame implements AskPinInterface {
 		this.lblAdvertencia.setVisible(true);
 		
 		
+	}
+
+	@Override
+	public void setAtmSelectorInterface(ATMSelectorInterface atmSelectorInterface) {
+		this.atmSelectorInterface = atmSelectorInterface;
 	}
 }

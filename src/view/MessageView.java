@@ -43,4 +43,11 @@ public class MessageView extends JFrame implements MessageInterface {
 		this.lbl2.setBounds(10, 49, 414, 20);
 		contentPane.add(this.lbl2);
 	}
+
+	@Override
+	public void setMessage(String string) {
+		this.lbl1.setText(string);
+		this.lbl2.setText("");
+		
+	}
 }

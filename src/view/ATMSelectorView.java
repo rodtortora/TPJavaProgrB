@@ -66,19 +66,11 @@ public class ATMSelectorView extends JFrame implements ATMSelectorInterface {
 		btnConfirmar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				atmSelectedListener.listenAtmSelectedEvent(new AtmSelectedEvent((ATM) ATMcomboBox.getSelectedItem()));
+				setVisible(false);
 			}
 		});
-		btnConfirmar.setBounds(10, 102, 414, 23);
+		btnConfirmar.setBounds(10, 111, 414, 41);
 		contentPane.add(btnConfirmar);
-		
-		JButton btnCancelar = new JButton("Cancelar");
-		btnCancelar.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				System.exit(0);
-			}
-		});
-		btnCancelar.setBounds(10, 136, 414, 23);
-		contentPane.add(btnCancelar);
 	}
 
 	@Override

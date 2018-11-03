@@ -256,7 +256,7 @@ public class Banco implements Serializable {
 				}	
 			}
 			cuenta.setLimiteExtraccionDiario(cuenta.getLimiteExtraccionDiario().subtract(moneyAmount));
-			this.movementAcceptedListener.listenMovementAcceptedEvent(new MovementAcceptedEvent(moneyAmount, cuenta.getSaldo()));
+			this.movementAcceptedListener.listenMovementAcceptedEvent(new MovementAcceptedEvent(TipoTransaccion.extraccion, moneyAmount, cuenta.getSaldo()));
 			
 			
 		} else {
@@ -277,7 +277,7 @@ public class Banco implements Serializable {
 				}				
 			}	
 		}
-		this.movementAcceptedListener.listenMovementAcceptedEvent(new MovementAcceptedEvent(moneyAmount, cuenta.getSaldo()));
+		this.movementAcceptedListener.listenMovementAcceptedEvent(new MovementAcceptedEvent(TipoTransaccion.depositoEfectivo, moneyAmount, cuenta.getSaldo()));
 	}
 	
 	public Cuenta buscarCuenta(BigInteger cbu) {
@@ -307,7 +307,7 @@ public class Banco implements Serializable {
 				cuentaOrigen.addTransaction(new Transferencia(fechaTransaccion, moneyAmount, TipoTransaccion.transferenciaEnviar, true, cuentaOrigen, cuentaDestino));
 				cuentaDestino.setSaldo(cuentaDestino.getSaldo().add(moneyAmount));
 				cuentaDestino.addTransaction(new Transferencia(fechaTransaccion, moneyAmount, TipoTransaccion.transferenciaRecibir, false, cuentaOrigen, cuentaDestino));
-				this.movementAcceptedListener.listenMovementAcceptedEvent(new MovementAcceptedEvent(moneyAmount, cuentaOrigen.getSaldo()));	
+				this.movementAcceptedListener.listenMovementAcceptedEvent(new MovementAcceptedEvent(TipoTransaccion.transferenciaEnviar, moneyAmount, cuentaOrigen.getSaldo()));	
 			} else {
 				throw new NotEnoughBalanceException("Saldo insuficiente");
 			}			

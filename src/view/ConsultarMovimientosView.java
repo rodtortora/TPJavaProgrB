@@ -14,17 +14,20 @@ import javax.swing.JTextField;
 import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JSpinner;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class ConsultarMovimientosView extends JFrame implements ConsultarMovimientosInterface {
 
 	private JPanel contentPane;
+	private PrincipalMenuInterface principalMenuInterface;
 
 	/**
 	 * Create the frame.
 	 */
 	public ConsultarMovimientosView() {
 		setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-		setBounds(100, 100, 450, 300);
+		setBounds(100, 100, 456, 357);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -55,11 +58,27 @@ public class ConsultarMovimientosView extends JFrame implements ConsultarMovimie
 		JSpinner spinner = new JSpinner();
 		spinner.setBounds(54, 40, 89, 20);
 		contentPane.add(spinner);
+		
+		JButton btnVolverAlMenu = new JButton("VOLVER AL MENU");
+		btnVolverAlMenu.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				principalMenuInterface.mostrar(true);
+				mostrar(false);
+			}
+		});
+		btnVolverAlMenu.setBounds(10, 272, 420, 35);
+		contentPane.add(btnVolverAlMenu);
 	}
 
 	@Override
 	public void mostrar(boolean e) {
 		this.setVisible(e);
+		
+	}
+	
+	@Override
+	public void setPrincipalMenuInterface(PrincipalMenuInterface principalMenuInterface) {
+		this.principalMenuInterface = principalMenuInterface;
 		
 	}
 }

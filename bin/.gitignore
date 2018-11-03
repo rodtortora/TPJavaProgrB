@@ -1,6 +1,5 @@
 /model/
-/events/
-/controller/
-/init/
 /view/
-/exceptions/
+/controller/
+/events/
+/init/

@@ -38,7 +38,8 @@ public class PrincipalMenuView extends JFrame implements PrincipalMenuInterface 
 		this.lblBanco.setText(message);
 	}
 
-	public PrincipalMenuView(ChangePassInterface changePassInterface, ExtraccionInterface extraccionInterface, DepositarInterface depositarInterface, TransferenciaInterface transferenciaInterface, ConsultarMovimientosInterface consultarMovimientosInterface) {
+	public PrincipalMenuView(ChangePassInterface changePassInterface, ExtraccionInterface extraccionInterface, DepositarInterface depositarInterface, TransferenciaInterface transferenciaInterface, ConsultarMovimientosInterface consultarMovimientosInterface,
+			ATMSelectorInterface atmSelectorInterface) {
 		setTitle("Menu");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 333);
@@ -54,6 +55,7 @@ public class PrincipalMenuView extends JFrame implements PrincipalMenuInterface 
 		JButton btnCambiarClave = new JButton("Cambiar clave");
 		btnCambiarClave.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				mostrar(false);
 				changePassInterface.mostrar(true);
 			}
 		});
@@ -72,6 +74,7 @@ public class PrincipalMenuView extends JFrame implements PrincipalMenuInterface 
 		JButton btnRetirarDinero = new JButton("Extracci\u00F3n");
 		btnRetirarDinero.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				mostrar(false);
 				extraccionInterface.mostrar(true);
 			}
 		});
@@ -81,6 +84,7 @@ public class PrincipalMenuView extends JFrame implements PrincipalMenuInterface 
 		JButton btnTransferencia = new JButton("Transferencia");
 		btnTransferencia.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				mostrar(false);
 				transferenciaInterface.mostrar(true);
 			}
 		});
@@ -90,19 +94,26 @@ public class PrincipalMenuView extends JFrame implements PrincipalMenuInterface 
 		JButton btnConsultaDeMovimientos = new JButton("Consulta de movimientos");
 		btnConsultaDeMovimientos.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				mostrar(false);
 				consultarMovimientosInterface.mostrar(true);
 			}
 		});
 		btnConsultaDeMovimientos.setBounds(10, 227, 414, 23);
 		contentPane.add(btnConsultaDeMovimientos);
-		
 		JButton btnSalir = new JButton("Salir");
+		btnSalir.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				mostrar(false);
+				atmSelectorInterface.mostrar(true);
+			}
+		});
 		btnSalir.setBounds(10, 261, 414, 23);
 		contentPane.add(btnSalir);
 		
 		JButton btnDepositar = new JButton("Dep\u00F3sito");
 		btnDepositar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				mostrar(false);
 				depositarInterface.mostrar(true);
 			}
 		});

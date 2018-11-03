@@ -23,6 +23,7 @@ public class ChangePassView extends JFrame implements ChangePassInterface {
 	private JPasswordField claveNueva;
 	private JPasswordField confirmClaveNueva;
 	private ChangePassListener changePassListener;
+	private PrincipalMenuInterface principalMenuInterface;
 
 	public ChangePassView() {
 		this.changePassListener = changePassListener;
@@ -46,7 +47,13 @@ public class ChangePassView extends JFrame implements ChangePassInterface {
 		btnConfirmar.setBounds(10, 139, 331, 23);
 		contentPane.add(btnConfirmar);
 		
-		JButton btnCancelar = new JButton("CANCELAR");
+		JButton btnCancelar = new JButton("VOLVER AL MENU");
+		btnCancelar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				principalMenuInterface.mostrar(true);
+				mostrar(false);
+			}
+		});
 		btnCancelar.setBounds(10, 173, 331, 23);
 		contentPane.add(btnCancelar);
 		
@@ -84,6 +91,12 @@ public class ChangePassView extends JFrame implements ChangePassInterface {
 	@Override
 	public void setChangePassListener(ChangePassListener listener) {
 		this.changePassListener = listener;
+		
+	}
+
+	@Override
+	public void setPrincipalMenuInterface(PrincipalMenuInterface principalMenuInterface) {
+		this.principalMenuInterface = principalMenuInterface;
 		
 	}
 }

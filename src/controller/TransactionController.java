@@ -1,17 +1,21 @@
 package controller;
 
 import events.MovementAcceptedEvent;
+import events.TransferRequestEvent;
+import events.TransferRequestListener;
 import events.DepositRequestEvent;
 import events.DepositRequestListener;
 import events.ExtractionAcceptedListener;
 import events.ExtractionRequestEvent;
 import events.ExtractionRequestEventListener;
+import exceptions.AccountNotFoundException;
 import exceptions.ExtractionLimitExceeded;
 import exceptions.NotEnoughBalanceException;
 import model.ATM;
+import model.TipoTransaccion;
 import view.MessageInterface;
 
-public class TransactionController implements ExtractionRequestEventListener, ExtractionAcceptedListener, DepositRequestListener {
+public class TransactionController implements ExtractionRequestEventListener, ExtractionAcceptedListener, DepositRequestListener, TransferRequestListener {
 	
 	private ATM atm;
 	private MessageInterface messageInterface;
@@ -33,23 +37,40 @@ public class TransactionController implements ExtractionRequestEventListener, Ex
 			messageInterface.mostrar(true);
 			messageInterface.setMessage("Error", e.getMessage());
 		}
-		
-		
 	}
-
-	@Override
-	public void listenMovementAcceptedEvent(MovementAcceptedEvent event) {
-		authController.getSessionAtm().expulsarDineroReservado();
-		messageInterface.mostrar(true);
-		messageInterface.setMessage("Operacion completada", "Saldo extraido: " + event.getCantidadExtraida() + ". Saldo restante: " + event.getSaldoRestante());
-	}
-
-
-
+	
 	@Override
 	public void listenDepositRequestEvent(DepositRequestEvent e) {
 		authController.getSessionAtm().depositarDinero(e.getValorBillete(), e.getCantidadBillete());
 		
 	}
+	
+	@Override
+	public void listenTransferRequestEvent(TransferRequestEvent e) {
+		try {
+			authController.getSessionAtm().transferencia(e.getCbuDestino(), e.getMoneyAmmount());
+		} catch (AccountNotFoundException | NotEnoughBalanceException error) {
+			messageInterface.mostrar(true);
+			messageInterface.setMessage("Error", error.getMessage());
+		}
+		
+	}
+
+	@Override
+	public void listenMovementAcceptedEvent(MovementAcceptedEvent event) {
+		if (event.getTipoExtraccion() == TipoTransaccion.extraccion) {
+			authController.getSessionAtm().expulsarDineroReservado();
+		}		
+		messageInterface.mostrar(true);
+		messageInterface.setMessage("Operacion completada. Saldo restante: ", event.getSaldoRestante().toString());
+	}
+
+
+
+
+
+
+
+
 
 }

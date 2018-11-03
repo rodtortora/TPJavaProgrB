@@ -22,13 +22,14 @@ public class ExtraccionView extends JFrame implements ExtraccionInterface {
 
 	private JPanel contentPane;
 	private ExtractionRequestEventListener extractionRequestEventListener;
+	private PrincipalMenuInterface principalMenuInterface;
 
 	/**
 	 * Create the frame.
 	 */
 	public ExtraccionView() {
 		setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-		setBounds(100, 100, 450, 158);
+		setBounds(100, 100, 450, 190);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -51,6 +52,18 @@ public class ExtraccionView extends JFrame implements ExtraccionInterface {
 		});
 		btnConfirmExtraction.setBounds(10, 83, 414, 23);
 		contentPane.add(btnConfirmExtraction);
+		
+		JButton btnVolverAlMenu = new JButton("VOLVER AL MENU");
+		btnVolverAlMenu.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				principalMenuInterface.mostrar(true);
+				mostrar(false);
+			}
+		});
+
+
+		btnVolverAlMenu.setBounds(10, 117, 414, 23);
+		contentPane.add(btnVolverAlMenu);
 	}
 
 	@Override
@@ -62,6 +75,12 @@ public class ExtraccionView extends JFrame implements ExtraccionInterface {
 	@Override
 	public void setExtractionRequestEventListener(ExtractionRequestEventListener listener) {
 		this.extractionRequestEventListener = listener;
+		
+	}
+	
+	@Override
+	public void setPrincipalMenuInterface(PrincipalMenuInterface principalMenuInterface) {
+		this.principalMenuInterface = principalMenuInterface;
 		
 	}
 }

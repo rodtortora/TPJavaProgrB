@@ -4,11 +4,13 @@ import java.math.BigDecimal;
 
 public class MovementAcceptedEvent {
 	
+	private int tipoExtraccion;
 	private BigDecimal cantidadExtraida, SaldoRestante;
 
-	public MovementAcceptedEvent(BigDecimal cantidadExtraida, BigDecimal saldoRestante) {
+	public MovementAcceptedEvent(int tipoExtraccion, BigDecimal cantidadExtraida, BigDecimal saldoRestante) {
 		this.setCantidadExtraida(cantidadExtraida);
 		this.setSaldoRestante(saldoRestante);
+		this.setTipoExtraccion(tipoExtraccion);
 
 	}
 
@@ -26,6 +28,14 @@ public class MovementAcceptedEvent {
 
 	public void setSaldoRestante(BigDecimal saldoRestante) {
 		SaldoRestante = saldoRestante;
+	}
+
+	public int getTipoExtraccion() {
+		return tipoExtraccion;
+	}
+
+	public void setTipoExtraccion(int tipoExtraccion) {
+		this.tipoExtraccion = tipoExtraccion;
 	}
 
 }
