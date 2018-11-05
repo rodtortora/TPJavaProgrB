@@ -11,6 +11,7 @@ import java.util.TreeMap;
 import controller.AuthenticationController;
 import controller.ChangePassController;
 import controller.MenuController;
+import controller.MovementsQueryController;
 import controller.SerializeController;
 import controller.TransactionController;
 import model.*;
@@ -134,6 +135,7 @@ public class RunApp {
 		MenuController menuController = new MenuController(authenticationController, principalMenu, messageInterface);
 		ChangePassController changePassController = new ChangePassController(authenticationController, messageInterface);
 		TransactionController transactionController = new TransactionController(authenticationController, messageInterface);
+		MovementsQueryController movementsQueryController = new MovementsQueryController(authenticationController, messageInterface, consultarMovimientosInterface);
 		
 		/**
 		 * Asignaciones para comunicacion MVC
@@ -143,6 +145,7 @@ public class RunApp {
 			banco.setPinRequestListener(authenticationController);
 			banco.setCardValidatedListener(authenticationController);
 			banco.setExtractionAcceptedListener(transactionController);
+			banco.setMovementsReturnedListener(movementsQueryController);
 		}		
 		lectorTarjetaInterface.setCardReadedListener(authenticationController);
 		askPinInterface.setPinListener(authenticationController);
@@ -157,6 +160,7 @@ public class RunApp {
 		depositarInterface.setPrincipalMenuInterface(principalMenu);
 		transferenciaInterface.setPrincipalMenuInterface(principalMenu);
 		consultarMovimientosInterface.setPrincipalMenuInterface(principalMenu);
+		consultarMovimientosInterface.setMovementsQueryListener(movementsQueryController);
 		changePassInterface.setChangePassListener(changePassController);
 		extraccionInterface.setExtractionRequestEventListener(transactionController);
 		depositarInterface.setDepositRequestListener(transactionController);

@@ -13,13 +13,12 @@ public class LectorTarjeta {
 	}
 	public void expulsarTarjeta() {
 		if (this.getTarjetaLeida() != null) {
-			this.setTarjetaLeida(null);
-			System.out.println("Retire la tarjeta"); // TODO: menu de retiro de tarjeta
+			this.setTarjetaLeida(null);			
 		}
 	}
 	
 	public void retenerTarjeta(BigInteger idTarjetaATM) {
-		System.out.println("Tarjeta retenida por el cajero"); // TODO: menu de tarjeta retenida
+		//TODO
 		this.setTarjetaLeida(null);		
 	}	
 	

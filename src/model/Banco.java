@@ -14,6 +14,8 @@ import java.util.List;
 import events.CardValidatedEvent;
 import events.CardValidatedListener;
 import events.MovementAcceptedEvent;
+import events.MovementsReturnedEvent;
+import events.MovementsReturnedListener;
 import events.ExtractionAcceptedListener;
 import events.PinRequestEvent;
 import events.PinRequestListener;
@@ -38,6 +40,7 @@ public class Banco implements Serializable {
 	private CardValidatedListener cardValidatedListener;
 	private ExtractionAcceptedListener movementAcceptedListener;
 	private boolean permiteMostrarMovimientos;
+	private MovementsReturnedListener movementsReturnedListener;
 
 	
 	public Banco() {};
@@ -133,6 +136,10 @@ public class Banco implements Serializable {
 
 	public void setCardValidatedListener(CardValidatedListener cardValidatedListener) {
 		this.cardValidatedListener = cardValidatedListener;
+	}
+	
+	public void setMovementsReturnedListener(MovementsReturnedListener listener) {
+		this.movementsReturnedListener = listener;
 	}
 
 	/**
@@ -326,7 +333,7 @@ public class Banco implements Serializable {
 		this.cuentas = cuentas;
 	}
 
-	public ArrayList<Transaction> consultarMovimientos(int ano, int mes, Cuenta cuenta) throws NotAllowedOperation {
+	public void consultarMovimientos(int ano, int mes, Cuenta cuenta) throws NotAllowedOperation {
 		ArrayList<Transaction> transacciones = new ArrayList<>();
 		if (this.permiteMostrarMovimientos()) {
 			for (Transaction transaccion : cuenta.getTransacciones()) {
@@ -334,11 +341,10 @@ public class Banco implements Serializable {
 					transacciones.add(transaccion);
 				}
 			}
-			return transacciones;
+			movementsReturnedListener.listenMovementsReturnedEvent(new MovementsReturnedEvent(transacciones));
 		} else {
 			throw new NotAllowedOperation();
-		}
-				
+		}				
 	}
 
 	public boolean permiteMostrarMovimientos() {

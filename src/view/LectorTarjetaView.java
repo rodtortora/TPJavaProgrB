@@ -9,6 +9,8 @@ import javax.swing.border.EmptyBorder;
 
 import events.CardReadedEvent;
 import events.CardReadedListener;
+import events.MovementsQueryListener;
+
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 import javax.swing.JPasswordField;
