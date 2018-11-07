@@ -1,4 +1,4 @@
-package controller;
+/*package controller;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
@@ -25,19 +25,21 @@ public class XmlController {
 			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
 			Document doc = dBuilder.parse(inputFile);
 			doc.getDocumentElement().normalize();
-			NodeList nList = doc.getElementsByTagName("cargo");
+			NodeList nList = doc.getElementsByTagName("Cargo");
 			for (int f=0;f<nList.getLength();f++) {
-				Node nNode = nList.item(f);
-				System.out.println("\nCurrent Element :" + nNode.getNodeName());
-				if (nNode.getNodeType() == Node.ELEMENT_NODE) {
-					
-				}
+				if (nList.item(f))
+				System.out.println(nList.item(f).getNodeName());
+				System.out.println(nList.item(f).getTextContent());
+				
 			}
 
+
 		} catch (Exception e) {
+			e.printStackTrace();
 			
 		}
 		
 	}
 
 }
+*/
