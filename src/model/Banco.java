@@ -149,21 +149,28 @@ public class Banco implements Serializable {
 	 * @return Si la validación se hace correctamente, se devuelve la tarjeta con sus datos. Caso contrario devuelve null.
 	 */
 	
-	public TarjetaATM cardIsOnWhitelist(BigInteger idTarjetaATM) {
-		setTarjetaEvaluada(null);
+	public boolean cardIsOnRange(BigInteger idTarjetaATM) {
 		if ((idTarjetaATM.compareTo(this.getMinRango()) >= 0)) {
 			if ((idTarjetaATM.compareTo(this.getMaxRango()) <= 0)) {
-				Iterator<TarjetaATM> ittarjetas = tarjetas.iterator();
-				TarjetaATM cardIterated;
-				while (ittarjetas.hasNext() && this.getTarjetaEvaluada() == null) {					
-					cardIterated = ittarjetas.next();
-					if (idTarjetaATM.compareTo(cardIterated.getID()) == 0) {
-						setTarjetaEvaluada(cardIterated);
-					}
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public TarjetaATM cardIsOnWhitelist(BigInteger idTarjetaATM) {
+		setTarjetaEvaluada(null);
+		if (cardIsOnRange(idTarjetaATM)) {
+			Iterator<TarjetaATM> ittarjetas = tarjetas.iterator();
+			TarjetaATM cardIterated;
+			while (ittarjetas.hasNext() && this.getTarjetaEvaluada() == null) {					
+				cardIterated = ittarjetas.next();
+				if (idTarjetaATM.compareTo(cardIterated.getID()) == 0) {
+					setTarjetaEvaluada(cardIterated);
 				}
-				if (getTarjetaEvaluada() != null) {
-					return getTarjetaEvaluada();
-				}
+			}
+			if (getTarjetaEvaluada() != null) {
+				return getTarjetaEvaluada();
 			}
 		}
 		return null;		
@@ -331,6 +338,10 @@ public class Banco implements Serializable {
 
 	public void setCuentas(List<Cuenta> cuentas) {
 		this.cuentas = cuentas;
+	}
+	
+	public void setCuentas(Cuenta cuenta) {
+		this.cuentas.add(cuenta);
 	}
 
 	public void consultarMovimientos(int ano, int mes, Cuenta cuenta) throws NotAllowedOperation {

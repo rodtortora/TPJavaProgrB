@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import controller.AbmController;
 import controller.AuthenticationController;
 import controller.ChangePassController;
 import controller.MenuController;
@@ -53,7 +54,7 @@ public class RunApp {
 		cuentas.add(new CuentaCorriente(BigInteger.valueOf(1),BigDecimal.valueOf(0),BigDecimal.valueOf(15000), BigDecimal.valueOf(10000), BigDecimal.valueOf(500), "CUENTA CORRIENTE", 3));
 		cuentas.add(new CuentaSueldo(BigInteger.valueOf(2),BigDecimal.valueOf(0),BigDecimal.valueOf(50000), BigDecimal.valueOf(10000), BigDecimal.valueOf(0), "CUENTA SUELDO", 0, "231312"));
 		
-		usuarios.add(new Usuario(1,"Tortora","Rodrigo"));
+		usuarios.add(new Usuario(BigInteger.valueOf(10),"Tortora","Rodrigo"));
 		usuarios.get(0).setCuenta(cuentas);
 		
 		/**
@@ -113,7 +114,8 @@ public class RunApp {
 		 */
 		
 		AskPinInterface askPinInterface = new AskPinView();
-		ATMSelectorInterface atmSelectorInterface = new ATMSelectorView();
+		AdministracionInterface administracion = new AdministracionView();
+		ATMSelectorInterface atmSelectorInterface = new ATMSelectorView(administracion);
 		atmSelectorInterface.llenarCombobox(ATMs);
 		LectorTarjetaInterface lectorTarjetaInterface = new LectorTarjetaView();
 		MessageInterface messageInterface = new MessageView();
@@ -136,6 +138,7 @@ public class RunApp {
 		ChangePassController changePassController = new ChangePassController(authenticationController, messageInterface);
 		TransactionController transactionController = new TransactionController(authenticationController, messageInterface);
 		MovementsQueryController movementsQueryController = new MovementsQueryController(authenticationController, messageInterface, consultarMovimientosInterface);
+		AbmController abmController = new AbmController(messageInterface);
 		
 		/**
 		 * Asignaciones para comunicacion MVC
@@ -146,7 +149,9 @@ public class RunApp {
 			banco.setCardValidatedListener(authenticationController);
 			banco.setExtractionAcceptedListener(transactionController);
 			banco.setMovementsReturnedListener(movementsQueryController);
-		}		
+		}	
+		administracion.setAtmSelectorInterface(atmSelectorInterface);
+		administracion.llenarCombobox(bancos);
 		lectorTarjetaInterface.setCardReadedListener(authenticationController);
 		askPinInterface.setPinListener(authenticationController);
 		atmSelectorInterface.setAtmSelectedListener(authenticationController);
@@ -165,6 +170,10 @@ public class RunApp {
 		extraccionInterface.setExtractionRequestEventListener(transactionController);
 		depositarInterface.setDepositRequestListener(transactionController);
 		transferenciaInterface.setTransferRequestListener(transactionController);
+		administracion.setAltaCuentaRequestListener(abmController);
+		administracion.setAltaTarjetaRequestListener(abmController);
+		administracion.setModificacionRequestListener(abmController);
+		administracion.setBajaRequestListener(abmController);
 		
 		
 		/**

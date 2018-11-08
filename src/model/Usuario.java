@@ -1,25 +1,20 @@
 package model;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
 public class Usuario {
-	private int id;
 	private Cuenta cuenta;
-
+	private BigInteger nroTarjeta;
 	private String apellido, nombre;
 	private ArrayList<Cuenta> cuentas = new ArrayList<>();
-	public Usuario(int id, String apellido, String nombre) {
-		this.id = id;
+	
+	public Usuario(BigInteger nroTarjeta, String apellido, String nombre) {
+		this.nroTarjeta = nroTarjeta;
 		this.apellido = apellido;
 		this.nombre = nombre;
-	}
-	public int getId() {
-		return id;
-	}
-	public void setId(int id) {
-		this.id = id;
 	}
 	public String getApellido() {
 		return apellido;
@@ -54,5 +49,11 @@ public class Usuario {
 			}
 		}
 		return null;
+	}
+	public BigInteger getNroTarjeta() {
+		return nroTarjeta;
+	}
+	public void setNroTarjeta(BigInteger nroTarjeta) {
+		this.nroTarjeta = nroTarjeta;
 	}
 }

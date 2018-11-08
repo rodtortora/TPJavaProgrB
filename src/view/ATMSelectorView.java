@@ -46,10 +46,10 @@ public class ATMSelectorView extends JFrame implements ATMSelectorInterface {
 	/**
 	 * Create the frame.
 	 */
-	public ATMSelectorView() {
+	public ATMSelectorView(AdministracionInterface administracion) {
 		setTitle("Simulador de seleccion de ATM");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 450, 202);
+		setBounds(100, 100, 450, 263);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -71,6 +71,16 @@ public class ATMSelectorView extends JFrame implements ATMSelectorInterface {
 		});
 		btnConfirmar.setBounds(10, 111, 414, 41);
 		contentPane.add(btnConfirmar);
+		
+		JButton btnAdministracion = new JButton("Administracion");
+		btnAdministracion.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				mostrar(false);
+				administracion.mostrar(true);
+			}
+		});
+		btnAdministracion.setBounds(10, 172, 414, 41);
+		contentPane.add(btnAdministracion);
 	}
 
 	@Override
