@@ -7,20 +7,24 @@ import model.TarjetaATM;
 
 public class SerializeController {
 	
-	public static void escribir(ArrayList<TarjetaATM> tarjetas) throws IOException {
-		FileOutputStream fout = new FileOutputStream("tarjetas.dat");
+	public static void escribir(TarjetaATM tarjeta, String fichero) throws IOException {
+		FileOutputStream fout = new FileOutputStream(fichero);
 		ObjectOutputStream outStream = new ObjectOutputStream(fout);
-		outStream.writeObject(tarjetas);
+		outStream.writeObject(tarjeta);
 		outStream.flush();
 		outStream.close();		
 	}
 	
-	public static ArrayList<TarjetaATM> leerTarjetas() throws IOException, ClassNotFoundException {
-		FileInputStream fin = new FileInputStream("tarjetas.dat");
+	public static ArrayList<TarjetaATM> leerTarjetas(String fichero) throws IOException, ClassNotFoundException {
+		FileInputStream fin = new FileInputStream(fichero);
 		ObjectInputStream inStream = new ObjectInputStream(fin);
-		ArrayList<TarjetaATM> tarjetas = (ArrayList<TarjetaATM>)inStream.readObject();
+		TarjetaATM card = (TarjetaATM) inStream.readObject();
+		ArrayList<TarjetaATM> tarjetas = new ArrayList<>();
+		while (card!=null) {
+			tarjetas.add(card);
+			card = (TarjetaATM) inStream.readObject();
+		}
 		inStream.close();
 		return tarjetas;
 	}
-
 }

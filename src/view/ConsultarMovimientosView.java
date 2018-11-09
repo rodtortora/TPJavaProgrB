@@ -50,10 +50,13 @@ public class ConsultarMovimientosView extends JFrame implements ConsultarMovimie
 	 * Create the frame.
 	 */
 	public ConsultarMovimientosView() {
+		Calendar fechaActual = Calendar.getInstance();
+		int anoActual = fechaActual.get(Calendar.YEAR);
+		int mesActual = fechaActual.get(Calendar.MONTH);
 		contentPane = (JPanel) getContentPane();
 		contentPane.setLayout(null);
 		setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-		setBounds(100, 100, 456, 357);
+		setBounds(100, 100, 781, 357);
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		
 		tablaModel.addColumn("Fecha");
@@ -63,11 +66,13 @@ public class ConsultarMovimientosView extends JFrame implements ConsultarMovimie
 		tabla.setModel(tablaModel);
 		scroll.setViewportBorder(new BevelBorder(BevelBorder.LOWERED, Color.BLUE, null, null, null));
 		
-		scroll.setBounds(10, 77, 414, 173);
+		scroll.setBounds(10, 77, 745, 173);
 		contentPane.add(scroll);
 		
 		JSpinner spAno = new JSpinner();
-		spAno.setBounds(54, 40, 161, 20);
+		spAno.setBounds(54, 40, 241, 20);
+		
+		spAno.setValue(anoActual);
 		contentPane.add(spAno);
 	
 		JLabel lblMes = new JLabel("Mes");
@@ -76,7 +81,8 @@ public class ConsultarMovimientosView extends JFrame implements ConsultarMovimie
 		
 		JComboBox cBoxMes = new JComboBox();
 		cBoxMes.setModel(new DefaultComboBoxModel(new String[] {"ENERO", "FEBRERO", "MARZO", "ABRIL", "MAYO", "JUNIO", "JULIO", "AGOSTO", "SEPTIEMBRE", "OCTUBRE", "NOVIEMBRE", "DICIEMBRE"}));
-		cBoxMes.setBounds(54, 12, 161, 20);
+		cBoxMes.setSelectedIndex(mesActual);
+		cBoxMes.setBounds(54, 12, 241, 20);
 		contentPane.add(cBoxMes);
 		
 		JLabel lblAno = new JLabel("A\u00F1o");
@@ -92,7 +98,7 @@ public class ConsultarMovimientosView extends JFrame implements ConsultarMovimie
 				mostrar(false);
 			}
 		});
-		btnVolverAlMenu.setBounds(10, 272, 420, 35);
+		btnVolverAlMenu.setBounds(10, 272, 745, 35);
 		contentPane.add(btnVolverAlMenu);
 		
 		JButton btnBuscar = new JButton("BUSCAR");
@@ -104,7 +110,7 @@ public class ConsultarMovimientosView extends JFrame implements ConsultarMovimie
 			}
 		});
 		
-		btnBuscar.setBounds(335, 11, 89, 42);
+		btnBuscar.setBounds(666, 15, 89, 42);
 		contentPane.add(btnBuscar);
 		
 		

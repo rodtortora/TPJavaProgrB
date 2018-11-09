@@ -53,12 +53,11 @@ public class Banco implements Serializable {
 	 * @param maxRango
 	 */
 	
-	public Banco(int ID, String nombre, BigInteger minRango, BigInteger maxRango, List<Cuenta> cuentas, boolean permiteMostrarMovimientos) {
+	public Banco(int ID, String nombre, BigInteger minRango, BigInteger maxRango, boolean permiteMostrarMovimientos) {
 		this.ID = ID;
 		this.nombre = nombre;
 		this.minRango = minRango;
 		this.maxRango = maxRango;
-		this.cuentas = cuentas;
 		this.setPermiteMostrarMovimientos(permiteMostrarMovimientos);
 	}
 	
@@ -97,9 +96,6 @@ public class Banco implements Serializable {
 	public void setTarjetas(TarjetaATM tarjeta) { //TODO
 		if ((tarjeta.getID().compareTo(this.getMinRango()) >= 0) && tarjeta.getID().compareTo(this.getMaxRango()) <= 0) {
 			this.tarjetas.add(tarjeta);
-			System.out.println("Tarjeta agregada con exito");
-		} else {
-			System.out.println("Error en banco.setTarjetas");
 		}
 	}
 	
@@ -184,7 +180,7 @@ public class Banco implements Serializable {
 
 	public void validarTarjeta(TarjetaATM tarjetaATM) throws BlockCardException {
 		if (!tarjetaATM.isHabilitada()) {
-			throw new BlockCardException();
+			throw new BlockCardException("Tarjeta bloqueada");
 		} else {
 			pinRequestListener.listenPinRequestEvent(new PinRequestEvent());			
 		}
@@ -312,7 +308,7 @@ public class Banco implements Serializable {
 
 	public void transferirDinero(BigDecimal moneyAmount, Cuenta cuentaOrigen, BigInteger nroCbuDestino) throws NotEnoughBalanceException, AccountNotFoundException {
 		Cuenta cuentaDestino;
-		cuentaDestino = buscarCuenta(nroCbuDestino);
+		cuentaDestino = this.buscarCuenta(nroCbuDestino);
 		if (cuentaDestino != null) {
 			if (cuentaOrigen.getSaldo().add(cuentaOrigen.getLimiteDescubierto()).compareTo(moneyAmount) >= 0) { 
 				/** El saldo junto con el limite descubierto disponible, es suficiente para la cantidad a transferir */
@@ -354,7 +350,7 @@ public class Banco implements Serializable {
 			}
 			movementsReturnedListener.listenMovementsReturnedEvent(new MovementsReturnedEvent(transacciones));
 		} else {
-			throw new NotAllowedOperation();
+			throw new NotAllowedOperation("No tiene permisos para realizar la operacion");
 		}				
 	}
 

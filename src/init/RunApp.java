@@ -29,10 +29,10 @@ public class RunApp {
 		
 		ArrayList<BigInteger> billetes = new ArrayList<>();
 		ArrayList<Banco> bancos = new ArrayList<>();
-		ArrayList<TarjetaATM> tarjetas = new ArrayList<>();
+		//ArrayList<TarjetaATM> tarjetas = new ArrayList<>();
 		ArrayList<ATM> ATMs = new ArrayList<>();
-		ArrayList<Cuenta> cuentas = new ArrayList<>();
-		ArrayList<Usuario> usuarios = new ArrayList<>();
+		//ArrayList<Cuenta> cuentas = new ArrayList<>();
+		//ArrayList<Usuario> usuarios = new ArrayList<>();
 		SortedMap<BigInteger, Billetero> billeterosmdp = new TreeMap(java.util.Collections.reverseOrder());
 		SortedMap<BigInteger, Billetero> billeterosbsas = new TreeMap(java.util.Collections.reverseOrder());
 		
@@ -51,19 +51,19 @@ public class RunApp {
 		 * Cuentas y usuarios
 		 */
 		
-		cuentas.add(new CuentaCorriente(BigInteger.valueOf(1),BigDecimal.valueOf(0),BigDecimal.valueOf(15000), BigDecimal.valueOf(10000), BigDecimal.valueOf(500), "CUENTA CORRIENTE", 3));
+		/*cuentas.add(new CuentaCorriente(BigInteger.valueOf(1),BigDecimal.valueOf(0),BigDecimal.valueOf(15000), BigDecimal.valueOf(10000), BigDecimal.valueOf(500), "CUENTA CORRIENTE", 3));
 		cuentas.add(new CuentaSueldo(BigInteger.valueOf(2),BigDecimal.valueOf(0),BigDecimal.valueOf(50000), BigDecimal.valueOf(10000), BigDecimal.valueOf(0), "CUENTA SUELDO", 0, "231312"));
 		
 		usuarios.add(new Usuario(BigInteger.valueOf(10),"Tortora","Rodrigo"));
-		usuarios.get(0).setCuenta(cuentas);
+		usuarios.get(0).setCuenta(cuentas);*/
 		
 		/**
 		 * Bancos
 		 */
 		
-		bancos.add(new Banco(1,"La Plaza",BigInteger.valueOf(5),BigInteger.valueOf(20), cuentas, true));
-		bancos.add(new Banco(2,"Provincia",BigInteger.valueOf(21),BigInteger.valueOf(30), null, false));
-		bancos.add(new Banco(3,"Frances",BigInteger.valueOf(31),BigInteger.valueOf(80), null, false));
+		bancos.add(new Banco(1,"La Plaza",BigInteger.valueOf(5),BigInteger.valueOf(20), true));
+		bancos.add(new Banco(2,"Provincia",BigInteger.valueOf(21),BigInteger.valueOf(30), false));
+		bancos.add(new Banco(3,"Frances",BigInteger.valueOf(31),BigInteger.valueOf(80), false));
 		
 		/**
 		 * Billeteros, reconocedor de billetes y ATMs
@@ -86,14 +86,14 @@ public class RunApp {
 		 * Tarjetas
 		 */
 						
-		tarjetas.add(new TarjetaATM(BigInteger.valueOf(10), "1234", true));
-		tarjetas.add(new TarjetaATM(BigInteger.valueOf(20), "1234", true));
-		tarjetas.add(new TarjetaATM(BigInteger.valueOf(30), "1234", true));
-		tarjetas.add(new TarjetaATM(BigInteger.valueOf(40), "1234", true));
-		tarjetas.add(new TarjetaATM(BigInteger.valueOf(50), "1234", true));
-		tarjetas.add(new TarjetaATM(BigInteger.valueOf(60), "1234", true));
+		//tarjetas.add(new TarjetaATM(BigInteger.valueOf(10), "1234", true));
+		//tarjetas.add(new TarjetaATM(BigInteger.valueOf(20), "1234", true));
+		//tarjetas.add(new TarjetaATM(BigInteger.valueOf(30), "1234", true));
+		//tarjetas.add(new TarjetaATM(BigInteger.valueOf(40), "1234", true));
+		//tarjetas.add(new TarjetaATM(BigInteger.valueOf(50), "1234", true));
+		//tarjetas.add(new TarjetaATM(BigInteger.valueOf(60), "1234", true));
 		
-		tarjetas.get(0).setUsuario(usuarios.get(0));
+		//tarjetas.get(0).setUsuario(usuarios.get(0));
 		
 	/*	try {
 			SerializeController.escribir(tarjetas);
@@ -101,9 +101,9 @@ public class RunApp {
 			e.printStackTrace();
 		}*/
 
-		bancos.get(0).setTarjetas(tarjetas);
-		bancos.get(1).setTarjetas(tarjetas);
-		bancos.get(2).setTarjetas(tarjetas);	
+		//bancos.get(0).setTarjetas(tarjetas);
+		//bancos.get(1).setTarjetas(tarjetas);
+		//bancos.get(2).setTarjetas(tarjetas);	
 		
 
 		

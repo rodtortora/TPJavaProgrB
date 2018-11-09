@@ -1,17 +1,21 @@
 package events;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 
 import model.Banco;
 
 public class ModificacionRequestEvent {
 	
-	private BigInteger nroTarjeta;
+	private BigInteger nroTarjeta, nroCuenta;
+	private BigDecimal limiteDesc;
 	private Banco banco;
 	private String nombre, apellido, cuit, pwd;
 
-	public ModificacionRequestEvent(BigInteger nroTarjeta,Banco banco,String nombre,String apellido,String cuit,String pwd) {
+	public ModificacionRequestEvent(BigInteger nroTarjeta,BigInteger nroCuenta, BigDecimal limiteDesc, Banco banco,String nombre,String apellido,String cuit,String pwd) {
 		this.setNroTarjeta(nroTarjeta);
+		this.setNroCuenta(nroCuenta);
+		this.setLimiteDesc(limiteDesc);
 		this.setBanco(banco);
 		this.setNombre(nombre);
 		this.setApellido(apellido);
@@ -65,6 +69,22 @@ public class ModificacionRequestEvent {
 
 	public void setCuit(String cuit) {
 		this.cuit = cuit;
+	}
+
+	public BigInteger getNroCuenta() {
+		return nroCuenta;
+	}
+
+	public void setNroCuenta(BigInteger nroCuenta) {
+		this.nroCuenta = nroCuenta;
+	}
+
+	public BigDecimal getLimiteDesc() {
+		return limiteDesc;
+	}
+
+	public void setLimiteDesc(BigDecimal limiteDesc) {
+		this.limiteDesc = limiteDesc;
 	}
 
 }

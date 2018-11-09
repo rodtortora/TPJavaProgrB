@@ -183,12 +183,14 @@ public class AdministracionView extends JFrame implements AdministracionInterfac
 		btnModificacion.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				BigInteger nroTarjeta = BigInteger.valueOf((int)spNroTarjeta.getValue());
+				BigInteger nroCuenta = BigInteger.valueOf((int)spNroCuenta.getValue());
+				BigDecimal limiteDesc = BigDecimal.valueOf((int)spnLimiteDesc.getValue());
 				Banco banco = ((Banco) cmbxBanco.getSelectedItem());
 				String nombre = txtNombre.getText();
 				String apellido = txtApellido.getText();
 				String cuit = txtCuit.getText();
 				String pwd = new String(pswPin.getPassword());
-				modificacionRequestListener.listenModificacionRequestEvent(new ModificacionRequestEvent(nroTarjeta,banco,nombre,apellido,cuit,pwd));
+				modificacionRequestListener.listenModificacionRequestEvent(new ModificacionRequestEvent(nroTarjeta,nroCuenta,limiteDesc,banco,nombre,apellido,cuit,pwd));
 			}
 		});
 		btnModificacion.setBounds(130, 325, 110, 23);
@@ -199,9 +201,11 @@ public class AdministracionView extends JFrame implements AdministracionInterfac
 			public void actionPerformed(ActionEvent e) {
 				BigInteger nroTarjeta = BigInteger.valueOf((int)spNroTarjeta.getValue());
 				BigInteger nroCuenta = BigInteger.valueOf((int)spNroCuenta.getValue());
-				BigDecimal limiteDesc = BigDecimal.valueOf((double)spnLimiteDesc.getValue());
+				BigDecimal limiteDesc = BigDecimal.valueOf((int)spnLimiteDesc.getValue());
 				String tipoCuenta = ((String)cmbxTipoCuenta.getSelectedItem());
-				altaCuentaRequestListener.listenAltaCuentaRequestEvent(new AltaCuentaRequestEvent(nroTarjeta,nroCuenta,limiteDesc,tipoCuenta));
+				Banco banco = ((Banco) cmbxBanco.getSelectedItem());
+				String cuit = txtCuit.getText();
+				altaCuentaRequestListener.listenAltaCuentaRequestEvent(new AltaCuentaRequestEvent(nroTarjeta,nroCuenta,limiteDesc,tipoCuenta,banco,cuit));
 			}
 		});
 		btnAltaCuenta.setBounds(297, 325, 110, 23);
@@ -211,7 +215,8 @@ public class AdministracionView extends JFrame implements AdministracionInterfac
 		btnBaja.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				BigInteger nroTarjeta = BigInteger.valueOf((int)spNroTarjeta.getValue());
-				bajaRequestListener.listenBajaRequestEvent(new BajaRequestEvent(nroTarjeta));
+				Banco banco = ((Banco) cmbxBanco.getSelectedItem());
+				bajaRequestListener.listenBajaRequestEvent(new BajaRequestEvent(nroTarjeta,banco));
 			}
 		});
 		btnBaja.setBounds(10, 325, 110, 23);

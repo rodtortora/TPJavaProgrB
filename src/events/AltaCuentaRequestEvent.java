@@ -3,16 +3,21 @@ package events;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
+import model.Banco;
+
 public class AltaCuentaRequestEvent {
 	private BigInteger nroTarjeta, nroCuenta;
 	private BigDecimal limiteDesc;
-	private String tipoCuenta;
+	private String tipoCuenta, cuit;
+	private Banco banco;
 
-	public AltaCuentaRequestEvent(BigInteger nroTarjeta, BigInteger nroCuenta, BigDecimal limiteDesc, String tipoCuenta) {
+	public AltaCuentaRequestEvent(BigInteger nroTarjeta, BigInteger nroCuenta, BigDecimal limiteDesc, String tipoCuenta, Banco banco, String cuit) {
 		this.setNroTarjeta(nroTarjeta);
 		this.setNroCuenta(nroCuenta);
 		this.setLimiteDesc(limiteDesc);
 		this.setTipoCuenta(tipoCuenta);
+		this.setBanco(banco);
+		this.setCuit(cuit);
 		
 	}
 
@@ -46,6 +51,22 @@ public class AltaCuentaRequestEvent {
 
 	public void setTipoCuenta(String tipoCuenta) {
 		this.tipoCuenta = tipoCuenta;
+	}
+
+	public Banco getBanco() {
+		return banco;
+	}
+
+	public void setBanco(Banco banco) {
+		this.banco = banco;
+	}
+
+	public String getCuit() {
+		return cuit;
+	}
+
+	public void setCuit(String cuit) {
+		this.cuit = cuit;
 	}
 
 }

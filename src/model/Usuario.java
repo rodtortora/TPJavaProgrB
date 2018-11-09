@@ -40,6 +40,22 @@ public class Usuario {
 		return cuentas;
 	}
 	
+	public Cuenta buscarCuenta(BigInteger cbu) {
+		Iterator<Cuenta> itCuentas = cuentas.iterator();
+		Cuenta c = null;
+		boolean cuentaEncontrada = false;
+		while (itCuentas.hasNext() && cuentaEncontrada == false) {
+			c = itCuentas.next();
+			if (c.getCBU().compareTo(cbu) == 0) {
+				cuentaEncontrada = true;
+			}
+		}
+		if (cuentaEncontrada == true) {
+			return c;
+		}
+		return null;
+	}
+	
 	public Cuenta getCuentas(Cuenta c) {
 		Iterator<Cuenta> itcuentas = cuentas.iterator();
 		while (itcuentas.hasNext()) {
