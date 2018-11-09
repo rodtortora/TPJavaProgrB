@@ -2,12 +2,10 @@ package controller;
 
 import events.BalanceCheckEvent;
 import events.BalanceCheckListener;
-import events.MenuEvent;
-import events.MenuListener;
 import view.MessageInterface;
 import view.PrincipalMenuInterface;
 
-public class MenuController implements MenuListener, BalanceCheckListener {
+public class MenuController implements BalanceCheckListener {
 	
 	private PrincipalMenuInterface principalMenu;
 	private AuthenticationController authenticationController;
@@ -41,11 +39,6 @@ public class MenuController implements MenuListener, BalanceCheckListener {
 
 	public void setMessageInterface(MessageInterface messageInterface) {
 		this.messageInterface = messageInterface;
-	}
-
-	@Override
-	public void listenMenuEvent(MenuEvent e) {
-		e.getVisible().mostrar(true);		
 	}
 
 	@Override

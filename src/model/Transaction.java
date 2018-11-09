@@ -1,9 +1,6 @@
 package model;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.sql.Date;
-import java.util.ArrayList;
 import java.util.Calendar;
 
 public class Transaction {

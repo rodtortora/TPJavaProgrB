@@ -1,26 +1,17 @@
 package view;
 
-import java.awt.BorderLayout;
-import java.awt.EventQueue;
-
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import events.CardReadedEvent;
 import events.CardReadedListener;
-import events.MovementsQueryListener;
-
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
-import javax.swing.JPasswordField;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.math.BigInteger;
 import java.awt.event.ActionEvent;
-import javax.swing.JTextField;
-import javax.swing.JFormattedTextField;
-import java.awt.Font;
 import javax.swing.JSpinner;
 
 public class LectorTarjetaView extends JFrame implements LectorTarjetaInterface {
@@ -39,7 +30,7 @@ public class LectorTarjetaView extends JFrame implements LectorTarjetaInterface 
 	/**
 	 * Create the frame.
 	 */
-	public LectorTarjetaView() {
+	public LectorTarjetaView(ATMSelectorInterface atmInterface) {
 		setTitle("Autenticaci\u00F3n");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 440, 285);
@@ -67,8 +58,18 @@ public class LectorTarjetaView extends JFrame implements LectorTarjetaInterface 
 				cardReadedListener.listenCardReadedEvent(new CardReadedEvent(nroTarjeta));
 			}
 		});
-		btnConfirmar.setBounds(117, 212, 202, 23);
+		btnConfirmar.setBounds(212, 212, 202, 23);
 		contentPane.add(btnConfirmar);		
+		
+		JButton btnCancel = new JButton("CANCELAR");
+		btnCancel.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				mostrar(false);
+				atmInterface.mostrar(true);
+			}
+		});
+		btnCancel.setBounds(5, 212, 202, 23);
+		contentPane.add(btnCancel);
 	}
 
 	@Override

@@ -1,10 +1,7 @@
 package init;
 
-import java.io.IOException;
-import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
@@ -13,7 +10,6 @@ import controller.AuthenticationController;
 import controller.ChangePassController;
 import controller.MenuController;
 import controller.MovementsQueryController;
-import controller.SerializeController;
 import controller.TransactionController;
 import model.*;
 import view.*;
@@ -29,10 +25,7 @@ public class RunApp {
 		
 		ArrayList<BigInteger> billetes = new ArrayList<>();
 		ArrayList<Banco> bancos = new ArrayList<>();
-		//ArrayList<TarjetaATM> tarjetas = new ArrayList<>();
 		ArrayList<ATM> ATMs = new ArrayList<>();
-		//ArrayList<Cuenta> cuentas = new ArrayList<>();
-		//ArrayList<Usuario> usuarios = new ArrayList<>();
 		SortedMap<BigInteger, Billetero> billeterosmdp = new TreeMap(java.util.Collections.reverseOrder());
 		SortedMap<BigInteger, Billetero> billeterosbsas = new TreeMap(java.util.Collections.reverseOrder());
 		
@@ -47,15 +40,6 @@ public class RunApp {
 		billetes.add(BigInteger.valueOf(500));
 		billetes.add(BigInteger.valueOf(1000));
 		
-		/**
-		 * Cuentas y usuarios
-		 */
-		
-		/*cuentas.add(new CuentaCorriente(BigInteger.valueOf(1),BigDecimal.valueOf(0),BigDecimal.valueOf(15000), BigDecimal.valueOf(10000), BigDecimal.valueOf(500), "CUENTA CORRIENTE", 3));
-		cuentas.add(new CuentaSueldo(BigInteger.valueOf(2),BigDecimal.valueOf(0),BigDecimal.valueOf(50000), BigDecimal.valueOf(10000), BigDecimal.valueOf(0), "CUENTA SUELDO", 0, "231312"));
-		
-		usuarios.add(new Usuario(BigInteger.valueOf(10),"Tortora","Rodrigo"));
-		usuarios.get(0).setCuenta(cuentas);*/
 		
 		/**
 		 * Bancos
@@ -80,34 +64,7 @@ public class RunApp {
 		ATM atmBsAs = new ATM(2,"Buenos Aires",bancos.get(2),bancos, billeterosbsas, reconocedorBilletes);
 		
 		ATMs.add(atmMdq);
-		ATMs.add(atmBsAs);
-		
-		/**
-		 * Tarjetas
-		 */
-						
-		//tarjetas.add(new TarjetaATM(BigInteger.valueOf(10), "1234", true));
-		//tarjetas.add(new TarjetaATM(BigInteger.valueOf(20), "1234", true));
-		//tarjetas.add(new TarjetaATM(BigInteger.valueOf(30), "1234", true));
-		//tarjetas.add(new TarjetaATM(BigInteger.valueOf(40), "1234", true));
-		//tarjetas.add(new TarjetaATM(BigInteger.valueOf(50), "1234", true));
-		//tarjetas.add(new TarjetaATM(BigInteger.valueOf(60), "1234", true));
-		
-		//tarjetas.get(0).setUsuario(usuarios.get(0));
-		
-	/*	try {
-			SerializeController.escribir(tarjetas);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}*/
-
-		//bancos.get(0).setTarjetas(tarjetas);
-		//bancos.get(1).setTarjetas(tarjetas);
-		//bancos.get(2).setTarjetas(tarjetas);	
-		
-
-		
-		
+		ATMs.add(atmBsAs);	
 		
 		/**
 		 * Creacion de interfaces
@@ -117,7 +74,7 @@ public class RunApp {
 		AdministracionInterface administracion = new AdministracionView();
 		ATMSelectorInterface atmSelectorInterface = new ATMSelectorView(administracion);
 		atmSelectorInterface.llenarCombobox(ATMs);
-		LectorTarjetaInterface lectorTarjetaInterface = new LectorTarjetaView();
+		LectorTarjetaInterface lectorTarjetaInterface = new LectorTarjetaView(atmSelectorInterface);
 		MessageInterface messageInterface = new MessageView();
 		SelectorCuentaInterface selectorCuentaInterface = new SelectorCuentaView();
 		ChangePassInterface changePassInterface = new ChangePassView();
@@ -158,7 +115,6 @@ public class RunApp {
 		askPinInterface.setAtmSelectorInterface(atmSelectorInterface);
 		selectorCuentaInterface.setAccountSelectedListener(authenticationController);
 		selectorCuentaInterface.setAtmSelectorInterface(atmSelectorInterface);
-		principalMenu.setMenuEventListener(menuController);
 		principalMenu.setBalanceCheckListener(menuController);
 		changePassInterface.setPrincipalMenuInterface(principalMenu);
 		extraccionInterface.setPrincipalMenuInterface(principalMenu);

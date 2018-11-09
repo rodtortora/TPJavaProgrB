@@ -1,7 +1,5 @@
 package view;
 
-import java.awt.BorderLayout;
-import java.awt.EventQueue;
 import java.util.ArrayList;
 
 import javax.swing.JFrame;
@@ -14,10 +12,8 @@ import events.AltaTarjetaRequestEvent;
 import events.AltaTarjetaRequestListener;
 import events.BajaRequestEvent;
 import events.BajaRequestListener;
-import events.CardReadedListener;
 import events.ModificacionRequestEvent;
 import events.ModificacionRequestListener;
-import model.ATM;
 import model.Banco;
 
 import javax.swing.JButton;
@@ -85,34 +81,34 @@ public class AdministracionView extends JFrame implements AdministracionInterfac
 
 	public AdministracionView() {
 		setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-		setBounds(100, 100, 548, 431);
+		setBounds(100, 100, 685, 431);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
-		JButton btnNewButton = new JButton("CANCELAR");
+		JButton btnNewButton = new JButton("SALIR");
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				mostrar(false);
 				atmSelectorInterface.mostrar(true);
 			}
 		});
-		btnNewButton.setBounds(10, 359, 512, 23);
+		btnNewButton.setBounds(10, 359, 649, 23);
 		contentPane.add(btnNewButton);
 		
 
 		
 		
 		JSpinner spNroTarjeta = new JSpinner();
-		spNroTarjeta.setBounds(244, 25, 278, 20);
+		spNroTarjeta.setBounds(285, 25, 374, 20);
 		contentPane.add(spNroTarjeta);
 		
 		JLabel lblNewLabel = new JLabel("Nro de tarjeta");
 		lblNewLabel.setBounds(10, 28, 224, 14);
 		contentPane.add(lblNewLabel);
 		
-		cmbxBanco.setBounds(244, 56, 278, 20);
+		cmbxBanco.setBounds(285, 56, 374, 20);
 		contentPane.add(cmbxBanco);
 		
 		JLabel lblBanco = new JLabel("Banco");
@@ -121,7 +117,7 @@ public class AdministracionView extends JFrame implements AdministracionInterfac
 		
 		JComboBox cmbxTipoCuenta = new JComboBox();
 		cmbxTipoCuenta.setModel(new DefaultComboBoxModel(new String[] {"Cuenta Corriente", "Cuenta Sueldo", "Caja de Ahorro"}));
-		cmbxTipoCuenta.setBounds(244, 87, 278, 20);
+		cmbxTipoCuenta.setBounds(285, 87, 374, 20);
 		contentPane.add(cmbxTipoCuenta);
 		
 		JLabel lblTipoDeCuenta = new JLabel("Tipo de cuenta");
@@ -129,7 +125,7 @@ public class AdministracionView extends JFrame implements AdministracionInterfac
 		contentPane.add(lblTipoDeCuenta);
 		
 		JSpinner spNroCuenta = new JSpinner();
-		spNroCuenta.setBounds(244, 118, 278, 20);
+		spNroCuenta.setBounds(285, 118, 374, 20);
 		contentPane.add(spNroCuenta);
 		
 		JLabel lblNroDeCuenta = new JLabel("Nro de cuenta");
@@ -145,13 +141,13 @@ public class AdministracionView extends JFrame implements AdministracionInterfac
 		contentPane.add(lblApellido);
 		
 		txtNombre = new JTextField();
-		txtNombre.setBounds(244, 149, 278, 20);
+		txtNombre.setBounds(285, 149, 374, 20);
 		contentPane.add(txtNombre);
 		txtNombre.setColumns(10);
 		
 		txtApellido = new JTextField();
 		txtApellido.setColumns(10);
-		txtApellido.setBounds(244, 180, 278, 20);
+		txtApellido.setBounds(285, 180, 374, 20);
 		contentPane.add(txtApellido);
 		
 		JLabel lblCuitEmpresa = new JLabel("Cuit Empresa");
@@ -160,7 +156,7 @@ public class AdministracionView extends JFrame implements AdministracionInterfac
 		
 		txtCuit = new JTextField();
 		txtCuit.setColumns(10);
-		txtCuit.setBounds(244, 211, 278, 20);
+		txtCuit.setBounds(285, 211, 374, 20);
 		contentPane.add(txtCuit);
 		
 		JLabel lblLimiteDescubierto = new JLabel("Limite descubierto");
@@ -168,7 +164,7 @@ public class AdministracionView extends JFrame implements AdministracionInterfac
 		contentPane.add(lblLimiteDescubierto);
 		
 		JSpinner spnLimiteDesc = new JSpinner();
-		spnLimiteDesc.setBounds(244, 242, 278, 20);
+		spnLimiteDesc.setBounds(285, 242, 374, 20);
 		contentPane.add(spnLimiteDesc);
 		
 		JLabel lblPin = new JLabel("PIN");
@@ -176,7 +172,7 @@ public class AdministracionView extends JFrame implements AdministracionInterfac
 		contentPane.add(lblPin);
 		
 		pswPin = new JPasswordField();
-		pswPin.setBounds(244, 273, 278, 20);
+		pswPin.setBounds(285, 273, 374, 20);
 		contentPane.add(pswPin);
 		
 		JButton btnModificacion = new JButton("MODIFICACION");
@@ -193,7 +189,7 @@ public class AdministracionView extends JFrame implements AdministracionInterfac
 				modificacionRequestListener.listenModificacionRequestEvent(new ModificacionRequestEvent(nroTarjeta,nroCuenta,limiteDesc,banco,nombre,apellido,cuit,pwd));
 			}
 		});
-		btnModificacion.setBounds(130, 325, 110, 23);
+		btnModificacion.setBounds(170, 325, 150, 23);
 		contentPane.add(btnModificacion);
 		
 		JButton btnAltaCuenta = new JButton("ALTA CUENTA");
@@ -208,7 +204,7 @@ public class AdministracionView extends JFrame implements AdministracionInterfac
 				altaCuentaRequestListener.listenAltaCuentaRequestEvent(new AltaCuentaRequestEvent(nroTarjeta,nroCuenta,limiteDesc,tipoCuenta,banco,cuit));
 			}
 		});
-		btnAltaCuenta.setBounds(297, 325, 110, 23);
+		btnAltaCuenta.setBounds(349, 325, 150, 23);
 		contentPane.add(btnAltaCuenta);
 		
 		JButton btnBaja = new JButton("BAJA");
@@ -219,7 +215,7 @@ public class AdministracionView extends JFrame implements AdministracionInterfac
 				bajaRequestListener.listenBajaRequestEvent(new BajaRequestEvent(nroTarjeta,banco));
 			}
 		});
-		btnBaja.setBounds(10, 325, 110, 23);
+		btnBaja.setBounds(10, 325, 150, 23);
 		contentPane.add(btnBaja);
 		
 		JButton btnAltaTarjeta = new JButton("ALTA TARJETA");
@@ -237,7 +233,7 @@ public class AdministracionView extends JFrame implements AdministracionInterfac
 				altaTarjetaRequestListener.listenAltaTarjetaRequestEvent(new AltaTarjetaRequestEvent(nroTarjeta,nroCuenta,limiteDesc,tipoCuenta,banco,nombre,apellido,cuit,pwd));
 			}
 		});
-		btnAltaTarjeta.setBounds(417, 325, 110, 23);
+		btnAltaTarjeta.setBounds(509, 325, 150, 23);
 		contentPane.add(btnAltaTarjeta);
 	}
 	@Override

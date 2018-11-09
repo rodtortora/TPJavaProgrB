@@ -1,4 +1,4 @@
-package controller;
+/*package controller;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -8,7 +8,7 @@ import model.TarjetaATM;
 public class SerializeController {
 	
 	public static void escribir(TarjetaATM tarjeta, String fichero) throws IOException {
-		FileOutputStream fout = new FileOutputStream(fichero);
+		FileOutputStream fout = new FileOutputStream(fichero + ".dat");
 		ObjectOutputStream outStream = new ObjectOutputStream(fout);
 		outStream.writeObject(tarjeta);
 		outStream.flush();
@@ -16,15 +16,18 @@ public class SerializeController {
 	}
 	
 	public static ArrayList<TarjetaATM> leerTarjetas(String fichero) throws IOException, ClassNotFoundException {
-		FileInputStream fin = new FileInputStream(fichero);
+		FileInputStream fin = new FileInputStream(fichero + ".dat");
 		ObjectInputStream inStream = new ObjectInputStream(fin);
-		TarjetaATM card = (TarjetaATM) inStream.readObject();
+		TarjetaATM card;
 		ArrayList<TarjetaATM> tarjetas = new ArrayList<>();
-		while (card!=null) {
-			tarjetas.add(card);
+		Object aux = inStream.readObject();
+		while (aux!=null) {
 			card = (TarjetaATM) inStream.readObject();
+			tarjetas.add(card);
+			
 		}
 		inStream.close();
 		return tarjetas;
 	}
 }
+*/

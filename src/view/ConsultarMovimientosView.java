@@ -1,27 +1,18 @@
 package view;
 
-import java.awt.BorderLayout;
-import java.awt.EventQueue;
-
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
-import events.ChangePassEvent;
-import events.ChangePassListener;
 import events.MovementsQueryEvent;
 import events.MovementsQueryListener;
 import model.TipoTransaccion;
 import model.Transaction;
 
-import javax.swing.JTextArea;
 import javax.swing.JButton;
 import javax.swing.JLabel;
-import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
-import javax.swing.JTextField;
 import javax.swing.JComboBox;
-import javax.management.modelmbean.ModelMBeanOperationInfo;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JSpinner;
 import javax.swing.JTable;
@@ -32,9 +23,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.awt.event.ActionEvent;
 import javax.swing.border.BevelBorder;
-import javax.swing.border.LineBorder;
 import java.awt.Color;
-import javax.swing.border.EtchedBorder;
 
 public class ConsultarMovimientosView extends JFrame implements ConsultarMovimientosInterface {
 
@@ -138,12 +127,7 @@ public class ConsultarMovimientosView extends JFrame implements ConsultarMovimie
 	public void fillWithMovements(ArrayList<Transaction> transactions) {
 		String fecha;
 		String tipoMovimiento;
-		int filas = tablaModel.getRowCount();
-		if (filas > 0) {
-			for (int i = 1; i <= filas; i++) {
-				tablaModel.removeRow(0);
-			}
-		}
+		this.vaciar();
 		for(Transaction transaction : transactions) {	
 			if (transaction.isDebito()) {
 				tipoMovimiento = "Debito";
@@ -153,6 +137,17 @@ public class ConsultarMovimientosView extends JFrame implements ConsultarMovimie
 			fecha = transaction.getFechaTransaccion().get(Calendar.YEAR) + "/" + transaction.getFechaTransaccion().get(Calendar.MONTH) + "/" + transaction.getFechaTransaccion().get(Calendar.DAY_OF_MONTH);
 			tablaModel.addRow(new Object[]{fecha,transaction.getMoneyAmount(),TipoTransaccion.getDescription(transaction.getTipoTransaccion()), tipoMovimiento});
 			tabla.setModel(tablaModel);
+		}
+		
+	}
+
+	@Override
+	public void vaciar() {
+		int filas = tablaModel.getRowCount();
+		if (filas > 0) {
+			for (int i = 1; i <= filas; i++) {
+				tablaModel.removeRow(0);
+			}
 		}
 		
 	}

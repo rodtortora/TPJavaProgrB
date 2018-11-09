@@ -1,18 +1,11 @@
 package view;
 
-import java.awt.BorderLayout;
-import java.awt.EventQueue;
-
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
-import controller.MenuController;
 import events.BalanceCheckEvent;
 import events.BalanceCheckListener;
-import events.ChangePassListener;
-import events.MenuEvent;
-import events.MenuListener;
 
 import javax.swing.JLabel;
 import javax.swing.JButton;
@@ -24,7 +17,6 @@ public class PrincipalMenuView extends JFrame implements PrincipalMenuInterface 
 
 	private JPanel contentPane;
 	private JLabel lblBanco = new JLabel();
-	private MenuListener menuListener;
 	private BalanceCheckListener balanceCheckListener;
 	
 	@Override
@@ -95,6 +87,7 @@ public class PrincipalMenuView extends JFrame implements PrincipalMenuInterface 
 		btnConsultaDeMovimientos.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				mostrar(false);
+				consultarMovimientosInterface.vaciar();
 				consultarMovimientosInterface.mostrar(true);
 			}
 		});
@@ -121,11 +114,6 @@ public class PrincipalMenuView extends JFrame implements PrincipalMenuInterface 
 		contentPane.add(btnDepositar);
 	}
 
-	@Override
-	public void setMenuEventListener(MenuListener e) {
-		this.menuListener = e;
-		
-	}
 
 	public BalanceCheckListener getBalanceCheckListener() {
 		return balanceCheckListener;

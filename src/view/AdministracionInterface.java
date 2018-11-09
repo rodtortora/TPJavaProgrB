@@ -6,7 +6,6 @@ import events.AltaCuentaRequestListener;
 import events.AltaTarjetaRequestListener;
 import events.BajaRequestListener;
 import events.ModificacionRequestListener;
-import model.ATM;
 import model.Banco;
 
 public interface AdministracionInterface extends Visible {

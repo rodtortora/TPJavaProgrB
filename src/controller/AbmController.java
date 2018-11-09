@@ -1,5 +1,7 @@
 package controller;
 
+import java.io.IOException;
+
 import events.AltaCuentaRequestEvent;
 import events.AltaCuentaRequestListener;
 import events.AltaTarjetaRequestEvent;
@@ -68,7 +70,7 @@ public class AbmController implements AltaCuentaRequestListener, AltaTarjetaRequ
 			admin.altaTarjeta(e.getNroTarjeta(), e.getNroCuenta(), e.getLimiteDesc(), e.getTipoCuenta(), e.getBanco(), e.getNombre(), e.getApellido(), e.getCuit(), e.getPwd());
 			messageInterface.mostrar(true);
 			messageInterface.setMessage("Tarjeta habilitada");
-		} catch (ImpossibleCreateCardException error) {
+		} catch (ImpossibleCreateCardException | IOException error) {
 			messageInterface.mostrar(true);
 			messageInterface.setMessage("Error", error.getMessage());
 		}

@@ -2,11 +2,9 @@ package model;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Iterator;
 
 public class Usuario {
-	private Cuenta cuenta;
 	private BigInteger nroTarjeta;
 	private String apellido, nombre;
 	private ArrayList<Cuenta> cuentas = new ArrayList<>();

@@ -1,8 +1,5 @@
 package view;
 
-import java.awt.BorderLayout;
-import java.awt.EventQueue;
-
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
@@ -26,7 +23,6 @@ public class ChangePassView extends JFrame implements ChangePassInterface {
 	private PrincipalMenuInterface principalMenuInterface;
 
 	public ChangePassView() {
-		this.changePassListener = changePassListener;
 		setTitle("Cambio de clave");
 		setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 		setBounds(100, 100, 367, 244);

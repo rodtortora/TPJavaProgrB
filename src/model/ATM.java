@@ -1,11 +1,11 @@
 package model;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map.Entry;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
@@ -14,6 +14,7 @@ import exceptions.ATMisOnMaintenanceException;
 import exceptions.BlockCardException;
 import exceptions.CardNotFoundException;
 import exceptions.ExtractionLimitExceeded;
+import exceptions.InvalidBillException;
 import exceptions.InvalidNewPinException;
 import exceptions.NotAllowedOperation;
 import exceptions.NotEnoughBalanceException;
@@ -136,6 +137,8 @@ public class ATM {
 	 * @throws CardNotFoundException 
 	 * @throws ATMisOnMaintenanceException 
 	 * @throws BlockCardException 
+	 * @throws IOException 
+	 * @throws ClassNotFoundException 
 	 */
 	
 	
@@ -247,10 +250,10 @@ public class ATM {
 			BigDecimal sumaPrecioTarifas = BigDecimal.ZERO;
 			if (!this.isBancoATMIgualBancoTarjeta()) {
 				if (this.getCuentaSeleccionada().getTipoCuenta() == "CAJA AHORRO") {
-					tarifasTransaccion.add(new Tarifa(Tarifa.cajaAhorroTransaccionForanea, TipoTransaccion.extraccion));
+					tarifasTransaccion.add(new Tarifa(Tarifa.cajaAhorroTransaccionForanea, TipoTransaccion.cargoBancoForaneo));
 					sumaPrecioTarifas = sumaPrecioTarifas.add(Tarifa.cajaAhorroTransaccionForanea);
 				} else if (this.getCuentaSeleccionada().getTipoCuenta() == "CUENTA CORRIENTE") {
-					tarifasTransaccion.add(new Tarifa(Tarifa.cuentaCorrienteTransaccionForanea, TipoTransaccion.extraccion));
+					tarifasTransaccion.add(new Tarifa(Tarifa.cuentaCorrienteTransaccionForanea, TipoTransaccion.cargoBancoForaneo));
 					sumaPrecioTarifas = sumaPrecioTarifas.add(Tarifa.cuentaCorrienteTransaccionForanea);
 				}
 				
@@ -286,7 +289,7 @@ public class ATM {
 		}		
 	}
 	
-	public void depositarDinero(BigInteger valorBillete, BigInteger cantidadBilletes) {
+	public void depositarDinero(BigInteger valorBillete, BigInteger cantidadBilletes) throws InvalidBillException {
 		ArrayList<Tarifa> tarifasTransaccion = new ArrayList<>();
 		BigDecimal sumaPrecioTarifas = BigDecimal.ZERO;
 		/**
@@ -295,10 +298,10 @@ public class ATM {
 		if (!this.isBancoATMIgualBancoTarjeta()) {
 			
 			if (this.getCuentaSeleccionada().getTipoCuenta() == "CAJA AHORRO") {
-				tarifasTransaccion.add(new Tarifa(Tarifa.cajaAhorroTransaccionForanea, TipoTransaccion.depositoEfectivo));
+				tarifasTransaccion.add(new Tarifa(Tarifa.cajaAhorroTransaccionForanea, TipoTransaccion.cargoBancoForaneo));
 				sumaPrecioTarifas = sumaPrecioTarifas.add(Tarifa.cajaAhorroTransaccionForanea);
 			} else if (this.getCuentaSeleccionada().getTipoCuenta() == "CUENTA CORRIENTE") {
-				tarifasTransaccion.add(new Tarifa(Tarifa.cuentaCorrienteTransaccionForanea, TipoTransaccion.depositoEfectivo));
+				tarifasTransaccion.add(new Tarifa(Tarifa.cuentaCorrienteTransaccionForanea, TipoTransaccion.cargoBancoForaneo));
 				sumaPrecioTarifas = sumaPrecioTarifas.add(Tarifa.cuentaCorrienteTransaccionForanea);
 			}			
 		}

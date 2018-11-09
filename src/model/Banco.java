@@ -1,13 +1,12 @@
 package model;
 
 import java.util.Calendar;
+import java.io.IOException;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
@@ -19,7 +18,6 @@ import events.MovementsReturnedListener;
 import events.ExtractionAcceptedListener;
 import events.PinRequestEvent;
 import events.PinRequestListener;
-import events.PinSentListener;
 import exceptions.AccountNotFoundException;
 import exceptions.BlockCardException;
 import exceptions.ExtractionLimitExceeded;
@@ -90,10 +88,8 @@ public class Banco implements Serializable {
 	public Collection<TarjetaATM> getTarjetas() {
 		return tarjetas;
 	}
-	public void setTarjetas(List<TarjetaATM> tarjetas) {
-		this.tarjetas = tarjetas;
-	}
-	public void setTarjetas(TarjetaATM tarjeta) { //TODO
+	
+	public void setTarjetas(TarjetaATM tarjeta) throws IOException { 
 		if ((tarjeta.getID().compareTo(this.getMinRango()) >= 0) && tarjeta.getID().compareTo(this.getMaxRango()) <= 0) {
 			this.tarjetas.add(tarjeta);
 		}
@@ -205,11 +201,11 @@ public class Banco implements Serializable {
 	 */
 
 	public void login(TarjetaATM tarjetaATM, String pin) throws WrongPinException, BlockCardException {
-		if (validarPIN(tarjetaATM,pin) && tarjetaATM.getIntentosFallidos() < 2) {
+		if (validarPIN(tarjetaATM,pin) && tarjetaATM.getIntentosFallidos() <= 2) {
 			tarjetaATM.setIntentosFallidos(0);
 			this.getCardValidatedListener().listenCardValidatedEvent(new CardValidatedEvent(tarjetaATM));
 		} else {
-			if (tarjetaATM.getIntentosFallidos() < 2) {
+			if (tarjetaATM.getIntentosFallidos() <= 2) {
 				tarjetaATM.setIntentosFallidos(); // Intentos fallidos ++
 				throw new WrongPinException("PIN incorrecto");
 			} else {
@@ -361,4 +357,5 @@ public class Banco implements Serializable {
 	public void setPermiteMostrarMovimientos(boolean permiteMostrarMovimientos) {
 		this.permiteMostrarMovimientos = permiteMostrarMovimientos;
 	}
+	
 }

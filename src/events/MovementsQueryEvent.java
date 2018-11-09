@@ -1,9 +1,5 @@
 package events;
 
-import java.util.ArrayList;
-
-import model.Transaction;
-
 public class MovementsQueryEvent {
 	
 	private int ano, mes;

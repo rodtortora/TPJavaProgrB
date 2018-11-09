@@ -1,9 +1,9 @@
 package model;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
-import exceptions.CardNotFoundException;
 import exceptions.ImpossibleCreateAccountException;
 import exceptions.ImpossibleCreateCardException;
 import exceptions.ImpossibleDeactivateCardException;
@@ -14,11 +14,12 @@ public class Administracion {
 	public Administracion() {}
 	
 	public void altaTarjeta(BigInteger nroTarjeta, BigInteger nroCuenta, BigDecimal limiteDesc, String tipoCuenta, Banco banco, 
-			String nombre, String apellido, String cuit, String pwd) throws ImpossibleCreateCardException {
-		TarjetaATM tarjeta = new TarjetaATM(nroTarjeta,pwd,true);
+			String nombre, String apellido, String cuit, String pwd) throws ImpossibleCreateCardException, IOException {
+		TarjetaATM tarjeta;
 		if (banco.cardIsOnRange(nroTarjeta)) {
-			if (banco.cardIsOnWhitelist(nroTarjeta) == null) {
-				
+			tarjeta = banco.cardIsOnWhitelist(nroTarjeta);
+			if (tarjeta == null) {
+				tarjeta = new TarjetaATM(nroTarjeta,pwd,true);
 				Usuario usuario = new Usuario(nroTarjeta,apellido,nombre);
 				Cuenta cuenta;
 				if (tipoCuenta == "Cuenta Corriente") {
@@ -39,6 +40,7 @@ public class Administracion {
 					throw new ImpossibleCreateCardException("La tarjeta ya existe y esta habilitada");
 				} else {
 					tarjeta.setHabilitada(true);
+					tarjeta.setIntentosFallidos(0);
 				}
 				
 			}

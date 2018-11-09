@@ -4,6 +4,8 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import exceptions.InvalidBillException;
+
 public class ReconocedorBilletes {
 	
 	private ArrayList<BigInteger> billetesAceptados = new ArrayList<>();
@@ -20,7 +22,7 @@ public class ReconocedorBilletes {
 		this.billetesAceptados = billetesAceptados;
 	}
 
-	public boolean validar(BigInteger valorBillete, BigInteger cantidadBilletes) {
+	public boolean validar(BigInteger valorBillete, BigInteger cantidadBilletes) throws InvalidBillException {
 		Iterator<BigInteger> itbilletesAceptados = billetesAceptados.iterator();
 		while (itbilletesAceptados.hasNext()) {
 			BigInteger billete = itbilletesAceptados.next();
@@ -28,7 +30,7 @@ public class ReconocedorBilletes {
 				return true;
 			}
 		}
-		return false;
+		throw new InvalidBillException("Billete no reconocido");
 	}
 
 }

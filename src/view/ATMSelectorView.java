@@ -1,8 +1,5 @@
 package view;
 
-import java.awt.BorderLayout;
-import java.awt.EventQueue;
-
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
@@ -59,7 +56,7 @@ public class ATMSelectorView extends JFrame implements ATMSelectorInterface {
 		lblNewLabel.setBounds(10, 11, 414, 14);
 		contentPane.add(lblNewLabel);
 		
-		this.ATMcomboBox.setBounds(10, 58, 414, 20);
+		this.ATMcomboBox.setBounds(10, 67, 414, 20);
 		contentPane.add(ATMcomboBox);
 		
 		JButton btnConfirmar = new JButton("Confirmar");
@@ -69,7 +66,7 @@ public class ATMSelectorView extends JFrame implements ATMSelectorInterface {
 				setVisible(false);
 			}
 		});
-		btnConfirmar.setBounds(10, 111, 414, 41);
+		btnConfirmar.setBounds(10, 127, 414, 41);
 		contentPane.add(btnConfirmar);
 		
 		JButton btnAdministracion = new JButton("Administracion");
